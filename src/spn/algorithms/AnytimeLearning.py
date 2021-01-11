@@ -171,9 +171,10 @@ class AnytimeSPN:
 			if len(tasks)==0:
 				break
 		
-		    local_data, parent, children_pos, scope, no_clusters, no_independencies = tasks.popleft()
+		    
 
 			if naiveFactor == 0:
+				local_data, parent, children_pos, scope, no_clusters, no_independencies = tasks.popleft()
 				operation, op_params = next_operation(
 				    local_data,
 				    scope,
@@ -183,6 +184,7 @@ class AnytimeSPN:
 				    is_first=(parent is root),
 				)
 			else:
+				local_data, parent, children_pos, scope, no_clusters, no_independencies = tasks.pop()
 				operation = Operation.NAIVE_FACTORIZATION
 
 		    logging.debug("OP: {} on slice {} (remaining tasks {})".format(operation, local_data.shape, len(tasks)))
@@ -256,10 +258,8 @@ class AnytimeSPN:
 
 		            node.children.append(None)
 		            node.weights.append(proportion)
-					if done:
-			            tasks.append((data_slice, node, len(node.children) - 1, scope, False, False))
-			        else:
-			        	tasks.appendleft((data_slice, node, len(node.children) - 1, scope, False, False))
+					tasks.append((data_slice, node, len(node.children) - 1, scope, False, False))
+			        
 				if not done:
 					naiveFactor = len(node.children)
 		        continue
@@ -319,7 +319,7 @@ class AnytimeSPN:
 		            "\t\tnaive factorization {} columns (in {:.5f} secs)".format(len(scope), split_end_t - split_start_t)
 		        )
 		        
-		        naiveFactor = min(0, naiveFactor-1)
+				naiveFactor = min(0, naiveFactor-1)
 
 		        continue
 
