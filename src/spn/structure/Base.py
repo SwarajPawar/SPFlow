@@ -71,7 +71,7 @@ class Node(object):
 
 
 class Sum(Node):
-    def __init__(self, weights=None, children=None):
+    def __init__(self, weights=None, children=None, k=2, done=False):
         Node.__init__(self)
         if weights is None:
             weights = []
@@ -80,6 +80,8 @@ class Sum(Node):
         if children is None:
             children = []
         self.children = children
+		self.k = k
+		self.done = done
 
     @property
     def parameters(self):
