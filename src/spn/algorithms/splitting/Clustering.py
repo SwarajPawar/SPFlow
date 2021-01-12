@@ -4,6 +4,7 @@ Created on March 25, 2018
 @author: Alejandro Molina
 """
 import numpy as np
+import math
 from sklearn.cluster import KMeans, DBSCAN
 from sklearn.mixture import GaussianMixture
 from sklearn.metrics import pairwise
@@ -38,6 +39,34 @@ def get_split_rows_KMeans(n_clusters=2, pre_proc=None, ohe=False, seed=17):
         data = preproc(local_data, ds_context, pre_proc, ohe)
 
         clusters = KMeans(n_clusters=n_clusters, random_state=seed).fit_predict(data)
+
+        return split_data_by_clusters(local_data, clusters, scope, rows=True)
+
+    return split_rows_KMeans
+
+
+def get_split_rows_XMeans(n_clusters=2, pre_proc=None, ohe=False, seed=17):
+    def split_rows_XMeans(local_data, ds_context, scope):
+        data = preproc(local_data, ds_context, pre_proc, ohe)
+
+        kmeans = KMeans(n_clusters=n_clusters, random_state=seed)
+        kmeans.fit(local_data)
+        clusters = kmeans.labels_
+
+        dim = np.size(X, axis=1)
+        centers = kmeans.cluster_centers_
+        p = dim + 1
+
+        obic = np.zeros(k)
+
+        for i in range(k):
+            rn = np.size(np.where(clusters == i))
+            var = np.sum((local_data[clusters == i] - centers[i])**2)/float(rn - 1)
+            obic[i] = loglikelihood(rn, rn, var, dim, 1) - p/2.0*math.log(rn)
+
+        sk = 2 #The number of subclusters
+        nbic = np.zeros(k)
+        addk = 0
 
         return split_data_by_clusters(local_data, clusters, scope, rows=True)
 
