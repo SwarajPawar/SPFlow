@@ -68,6 +68,27 @@ def get_split_rows_XMeans(n_clusters=2, pre_proc=None, ohe=False, seed=17):
         nbic = np.zeros(k)
         addk = 0
 
+        for i in range(k):
+            ci = X[labels == i]
+            r = np.size(np.where(labels == i))
+
+            kmeans = KMeans(n_clusters=sk).fit(ci)
+            ci_labels = kmeans.labels_
+            sm = kmeans.cluster_centers_
+
+            for l in range(sk):
+                rn = np.size(np.where(ci_labels == l))
+                var = np.sum((ci[ci_labels == l] - sm[l])**2)/float(rn - sk)
+                nbic[i] += self.loglikelihood(r, rn, var, M, sk)
+
+            p = sk * (M + 1)
+            nbic[i] -= p/2.0*mt.log(r)
+
+            if obic[i] < nbic[i]:
+                addk += 1
+
+        k += addk
+
         return split_data_by_clusters(local_data, clusters, scope, rows=True)
 
     return split_rows_KMeans
@@ -146,3 +167,14 @@ def get_split_rows_GMM(n_clusters=2, pre_proc=None, ohe=False, seed=17, max_iter
         return split_data_by_clusters(local_data, clusters, scope, rows=True)
 
     return split_rows_GMM
+
+
+
+
+def loglikelihood(self, r, rn, var, m, k):
+    l1 = - rn / 2.0 * mt.log(2 * mt.pi)
+    l2 = - rn * m / 2.0 * mt.log(var)
+    l3 = - (rn - k) / 2.0
+    l4 = rn * mt.log(rn)
+    l5 = - rn * mt.log(r)
+    return l1 + l2 + l3 + l4 + l5
