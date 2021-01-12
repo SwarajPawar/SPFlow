@@ -45,15 +45,16 @@ def get_split_rows_KMeans(n_clusters=2, pre_proc=None, ohe=False, seed=17):
     return split_rows_KMeans
 
 
-def get_split_rows_XMeans(n_clusters=2, pre_proc=None, ohe=False, seed=17):
-    def split_rows_XMeans(local_data, ds_context, scope):
+def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17):
+    def split_rows_XMeans(k=2, local_data, ds_context, scope):
         data = preproc(local_data, ds_context, pre_proc, ohe)
 
-        kmeans = KMeans(n_clusters=n_clusters, random_state=seed)
+        kmeans = KMeans(n_clusters=k, random_state=seed)
         kmeans.fit(local_data)
         clusters = kmeans.labels_
 
-        dim = np.size(X, axis=1)
+		k1 = k
+        dim = np.size(local_data, axis=1)
         centers = kmeans.cluster_centers_
         p = dim + 1
 
@@ -69,7 +70,7 @@ def get_split_rows_XMeans(n_clusters=2, pre_proc=None, ohe=False, seed=17):
         addk = 0
 
         for i in range(k):
-            ci = X[labels == i]
+            ci = local_data[labels == i]
             r = np.size(np.where(labels == i))
 
             kmeans = KMeans(n_clusters=sk).fit(ci)
@@ -79,19 +80,17 @@ def get_split_rows_XMeans(n_clusters=2, pre_proc=None, ohe=False, seed=17):
             for l in range(sk):
                 rn = np.size(np.where(ci_labels == l))
                 var = np.sum((ci[ci_labels == l] - sm[l])**2)/float(rn - sk)
-                nbic[i] += self.loglikelihood(r, rn, var, M, sk)
+                nbic[i] += loglikelihood(r, rn, var, M, sk)
 
             p = sk * (M + 1)
-            nbic[i] -= p/2.0*mt.log(r)
+            nbic[i] -= p/2.0*math.log(r)
 
             if obic[i] < nbic[i]:
                 addk += 1
+        newk = k + addk
+        return newk, split_data_by_clusters(local_data, clusters, scope, rows=True)
 
-        k += addk
-
-        return split_data_by_clusters(local_data, clusters, scope, rows=True)
-
-    return split_rows_KMeans
+    return split_rows_XMeans
 
 
 def get_split_rows_TSNE(n_clusters=2, pre_proc=None, ohe=False, seed=17, verbose=10, n_jobs=-1):
@@ -172,9 +171,9 @@ def get_split_rows_GMM(n_clusters=2, pre_proc=None, ohe=False, seed=17, max_iter
 
 
 def loglikelihood(self, r, rn, var, m, k):
-    l1 = - rn / 2.0 * mt.log(2 * mt.pi)
-    l2 = - rn * m / 2.0 * mt.log(var)
+    l1 = - rn / 2.0 * math.log(2 * math.pi)
+    l2 = - rn * m / 2.0 * math.log(var)
     l3 = - (rn - k) / 2.0
-    l4 = rn * mt.log(rn)
-    l5 = - rn * mt.log(r)
+    l4 = rn * math.log(rn)
+    l5 = - rn * math.log(r)
     return l1 + l2 + l3 + l4 + l5

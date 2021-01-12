@@ -21,6 +21,7 @@ import numpy as np
 from spn.algorithms.TransformStructure import Prune
 from spn.algorithms.Validity import is_valid
 from spn.structure.Base import Product, Sum, assign_ids
+from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
 import multiprocessing
 import os
 
@@ -52,6 +53,7 @@ def get_next_operation(min_instances_slice=100, min_features_slice=1, multivaria
 	    is_first=False,
 	    cluster_first=True,
 	    cluster_univariate=False,
+	    k = 0
 	):
 
 	    minimalFeatures = len(scope) == min_features_slice
@@ -62,7 +64,10 @@ def get_next_operation(min_instances_slice=100, min_features_slice=1, multivaria
 	            return Operation.CREATE_LEAF, None
 	        else:
 	            if cluster_univariate:
-	                return Operation.SPLIT_ROWS, None
+	            	if k = 0:
+		                return Operation.SPLIT_ROWS, None
+		            else:
+		            	return Operation.SPLIT_ROWS, k
 	            else:
 	                return Operation.CREATE_LEAF, None
 
@@ -87,14 +92,20 @@ def get_next_operation(min_instances_slice=100, min_features_slice=1, multivaria
 	            return Operation.NAIVE_FACTORIZATION, None
 
 	    if no_independencies:
-	        return Operation.SPLIT_ROWS, None
+	        if k = 0:
+                return Operation.SPLIT_ROWS, None
+            else:
+            	return Operation.SPLIT_ROWS, k
 
 	    if no_clusters:
 	        return Operation.SPLIT_COLUMNS, None
 
 	    if is_first:
 	        if cluster_first:
-	            return Operation.SPLIT_ROWS, None
+	            if k = 0:
+		            return Operation.SPLIT_ROWS, None
+		        else:
+		        	return Operation.SPLIT_ROWS, k
 	        else:
 	            return Operation.SPLIT_COLUMNS, None
 
@@ -120,7 +131,6 @@ class AnytimeSPN:
 
 
 	def __init__(self,
-		split_rows,
 		split_cols,
 		create_leaf,
 		next_operation=get_next_operation(),		
@@ -128,11 +138,11 @@ class AnytimeSPN:
 	):
 		
 
-		self.split_rows = split_rows
+		self.split_rows = get_split_rows_XMeans(n_clusters=k)
 		self.split_cols = split_cols
 		self.create_leaf = create_leaf
 		self.next_operation = next_operation
-		self.data_slicer = data_slicer,
+		self.data_slicer = data_slicer
 
 		self.root = Product()
 		self.root.children.append(None)
@@ -172,7 +182,7 @@ class AnytimeSPN:
 				break
 		
 		    
-
+			#Normal executions
 			if naiveFactor == 0:
 				local_data, parent, children_pos, scope, no_clusters, no_independencies = tasks.popleft()
 				operation, op_params = next_operation(
@@ -183,6 +193,7 @@ class AnytimeSPN:
 				    no_independencies=no_independencies,
 				    is_first=(parent is root),
 				)
+			#Naive Factorize subtrees
 			else:
 				local_data, parent, children_pos, scope, no_clusters, no_independencies = tasks.pop()
 				operation = Operation.NAIVE_FACTORIZATION
@@ -236,9 +247,17 @@ class AnytimeSPN:
 		        continue
 
 		    elif operation == Operation.SPLIT_ROWS:
-
+				
+				#Default k
+				k = 2
+				#Get the k value for next round of XMeans
+				if op_params is not None:
+					k = op_params
+					
 		        split_start_t = perf_counter()
-		        data_slices, done = split_rows(local_data, ds_context, scope)
+		        
+		        #Get the new K value and dataslices
+		        newk, data_slices = self.split_rows(k, local_data, ds_context, scope)
 		        split_end_t = perf_counter()
 		        logging.debug(
 		            "\t\tfound {} row clusters (in {:.5f} secs)".format(len(data_slices), split_end_t - split_start_t)
@@ -247,12 +266,18 @@ class AnytimeSPN:
 		        if len(data_slices) == 1:
 		            tasks.append((local_data, parent, children_pos, scope, True, False))
 		            continue
+		        
+		        # If K can be increased, find the clusters again in next iteration
+		        if k < newk:
+		        	tasks.appendleft((local_data, parent, children_pos, scope, False, True, k = newk))
 
-		        node = Sum()
+				#Create sum node
+		        node = Sum(k=k)
 		        node.scope.extend(scope)
 		        parent.children[children_pos] = node
 		        # assert parent.scope == node.scope
 
+				#Add branches to the sum node
 		        for data_slice, scope_slice, proportion in data_slices:
 		            assert isinstance(scope_slice, list), "slice must be a list"
 
@@ -260,13 +285,14 @@ class AnytimeSPN:
 		            node.weights.append(proportion)
 					tasks.append((data_slice, node, len(node.children) - 1, scope, False, False))
 			        
-				if not done:
+			    # If newk > k, naiveFactorize subtrees
+				if newk > k:
 					naiveFactor = len(node.children)
 		        continue
 
 		    elif operation == Operation.SPLIT_COLUMNS:
 		        split_start_t = perf_counter()
-		        data_slices = split_cols(local_data, ds_context, scope)
+		        data_slices = self.split_cols(local_data, ds_context, scope)
 		        split_end_t = perf_counter()
 		        logging.debug(
 		            "\t\tfound {} col clusters (in {:.5f} secs)".format(len(data_slices), split_end_t - split_start_t)
