@@ -9,6 +9,7 @@ from sklearn.cluster import KMeans
 
 from spn.algorithms.splitting.Base import split_data_by_clusters, clusters_by_adjacency_matrix
 import logging
+import random
 
 logger = logging.getLogger(__name__)
 _rpy_initialized = False
@@ -91,10 +92,14 @@ def get_split_cols_random_RDC(threshold=0.3, ohe=True, linear=True):
     def split_cols_random_RDC(k=0, local_data, ds_context, scope):
         data = local_data[:,:k]
         ds_context = ds_context[:k]
-        scope = scope[:k]
-        adjm = get_RDC_adjacency_matrix(data, ds_context.get_meta_types_by_scope(scope), ohe, linear)
+        k_scope = scope[:k]
+        adjm = get_RDC_adjacency_matrix(data, ds_context.get_meta_types_by_scope(k_scope), ohe, linear)
 
         clusters = clusters_by_adjacency_matrix(adjm, threshold, data.shape[1])
+        clusters = list(clusters)
+        n_clusters = max(clusters)
+        rand = random.randint(1,n_clusters)
+        clusters = np.array(clusters + [rand]*(local_data.shape[1] - k))
 
         return split_data_by_clusters(local_data, clusters, scope, rows=False)
 
