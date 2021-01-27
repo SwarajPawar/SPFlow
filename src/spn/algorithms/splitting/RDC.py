@@ -88,8 +88,8 @@ def get_split_cols_RDC(threshold=0.3, ohe=True, linear=True):
 
     return split_cols_RDC
 
-def get_split_cols_random_RDC(threshold=0.3, ohe=True, linear=True):
-    def split_cols_random_RDC(k=0, local_data, ds_context, scope):
+def get_split_cols_single_RDC(threshold=0.3, ohe=True, linear=True):
+    def split_cols_single_RDC(local_data, ds_context, scope, k=0):
         data = local_data[:,:k]
         ds_context = ds_context[:k]
         k_scope = scope[:k]
@@ -103,7 +103,26 @@ def get_split_cols_random_RDC(threshold=0.3, ohe=True, linear=True):
 
         return split_data_by_clusters(local_data, clusters, scope, rows=False)
 
-    return split_cols_RDC
+    return split_cols_single_RDC
+    
+    
+def get_split_cols_distributed_RDC(threshold=0.3, ohe=True, linear=True):
+    def split_cols_distributed_RDC(local_data, ds_context, scope, k=0):
+        data = local_data[:,:k]
+        ds_context = ds_context[:k]
+        k_scope = scope[:k]
+        adjm = get_RDC_adjacency_matrix(data, ds_context.get_meta_types_by_scope(k_scope), ohe, linear)
+
+        clusters = clusters_by_adjacency_matrix(adjm, threshold, data.shape[1])
+        clusters = list(clusters)
+        n_clusters = max(clusters)
+        rand = random.randint(1,n_clusters)
+        clusters = np.array(clusters + [rand]*(local_data.shape[1] - k))
+
+        return split_data_by_clusters(local_data, clusters, scope, rows=False)
+
+    return split_cols_distributed_RDC
+    
 
 def get_split_rows_RDC(n_clusters=2, k=10, s=1 / 6, ohe=True, seed=17):
     def split_rows_RDC(local_data, ds_context, scope):

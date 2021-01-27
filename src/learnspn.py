@@ -71,7 +71,7 @@ leaves = create_histogram_leaf
 rand_gen=None
 cpus=-1
 
-df = pd.read_csv("spn/data/binary/nltcs.ts.data", index_col=0, sep=',')
+df = pd.read_csv("spn/data/binary/nltcs.ts.data", sep=',')
 data = df.values
 print(data.shape)
 samples, var = data.shape
@@ -82,6 +82,47 @@ split_cols, split_rows = get_splitting_functions(cols, rows, ohe, threshold, ran
 nextop = get_next_operation(min_instances_slice)
 
 spn = learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop)
+
+from spn.io.Graphics import plot_spn
+
+plot_spn(spn, 'basicspn.png')
+
+
+import numpy as np
+test_data = np.array([1]*var).reshape(-1, var)
+
+from spn.algorithms.Inference import log_likelihood
+
+ll = log_likelihood(spn, test_data)
+print(ll, np.exp(ll))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

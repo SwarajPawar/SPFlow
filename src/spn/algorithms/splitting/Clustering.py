@@ -46,14 +46,13 @@ def get_split_rows_KMeans(n_clusters=2, pre_proc=None, ohe=False, seed=17):
 
 
 def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17):
-    def split_rows_XMeans(k=2, local_data, ds_context, scope):
+    def split_rows_XMeans(local_data, ds_context, scope, k=2):
         data = preproc(local_data, ds_context, pre_proc, ohe)
 
         kmeans = KMeans(n_clusters=k, random_state=seed)
         kmeans.fit(local_data)
         clusters = kmeans.labels_
-
-		k1 = k
+        k1 = k
         dim = np.size(local_data, axis=1)
         centers = kmeans.cluster_centers_
         p = dim + 1

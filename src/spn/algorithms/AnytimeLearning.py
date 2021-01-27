@@ -257,7 +257,7 @@ class AnytimeSPN:
 		        split_start_t = perf_counter()
 		        
 		        #Get the new K value and dataslices
-		        newk, data_slices = self.split_rows(k, local_data, ds_context, scope)
+		        newk, data_slices = self.split_rows(local_data, ds_context, scope, k)
 		        split_end_t = perf_counter()
 		        logging.debug(
 		            "\t\tfound {} row clusters (in {:.5f} secs)".format(len(data_slices), split_end_t - split_start_t)
