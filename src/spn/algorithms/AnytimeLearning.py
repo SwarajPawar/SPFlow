@@ -98,7 +98,10 @@ def get_next_operation(min_instances_slice=100, min_features_slice=1, multivaria
             	return Operation.SPLIT_ROWS, k
 
 	    if no_clusters:
-	        return Operation.SPLIT_COLUMNS, None
+	        if k = 0:
+                return Operation.SPLIT_COLUMNS, None
+            else:
+            	return Operation.SPLIT_COLUMNS, k
 
 	    if is_first:
 	        if cluster_first:
@@ -107,9 +110,15 @@ def get_next_operation(min_instances_slice=100, min_features_slice=1, multivaria
 		        else:
 		        	return Operation.SPLIT_ROWS, k
 	        else:
-	            return Operation.SPLIT_COLUMNS, None
+	            if k = 0:
+	                return Operation.SPLIT_COLUMNS, None
+	            else:
+	            	return Operation.SPLIT_COLUMNS, k
 
-	    return Operation.SPLIT_COLUMNS, None
+	    if k = 0:
+            return Operation.SPLIT_COLUMNS, None
+        else:
+        	return Operation.SPLIT_COLUMNS, k
 
 	return next_operation
 
@@ -272,7 +281,7 @@ class AnytimeSPN:
 		        	tasks.appendleft((local_data, parent, children_pos, scope, False, True, k = newk))
 
 				#Create sum node
-		        node = Sum(k=k)
+		        node = Sum()
 		        node.scope.extend(scope)
 		        parent.children[children_pos] = node
 		        # assert parent.scope == node.scope
@@ -291,8 +300,15 @@ class AnytimeSPN:
 		        continue
 
 		    elif operation == Operation.SPLIT_COLUMNS:
+
+		    	#Default k
+				k = int(local_data.shape[1]**0.5)
+				#Get the k value for next round of variable splitting
+				if op_params is not None:
+					k = op_params
+
 		        split_start_t = perf_counter()
-		        data_slices = self.split_cols(local_data, ds_context, scope)
+		        data_slices = self.split_cols(local_data, ds_context, scope, k)
 		        split_end_t = perf_counter()
 		        logging.debug(
 		            "\t\tfound {} col clusters (in {:.5f} secs)".format(len(data_slices), split_end_t - split_start_t)
@@ -304,6 +320,9 @@ class AnytimeSPN:
 		            assert data_slices[0][1] == scope
 		            continue
 
+		        if k < local_data.shape[1]:
+		        	tasks.appendleft((local_data, parent, children_pos, scope, True, False, k = k+1))
+
 		        node = Product()
 		        node.scope.extend(scope)
 		        parent.children[children_pos] = node
@@ -314,6 +333,8 @@ class AnytimeSPN:
 		            node.children.append(None)
 		            tasks.append((data_slice, node, len(node.children) - 1, scope_slice, False, False))
 
+		        if k < local_data.shape[1]:
+					naiveFactor = len(node.children)
 		        continue
 
 		    elif operation == Operation.NAIVE_FACTORIZATION:

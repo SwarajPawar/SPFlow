@@ -116,8 +116,12 @@ def get_split_cols_distributed_RDC(threshold=0.3, ohe=True, linear=True):
         clusters = clusters_by_adjacency_matrix(adjm, threshold, data.shape[1])
         clusters = list(clusters)
         n_clusters = max(clusters)
-        rand = random.randint(1,n_clusters)
-        clusters = np.array(clusters + [rand]*(local_data.shape[1] - k))
+        remaining = [0 for i in range(local_data.shape[1] - k)]
+        c=0
+        for i in range(len(remaining)):
+            remaining[i] = c+1
+            c = (c+1)%n_clusters
+        clusters = np.array(clusters + remaining)
 
         return split_data_by_clusters(local_data, clusters, scope, rows=False)
 
