@@ -22,6 +22,7 @@ from spn.algorithms.TransformStructure import Prune
 from spn.algorithms.Validity import is_valid
 from spn.structure.Base import Product, Sum, assign_ids
 from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
+from spn.algorithms.splitting.RDC import get_split_cols_single_RDC
 import multiprocessing
 import os
 
@@ -140,14 +141,15 @@ class AnytimeSPN:
 
 
 	def __init__(self,
-		split_cols,
+	    split_rows,
+	    split_cols,
 		create_leaf,
 		next_operation=get_next_operation(),		
 		data_slicer=default_slicer,
 	):
 		
 
-		self.split_rows = get_split_rows_XMeans(n_clusters=k)
+		self.split_rows = split_rows
 		self.split_cols = split_cols
 		self.create_leaf = create_leaf
 		self.next_operation = next_operation
@@ -155,7 +157,9 @@ class AnytimeSPN:
 
 		self.root = Product()
 		self.root.children.append(None)
-
+        self.id = 0
+        self.likelihood = list()
+        self.llikelihood = list()
 
 
 	def learn_structure(self, 
@@ -365,7 +369,11 @@ class AnytimeSPN:
 		        logging.debug(
 		            "\t\tnaive factorization {} columns (in {:.5f} secs)".format(len(scope), split_end_t - split_start_t)
 		        )
-		        
+		        if naiveFactor == 1:
+		            spn = self.return_spn()
+		            self.id += 1
+		            
+		            
 				naiveFactor = min(0, naiveFactor-1)
 
 		        continue
@@ -385,7 +393,10 @@ class AnytimeSPN:
 		    else:
 		        raise Exception("Invalid operation: " + operation)
 
-		node = self.root.children[0]
+		return self.return_spn()
+		
+	def return_spn(self):
+	    node = self.root.children[0]
 		assign_ids(node)
 		valid, err = is_valid(node)
 		assert valid, "invalid spn: " + err
