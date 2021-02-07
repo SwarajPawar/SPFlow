@@ -158,8 +158,8 @@ class AnytimeSPN:
 		self.root = Product()
 		self.root.children.append(None)
         self.id = 0
-        self.likelihood = list()
         self.llikelihood = list()
+        self.spns = list()
 
 
 	def learn_structure(self, 
@@ -298,6 +298,10 @@ class AnytimeSPN:
 		            node.weights.append(proportion)
 					tasks.append((data_slice, node, len(node.children) - 1, scope, False, False))
 			        
+
+			    if k == newk:
+			    	for data_slice, scope_slice, proportion in data_slices:
+			    		tasks.append((data_slice, node, len(node.children) - 1, scope, False, False))
 			    # If newk > k, naiveFactorize subtrees
 				if newk > k:
 					naiveFactor = len(node.children)
@@ -306,13 +310,13 @@ class AnytimeSPN:
 		    elif operation == Operation.SPLIT_COLUMNS:
 
 		    	#Default k
-				k = int(local_data.shape[1]**0.5)
+				n = int(local_data.shape[1]**0.5)
 				#Get the k value for next round of variable splitting
 				if op_params is not None:
-					k = op_params
+					n = op_params
 
 		        split_start_t = perf_counter()
-		        data_slices = self.split_cols(local_data, ds_context, scope, k)
+		        data_slices = self.split_cols(local_data, ds_context, scope, n)
 		        split_end_t = perf_counter()
 		        logging.debug(
 		            "\t\tfound {} col clusters (in {:.5f} secs)".format(len(data_slices), split_end_t - split_start_t)
@@ -324,8 +328,8 @@ class AnytimeSPN:
 		            assert data_slices[0][1] == scope
 		            continue
 
-		        if k < local_data.shape[1]:
-		        	tasks.appendleft((local_data, parent, children_pos, scope, True, False, k = k+1))
+		        if n < local_data.shape[1]:
+		        	tasks.appendleft((local_data, parent, children_pos, scope, True, False, k = n+1))
 
 		        node = Product()
 		        node.scope.extend(scope)
@@ -337,7 +341,11 @@ class AnytimeSPN:
 		            node.children.append(None)
 		            tasks.append((data_slice, node, len(node.children) - 1, scope_slice, False, False))
 
-		        if k < local_data.shape[1]:
+		        if n == local_data.shape[1]:
+		        	for data_slice, scope_slice, _ in data_slices:
+			            tasks.append((data_slice, node, len(node.children) - 1, scope_slice, False, False))
+
+		        if n < local_data.shape[1]:
 					naiveFactor = len(node.children)
 		        continue
 
@@ -372,6 +380,8 @@ class AnytimeSPN:
 		        if naiveFactor == 1:
 		            spn = self.return_spn()
 		            self.id += 1
+		            print(f"\n\n\n\nSPN {self.id} created\n\n\n\n")
+		            self.spns.append(spn)
 		            
 		            
 				naiveFactor = min(0, naiveFactor-1)
@@ -393,7 +403,11 @@ class AnytimeSPN:
 		    else:
 		        raise Exception("Invalid operation: " + operation)
 
-		return self.return_spn()
+		spn = self.return_spn()
+        self.id += 1
+        print(f"\n\n\n\nSPN {self.id} created\n\n\n\n")
+        self.spns.append(spn)
+		return self.spns
 		
 	def return_spn(self):
 	    node = self.root.children[0]

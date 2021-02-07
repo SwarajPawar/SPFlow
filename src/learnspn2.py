@@ -9,7 +9,6 @@ import numpy as np
 from spn.algorithms.StructureLearning import get_next_operation, learn_structure
 from spn.algorithms.CnetStructureLearning import get_next_operation_cnet, learn_structure_cnet
 from spn.algorithms.Validity import is_valid
-from spn.algorithms.AnytimeLearning import AnytimeSPN
 
 from spn.structure.Base import Sum, assign_ids
 
@@ -64,7 +63,7 @@ from spn.structure.Base import Context
 from spn.structure.StatisticalTypes import MetaType
 
 cols="rdc"
-split_rows = get_split_rows_XMeans()
+rows="kmeans"
 min_instances_slice=200
 threshold=0.3
 ohe=False
@@ -85,22 +84,22 @@ test = df2.values
 ll = list()
 
 for k in range(2, 10):
-    split_cols, split_rows = get_splitting_functions(cols, rows, ohe, threshold, rand_gen, cpus, k=k)
-    nextop = get_next_operation(min_instances_slice)
+	split_cols, split_rows = get_splitting_functions(cols, rows, ohe, threshold, rand_gen, cpus, k=k)
+	nextop = get_next_operation(min_instances_slice)
 
-    spn = learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop)
+	spn = learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop)
 
-    from spn.io.Graphics import plot_spn
+	from spn.io.Graphics import plot_spn
 
-    plot_spn(spn, 'basicspn'+str(k)+'.png')
+	plot_spn(spn, 'basicspn'+str(k)+'.png')
 
-    from spn.algorithms.Inference import log_likelihood
-    total_ll = 0
-    for instance in test:
-        import numpy as np
-        test_data = np.array(instance).reshape(-1, var)
-        total_ll += log_likelihood(spn, test_data)
-    ll.append(total_ll/len(test))
+	from spn.algorithms.Inference import log_likelihood
+	total_ll = 0
+	for instance in test:
+		import numpy as np
+		test_data = np.array(instance).reshape(-1, var)
+		total_ll += log_likelihood(spn, test_data)
+	ll.append(total_ll/len(test))
 
 import matplotlib.pyplot as plt 
 

@@ -368,6 +368,72 @@ def get_split_cols_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=
 
     return split_cols_RDC_py
 
+def get_split_cols_single_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None):
+    def split_cols_single_RDC_py(local_data, ds_context, scope, n=0):
+        data = local_data[:,:n]
+        ds_context = ds_context[:n]
+        n_scope = scope[:n]
+
+        meta_types = ds_context.get_meta_types_by_scope(n_scope)
+        domains = ds_context.get_domains_by_scope(n_scope)
+
+        clusters = getIndependentRDCGroups_py(
+            data,
+            threshold,
+            meta_types,
+            domains,
+            k=k,
+            s=s,
+            # ohe=True,
+            non_linearity=non_linearity,
+            n_jobs=n_jobs,
+            rand_gen=rand_gen,
+        )
+
+        clusters = list(clusters)
+        n_clusters = max(clusters)
+        rand = random.randint(1,n_clusters)
+        clusters = np.array(clusters + [rand]*(local_data.shape[1] - n))
+
+        return split_data_by_clusters(local_data, clusters, scope, rows=False)
+
+    return split_cols_single_RDC_py
+    
+    
+def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, linear=True):
+    def split_cols_distributed_RDC_py(local_data, ds_context, scope, k=0):
+        data = local_data[:,:n]
+        ds_context = ds_context[:n]
+        n_scope = scope[:n]
+
+        meta_types = ds_context.get_meta_types_by_scope(n_scope)
+        domains = ds_context.get_domains_by_scope(n_scope)
+
+        clusters = getIndependentRDCGroups_py(
+            data,
+            threshold,
+            meta_types,
+            domains,
+            k=k,
+            s=s,
+            # ohe=True,
+            non_linearity=non_linearity,
+            n_jobs=n_jobs,
+            rand_gen=rand_gen,
+        )
+
+        clusters = list(clusters)
+        n_clusters = max(clusters)
+        remaining = [0 for i in range(local_data.shape[1] - n)]
+        c=0
+        for i in range(len(remaining)):
+            remaining[i] = c+1
+            c = (c+1)%n_clusters
+        clusters = np.array(clusters + remaining)
+
+        return split_data_by_clusters(local_data, clusters, scope, rows=False)
+
+    return split_cols_distributed_RDC_py
 
 def get_split_rows_RDC_py(n_clusters=2, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None):
     def split_rows_RDC_py(local_data, ds_context, scope):
