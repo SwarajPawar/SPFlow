@@ -18,8 +18,8 @@ from spn.structure.leaves.parametric.Parametric import create_parametric_leaf
 from spn.structure.leaves.piecewise.PiecewiseLinear import create_piecewise_leaf
 from spn.structure.leaves.cltree.CLTree import create_cltree_leaf
 from spn.algorithms.splitting.Conditioning import (
-    get_split_rows_naive_mle_conditioning,
-    get_split_rows_random_conditioning,
+	get_split_rows_naive_mle_conditioning,
+	get_split_rows_random_conditioning,
 )
 import logging
 
@@ -63,17 +63,17 @@ nextop = get_next_operation(min_instances_slice)
 anyspn = AnytimeSPN(split_rows, split_cols, leaves, nextop)
 spns = learn_structure(data, ds_context)
 
-    
+	
 for spn in spns:
 
-    total_ll = 0
-    stats = get_structure_stats_dict(spn)
-    nodes.append(stats["nodes"])
-    for instance in test:
-        import numpy as np
-        test_data = np.array(instance).reshape(-1, var)
-        total_ll += log_likelihood(spn, test_data)
-    ll.append(total_ll/len(test))
+	total_ll = 0
+	stats = get_structure_stats_dict(spn)
+	nodes.append(stats["nodes"])
+	for instance in test:
+		import numpy as np
+		test_data = np.array(instance).reshape(-1, var)
+		total_ll += log_likelihood(spn, test_data)
+	ll.append(total_ll/len(test))
 
 import matplotlib.pyplot as plt 
 

@@ -17,8 +17,8 @@ from spn.structure.leaves.parametric.Parametric import create_parametric_leaf
 from spn.structure.leaves.piecewise.PiecewiseLinear import create_piecewise_leaf
 from spn.structure.leaves.cltree.CLTree import create_cltree_leaf
 from spn.algorithms.splitting.Conditioning import (
-    get_split_rows_naive_mle_conditioning,
-    get_split_rows_random_conditioning,
+	get_split_rows_naive_mle_conditioning,
+	get_split_rows_random_conditioning,
 )
 import logging
 
@@ -29,34 +29,34 @@ logger = logging.getLogger(__name__)
 
 
 def get_splitting_functions(cols, rows, ohe, threshold, rand_gen, n_jobs, k=2):
-    from spn.algorithms.splitting.Clustering import get_split_rows_KMeans, get_split_rows_TSNE, get_split_rows_GMM
-    from spn.algorithms.splitting.PoissonStabilityTest import get_split_cols_poisson_py
-    from spn.algorithms.splitting.RDC import get_split_cols_RDC_py, get_split_rows_RDC_py
+	from spn.algorithms.splitting.Clustering import get_split_rows_KMeans, get_split_rows_TSNE, get_split_rows_GMM
+	from spn.algorithms.splitting.PoissonStabilityTest import get_split_cols_poisson_py
+	from spn.algorithms.splitting.RDC import get_split_cols_RDC_py, get_split_rows_RDC_py
 
-    if isinstance(cols, str):
-        if cols == "rdc":
-            split_cols = get_split_cols_RDC_py(threshold, rand_gen=rand_gen, ohe=ohe, n_jobs=n_jobs)
-        elif cols == "poisson":
-            split_cols = get_split_cols_poisson_py(threshold, n_jobs=n_jobs)
-        else:
-            raise AssertionError("unknown columns splitting strategy type %s" % str(cols))
-    else:
-        split_cols = cols
+	if isinstance(cols, str):
+		if cols == "rdc":
+			split_cols = get_split_cols_RDC_py(threshold, rand_gen=rand_gen, ohe=ohe, n_jobs=n_jobs)
+		elif cols == "poisson":
+			split_cols = get_split_cols_poisson_py(threshold, n_jobs=n_jobs)
+		else:
+			raise AssertionError("unknown columns splitting strategy type %s" % str(cols))
+	else:
+		split_cols = cols
 
-    if isinstance(rows, str):
-        if rows == "rdc":
-            split_rows = get_split_rows_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=n_jobs)
-        elif rows == "kmeans":
-            split_rows = get_split_rows_KMeans(n_clusters=k)
-        elif rows == "tsne":
-            split_rows = get_split_rows_TSNE()
-        elif rows == "gmm":
-            split_rows = get_split_rows_GMM()
-        else:
-            raise AssertionError("unknown rows splitting strategy type %s" % str(rows))
-    else:
-        split_rows = rows
-    return split_cols, split_rows
+	if isinstance(rows, str):
+		if rows == "rdc":
+			split_rows = get_split_rows_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=n_jobs)
+		elif rows == "kmeans":
+			split_rows = get_split_rows_KMeans(n_clusters=k)
+		elif rows == "tsne":
+			split_rows = get_split_rows_TSNE()
+		elif rows == "gmm":
+			split_rows = get_split_rows_GMM()
+		else:
+			raise AssertionError("unknown rows splitting strategy type %s" % str(rows))
+	else:
+		split_rows = rows
+	return split_cols, split_rows
 
 import pandas as pd
 from spn.structure.Base import Context

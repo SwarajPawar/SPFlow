@@ -13,34 +13,34 @@ logger = logging.getLogger(__name__)
 
 
 def get_structure_stats_dict(node):
-    node_types = dict(Counter([type(n) for n in get_nodes_by_type(node)]))
-    num_nodes = len(get_nodes_by_type(node, Node))
-    edges = get_number_of_edges(node)
-    layers = get_depth(node)
+	node_types = dict(Counter([type(n) for n in get_nodes_by_type(node)]))
+	num_nodes = len(get_nodes_by_type(node, Node))
+	edges = get_number_of_edges(node)
+	layers = get_depth(node)
 
-    result = {"nodes": num_nodes, "edges": edges, "layers": layers, "count_per_type": node_types}
-    return result
+	result = {"nodes": num_nodes, "edges": edges, "layers": layers, "count_per_type": node_types}
+	return result
 
 
 def get_structure_stats(node):
-    num_nodes = len(get_nodes_by_type(node, Node))
-    sum_nodes = len(get_nodes_by_type(node, Sum))
-    prod_nodes = len(get_nodes_by_type(node, Product))
-    leaf_nodes = len(get_nodes_by_type(node, Leaf))
-    edges = get_number_of_edges(node)
-    layers = get_depth(node)
+	num_nodes = len(get_nodes_by_type(node, Node))
+	sum_nodes = len(get_nodes_by_type(node, Sum))
+	prod_nodes = len(get_nodes_by_type(node, Product))
+	leaf_nodes = len(get_nodes_by_type(node, Leaf))
+	edges = get_number_of_edges(node)
+	layers = get_depth(node)
 
-    return """---Structure Statistics---
+	return """---Structure Statistics---
 # nodes             %s
-    # sum nodes     %s
-    # prod nodes    %s
-    # leaf nodes    %s
+	# sum nodes     %s
+	# prod nodes    %s
+	# leaf nodes    %s
 # edges             %s
 # layers            %s""" % (
-        num_nodes,
-        sum_nodes,
-        prod_nodes,
-        leaf_nodes,
-        edges,
-        layers,
-    )
+		num_nodes,
+		sum_nodes,
+		prod_nodes,
+		leaf_nodes,
+		edges,
+		layers,
+	)
