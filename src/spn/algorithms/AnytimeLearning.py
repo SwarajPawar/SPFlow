@@ -55,7 +55,7 @@ def get_next_operation(min_instances_slice=100, min_features_slice=1, multivaria
 		is_first=False,
 		cluster_first=True,
 		cluster_univariate=False,
-		k = 0
+		param = None
 	):
 
 		minimalFeatures = len(scope) == min_features_slice
@@ -66,10 +66,10 @@ def get_next_operation(min_instances_slice=100, min_features_slice=1, multivaria
 				return Operation.CREATE_LEAF, None
 			else:
 				if cluster_univariate:
-					if k == 0:
+					if param is None:
 						return Operation.SPLIT_ROWS, None
 					else:
-						return Operation.SPLIT_ROWS, k
+						return Operation.SPLIT_ROWS, param
 				else:
 					return Operation.CREATE_LEAF, None
 
@@ -94,33 +94,33 @@ def get_next_operation(min_instances_slice=100, min_features_slice=1, multivaria
 				return Operation.NAIVE_FACTORIZATION, None
 
 		if no_independencies:
-			if k == 0:
+			if param is None:
 				return Operation.SPLIT_ROWS, None
 			else:
-				return Operation.SPLIT_ROWS, k
+				return Operation.SPLIT_ROWS, param
 
 		if no_clusters:
-			if k == 0:
+			if param is None:
 				return Operation.SPLIT_COLUMNS, None
 			else:
-				return Operation.SPLIT_COLUMNS, k
+				return Operation.SPLIT_COLUMNS, param
 
 		if is_first:
 			if cluster_first:
-				if k == 0:
+				if param is None:
 					return Operation.SPLIT_ROWS, None
 				else:
-					return Operation.SPLIT_ROWS, k
+					return Operation.SPLIT_ROWS, param
 			else:
-				if k == 0:
+				if param is None:
 					return Operation.SPLIT_COLUMNS, None
 				else:
-					return Operation.SPLIT_COLUMNS, k
+					return Operation.SPLIT_COLUMNS, param
 
-		if k == 0:
+		if param is None:
 			return Operation.SPLIT_COLUMNS, None
 		else:
-			return Operation.SPLIT_COLUMNS, k
+			return Operation.SPLIT_COLUMNS, param
 
 	return next_operation
 
@@ -198,7 +198,7 @@ class AnytimeSPN:
 			
 			#Normal executions
 			if naiveFactor == 0:
-				local_data, parent, children_pos, scope, no_clusters, no_independencies = tasks.popleft()
+				local_data, parent, children_pos, scope, no_clusters, no_independencies, param = tasks.popleft()
 				operation, op_params = next_operation(
 					local_data,
 					scope,
@@ -206,10 +206,11 @@ class AnytimeSPN:
 					no_clusters=no_clusters,
 					no_independencies=no_independencies,
 					is_first=(parent is root),
+					param = param
 				)
 			#Naive Factorize subtrees
 			else:
-				local_data, parent, children_pos, scope, no_clusters, no_independencies = tasks.pop()
+				local_data, parent, children_pos, scope, no_clusters, no_independencies, param = tasks.pop()
 				operation = Operation.NAIVE_FACTORIZATION
 
 			logging.debug("OP: {} on slice {} (remaining tasks {})".format(operation, local_data.shape, len(tasks)))
@@ -230,7 +231,8 @@ class AnytimeSPN:
 							len(node.children) - 1,
 							[scope[col]],
 							True,
-							True
+							True,
+							None
 						)
 					)
 
@@ -254,7 +256,8 @@ class AnytimeSPN:
 						c_pos,
 						rest_scope,
 						next_final,
-						next_final
+						next_final,
+						None
 					)
 				)
 
@@ -283,7 +286,7 @@ class AnytimeSPN:
 				
 				# If K can be increased, find the clusters again in next iteration
 				if k < newk:
-					tasks.appendleft((local_data, parent, children_pos, scope, False, True, k = newk))
+					tasks.appendleft((local_data, parent, children_pos, scope, False, True, newk))
 
 				#Create sum node
 				node = Sum()
@@ -297,12 +300,12 @@ class AnytimeSPN:
 
 					node.children.append(None)
 					node.weights.append(proportion)
-					tasks.append((data_slice, node, len(node.children) - 1, scope, False, False))
+					tasks.append((data_slice, node, len(node.children) - 1, scope, False, False, None))
 					
 
 				if k == newk:
 					for data_slice, scope_slice, proportion in data_slices:
-						tasks.append((data_slice, node, len(node.children) - 1, scope, False, False))
+						tasks.append((data_slice, node, len(node.children) - 1, scope, False, False, None))
 				# If newk > k, naiveFactorize subtrees
 				if newk > k:
 					naiveFactor = len(node.children)
@@ -324,13 +327,13 @@ class AnytimeSPN:
 				)
 
 				if len(data_slices) == 1:
-					tasks.append((local_data, parent, children_pos, scope, False, True))
+					tasks.append((local_data, parent, children_pos, scope, False, True, None))
 					assert np.shape(data_slices[0][0]) == np.shape(local_data)
 					assert data_slices[0][1] == scope
 					continue
 
 				if n < local_data.shape[1]:
-					tasks.appendleft((local_data, parent, children_pos, scope, True, False, k = n+1))
+					tasks.appendleft((local_data, parent, children_pos, scope, True, False, n+1))
 
 				node = Product()
 				node.scope.extend(scope)
@@ -340,11 +343,11 @@ class AnytimeSPN:
 					assert isinstance(scope_slice, list), "slice must be a list"
 
 					node.children.append(None)
-					tasks.append((data_slice, node, len(node.children) - 1, scope_slice, False, False))
+					tasks.append((data_slice, node, len(node.children) - 1, scope_slice, False, False, None))
 
 				if n == local_data.shape[1]:
 					for data_slice, scope_slice, _ in data_slices:
-						tasks.append((data_slice, node, len(node.children) - 1, scope_slice, False, False))
+						tasks.append((data_slice, node, len(node.children) - 1, scope_slice, False, False, None))
 
 				if n < local_data.shape[1]:
 					naiveFactor = len(node.children)

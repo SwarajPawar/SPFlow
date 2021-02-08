@@ -42,7 +42,7 @@ ohe=False
 leaves = create_histogram_leaf
 rand_gen=None
 cpus=-1
-split_cols=get_split_rows_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus)
+split_cols=get_split_cols_single_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus)
 split_rows = get_split_rows_XMeans()
 
 df = pd.read_csv("spn/data/binary/nltcs.ts.data", sep=',')
@@ -61,7 +61,7 @@ nodes = list()
 nextop = get_next_operation(min_instances_slice)
 
 anyspn = AnytimeSPN(split_rows, split_cols, leaves, nextop)
-spns = learn_structure(data, ds_context)
+spns = anyspn.learn_structure(data, ds_context)
 
 	
 for spn in spns:
