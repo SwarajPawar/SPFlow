@@ -56,7 +56,7 @@ df2 = pd.read_csv("spn/data/binary/nltcs.test.data", sep=',')
 test = df2.values
 
 ll = list()
-
+nodes = list()
 
 nextop = get_next_operation(min_instances_slice)
 
@@ -67,6 +67,8 @@ spns = learn_structure(data, ds_context)
 for spn in spns:
 
     total_ll = 0
+    stats = get_structure_stats_dict(spn)
+    nodes.append(stats["nodes"])
     for instance in test:
         import numpy as np
         test_data = np.array(instance).reshape(-1, var)
@@ -76,7 +78,8 @@ for spn in spns:
 import matplotlib.pyplot as plt 
 
 # plot line 
-plt.plot(ll) 
+plt.plot(ll, label="Log Likelihood")
+plt.plot(nodes, label="# nodes") 
 plt.show()
 
 

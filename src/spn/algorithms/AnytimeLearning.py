@@ -20,6 +20,7 @@ import numpy as np
 
 from spn.algorithms.TransformStructure import Prune, Copy
 from spn.algorithms.Validity import is_valid
+from spn.algorithms.Statistics import get_structure_stats
 from spn.structure.Base import Product, Sum, assign_ids
 from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
 from spn.algorithms.splitting.RDC import get_split_cols_single_RDC
@@ -46,7 +47,7 @@ class Operation(Enum):
 
 def get_next_operation(min_instances_slice=100, min_features_slice=1, multivariate_leaf=False):
 	def next_operation(
-	    data,
+		data,
 	    scope,
 	    create_leaf,
 	    no_clusters=False,
@@ -57,17 +58,17 @@ def get_next_operation(min_instances_slice=100, min_features_slice=1, multivaria
 	    k = 0
 	):
 
-	    minimalFeatures = len(scope) == min_features_slice
-	    minimalInstances = data.shape[0] <= min_instances_slice
+        minimalFeatures = len(scope) == min_features_slice
+        minimalInstances = data.shape[0] <= min_instances_slice
 
 	    if minimalFeatures:
 	        if minimalInstances or no_clusters:
 	            return Operation.CREATE_LEAF, None
 	        else:
 	            if cluster_univariate:
-	            	if k = 0:
-		                return Operation.SPLIT_ROWS, None
-		            else:
+	            	if k == 0:
+                        return Operation.SPLIT_ROWS, None
+                    else:
 		            	return Operation.SPLIT_ROWS, k
 	            else:
 	                return Operation.CREATE_LEAF, None
@@ -93,30 +94,30 @@ def get_next_operation(min_instances_slice=100, min_features_slice=1, multivaria
 	            return Operation.NAIVE_FACTORIZATION, None
 
 	    if no_independencies:
-	        if k = 0:
+	        if k == 0:
                 return Operation.SPLIT_ROWS, None
             else:
             	return Operation.SPLIT_ROWS, k
 
 	    if no_clusters:
-	        if k = 0:
+	        if k == 0:
                 return Operation.SPLIT_COLUMNS, None
             else:
             	return Operation.SPLIT_COLUMNS, k
 
 	    if is_first:
 	        if cluster_first:
-	            if k = 0:
+	            if k == 0:
 		            return Operation.SPLIT_ROWS, None
 		        else:
 		        	return Operation.SPLIT_ROWS, k
 	        else:
-	            if k = 0:
+	            if k == 0:
 	                return Operation.SPLIT_COLUMNS, None
 	            else:
 	            	return Operation.SPLIT_COLUMNS, k
 
-	    if k = 0:
+	    if k == 0:
             return Operation.SPLIT_COLUMNS, None
         else:
         	return Operation.SPLIT_COLUMNS, k
@@ -381,6 +382,7 @@ class AnytimeSPN:
 		            spn = Copy(self.return_spn())
 		            self.id += 1
 		            print(f"\n\n\n\nSPN {self.id} created\n\n\n\n")
+		            print(get_structure_stats(spn))
 		            self.spns.append(spn)
 		            
 		            
@@ -406,7 +408,8 @@ class AnytimeSPN:
 		spn = Copy(self.return_spn())
         self.id += 1
         print(f"\n\n\n\nSPN {self.id} created\n\n\n\n")
-        self.spns.append(spn)
+        print(get_structure_stats(spn))
+		self.spns.append(spn)
 		return self.spns
 		
 	def return_spn(self):
