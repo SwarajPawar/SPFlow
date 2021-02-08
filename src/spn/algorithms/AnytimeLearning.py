@@ -187,7 +187,7 @@ class AnytimeSPN:
 
 
 		tasks = deque()
-		tasks.append((dataset, self.root, 0, initial_scope, False, False))
+		tasks.append((dataset, self.root, 0, initial_scope, False, False, None))
 		naiveFactor = 0
 
 		while True:
@@ -281,7 +281,7 @@ class AnytimeSPN:
 				)
 
 				if len(data_slices) == 1:
-					tasks.append((local_data, parent, children_pos, scope, True, False))
+					tasks.append((local_data, parent, children_pos, scope, True, False, None))
 					continue
 				
 				# If K can be increased, find the clusters again in next iteration
