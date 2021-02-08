@@ -18,7 +18,7 @@ except:
 
 import numpy as np
 
-from spn.algorithms.TransformStructure import Prune
+from spn.algorithms.TransformStructure import Prune, Copy
 from spn.algorithms.Validity import is_valid
 from spn.structure.Base import Product, Sum, assign_ids
 from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
@@ -378,7 +378,7 @@ class AnytimeSPN:
 		            "\t\tnaive factorization {} columns (in {:.5f} secs)".format(len(scope), split_end_t - split_start_t)
 		        )
 		        if naiveFactor == 1:
-		            spn = self.return_spn()
+		            spn = Copy(self.return_spn())
 		            self.id += 1
 		            print(f"\n\n\n\nSPN {self.id} created\n\n\n\n")
 		            self.spns.append(spn)
@@ -403,14 +403,14 @@ class AnytimeSPN:
 		    else:
 		        raise Exception("Invalid operation: " + operation)
 
-		spn = self.return_spn()
+		spn = Copy(self.return_spn())
         self.id += 1
         print(f"\n\n\n\nSPN {self.id} created\n\n\n\n")
         self.spns.append(spn)
 		return self.spns
 		
 	def return_spn(self):
-	    node = self.root.children[0]
+	    node = Copy(self.root.children[0])
 		assign_ids(node)
 		valid, err = is_valid(node)
 		assert valid, "invalid spn: " + err
