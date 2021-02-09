@@ -69,8 +69,8 @@ def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17):
 		addk = 0
 
 		for i in range(k):
-			ci = local_data[labels == i]
-			r = np.size(np.where(labels == i))
+			ci = local_data[clusters == i]
+			r = np.size(np.where(clusters == i))
 
 			kmeans = KMeans(n_clusters=sk).fit(ci)
 			ci_labels = kmeans.labels_
