@@ -205,7 +205,7 @@ class AnytimeSPN:
 					self.create_leaf,
 					no_clusters=no_clusters,
 					no_independencies=no_independencies,
-					is_first=(parent is root),
+					is_first=(parent is self.root),
 					param = param
 				)
 			#Naive Factorize subtrees
