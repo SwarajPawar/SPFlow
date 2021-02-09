@@ -169,7 +169,7 @@ def get_split_rows_GMM(n_clusters=2, pre_proc=None, ohe=False, seed=17, max_iter
 
 
 
-def loglikelihood(self, r, rn, var, m, k):
+def loglikelihood(r, rn, var, m, k):
 	l1 = - rn / 2.0 * math.log(2 * math.pi)
 	l2 = - rn * m / 2.0 * math.log(var)
 	l3 = - (rn - k) / 2.0
