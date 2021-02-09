@@ -202,7 +202,7 @@ class AnytimeSPN:
 				operation, op_params = self.next_operation(
 					local_data,
 					scope,
-					create_leaf,
+					self.create_leaf,
 					no_clusters=no_clusters,
 					no_independencies=no_independencies,
 					is_first=(parent is root),
@@ -368,7 +368,7 @@ class AnytimeSPN:
 					child_data_slice = data_slicer(local_data, [col], num_conditional_cols)
 					local_children_params.append((child_data_slice, ds_context, [scope[col]]))
 
-				result_nodes = pool.starmap(create_leaf, local_children_params)
+				result_nodes = pool.starmap(self.create_leaf, local_children_params)
 				# result_nodes = []
 				# for l in tqdm(local_children_params):
 				#    result_nodes.append(create_leaf(*l))
@@ -395,7 +395,7 @@ class AnytimeSPN:
 
 			elif operation == Operation.CREATE_LEAF:
 				leaf_start_t = perf_counter()
-				node = create_leaf(local_data, ds_context, scope)
+				node = self.create_leaf(local_data, ds_context, scope)
 				parent.children[children_pos] = node
 				leaf_end_t = perf_counter()
 
