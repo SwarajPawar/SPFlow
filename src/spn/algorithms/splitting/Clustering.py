@@ -79,9 +79,9 @@ def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17):
 			for l in range(sk):
 				rn = np.size(np.where(ci_labels == l))
 				var = np.sum((ci[ci_labels == l] - sm[l])**2)/float(rn - sk)
-				nbic[i] += loglikelihood(r, rn, var, M, sk)
+				nbic[i] += loglikelihood(r, rn, var, dim, sk)
 
-			p = sk * (M + 1)
+			p = sk * (dim + 1)
 			nbic[i] -= p/2.0*math.log(r)
 
 			if obic[i] < nbic[i]:
