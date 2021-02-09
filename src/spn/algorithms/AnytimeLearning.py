@@ -199,7 +199,7 @@ class AnytimeSPN:
 			#Normal executions
 			if naiveFactor == 0:
 				local_data, parent, children_pos, scope, no_clusters, no_independencies, param = tasks.popleft()
-				operation, op_params = next_operation(
+				operation, op_params = self.next_operation(
 					local_data,
 					scope,
 					create_leaf,

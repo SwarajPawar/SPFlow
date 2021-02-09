@@ -6,10 +6,10 @@ Created on March 30, 2018
 
 import numpy as np
 
-from spn.algorithms.StructureLearning import get_next_operation, learn_structure
+from spn.algorithms.StructureLearning import learn_structure
 from spn.algorithms.CnetStructureLearning import get_next_operation_cnet, learn_structure_cnet
 from spn.algorithms.Validity import is_valid
-from spn.algorithms.AnytimeLearning import AnytimeSPN
+from spn.algorithms.AnytimeLearning import get_next_operation, AnytimeSPN
 
 from spn.structure.Base import Sum, assign_ids
 
