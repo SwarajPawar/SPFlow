@@ -195,7 +195,8 @@ class AnytimeSPN:
 			if len(tasks)==0:
 				break
 		
-			
+			#print("\n\n\n",tasks)
+			#input()
 			#Normal executions
 			if naiveFactor == 0:
 				local_data, parent, children_pos, scope, no_clusters, no_independencies, param = tasks.popleft()
@@ -208,11 +209,13 @@ class AnytimeSPN:
 					is_first=(parent is self.root),
 					param = param
 				)
+				
 			#Naive Factorize subtrees
 			else:
 				local_data, parent, children_pos, scope, no_clusters, no_independencies, param = tasks.pop()
 				operation = Operation.NAIVE_FACTORIZATION
-
+			print(operation)
+			#print("Factor:",naiveFactor)
 			logging.debug("OP: {} on slice {} (remaining tasks {})".format(operation, local_data.shape, len(tasks)))
 
 			if operation == Operation.REMOVE_UNINFORMATIVE_FEATURES:
@@ -226,7 +229,7 @@ class AnytimeSPN:
 					node.children.append(None)
 					tasks.append(
 						(
-							data_slicer(local_data, [col], num_conditional_cols),
+							self.data_slicer(local_data, [col], num_conditional_cols),
 							node,
 							len(node.children) - 1,
 							[scope[col]],
@@ -251,7 +254,7 @@ class AnytimeSPN:
 
 				tasks.append(
 					(
-						data_slicer(local_data, rest_cols, num_conditional_cols),
+						self.data_slicer(local_data, rest_cols, num_conditional_cols),
 						node,
 						c_pos,
 						rest_scope,
@@ -275,6 +278,9 @@ class AnytimeSPN:
 				
 				#Get the new K value and dataslices
 				newk, data_slices = self.split_rows(local_data, ds_context, scope, k)
+				print("K",k)
+				print("NEw K",newk)
+				print("Slices",len(data_slices))
 				split_end_t = perf_counter()
 				logging.debug(
 					"\t\tfound {} row clusters (in {:.5f} secs)".format(len(data_slices), split_end_t - split_start_t)
@@ -365,7 +371,7 @@ class AnytimeSPN:
 					node.children.append(None)
 					# tasks.append((data_slicer(local_data, [col], num_conditional_cols), node, len(node.children) - 1, [scope[col]], True, True))
 					local_tasks.append(len(node.children) - 1)
-					child_data_slice = data_slicer(local_data, [col], num_conditional_cols)
+					child_data_slice = self.data_slicer(local_data, [col], num_conditional_cols)
 					local_children_params.append((child_data_slice, ds_context, [scope[col]]))
 
 				result_nodes = pool.starmap(self.create_leaf, local_children_params)
@@ -389,7 +395,7 @@ class AnytimeSPN:
 					self.spns.append(spn)
 					
 					
-				naiveFactor = min(0, naiveFactor-1)
+				naiveFactor = max(0, naiveFactor-1)
 
 				continue
 
