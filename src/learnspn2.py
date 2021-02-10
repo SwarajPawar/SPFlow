@@ -86,12 +86,15 @@ while True:
 		test_data = np.array(instance).reshape(-1, var)
 		total_ll += log_likelihood(spn, test_data)[0][0]
 	ll.append(total_ll/len(test))
+	
 	if n[j]==max_iter:
 		break
 	print("\n\n\n\n\n")
 	print(k1[i],n[j])
 	print(nodes[k])
 	print(ll[k])
+	print(ll)
+	print(nodes)
 	print("\n\n\n\n\n")
 	k+=1
 	if i<len(k1)-1:
