@@ -187,7 +187,7 @@ class AnytimeSPN:
 
 
 		tasks = deque()
-		tasks.append((dataset, self.root, 0, initial_scope, False, False, None))
+		tasks.append((dataset, self.root, 0, initial_scope, False, False, None, False))
 		naiveFactor = 0
 
 		while True:
@@ -199,7 +199,7 @@ class AnytimeSPN:
 			#input()
 			#Normal executions
 			if naiveFactor == 0:
-				local_data, parent, children_pos, scope, no_clusters, no_independencies, param = tasks.popleft()
+				local_data, parent, children_pos, scope, no_clusters, no_independencies, param, leaf = tasks.popleft()
 				operation, op_params = self.next_operation(
 					local_data,
 					scope,
@@ -212,8 +212,11 @@ class AnytimeSPN:
 				
 			#Naive Factorize subtrees
 			else:
-				local_data, parent, children_pos, scope, no_clusters, no_independencies, param = tasks.pop()
-				operation = Operation.NAIVE_FACTORIZATION
+				local_data, parent, children_pos, scope, no_clusters, no_independencies, param, leaf = tasks.pop()
+				if leaf:
+					operation = Operation.CREATE_LEAF
+				else:
+					operation = Operation.NAIVE_FACTORIZATION
 			print(operation)
 			#print("Factor:",naiveFactor)
 			logging.debug("OP: {} on slice {} (remaining tasks {})".format(operation, local_data.shape, len(tasks)))
@@ -235,7 +238,8 @@ class AnytimeSPN:
 							[scope[col]],
 							True,
 							True,
-							None
+							None,
+							False
 						)
 					)
 
@@ -260,7 +264,8 @@ class AnytimeSPN:
 						rest_scope,
 						next_final,
 						next_final,
-						None
+						None,
+						False
 					)
 				)
 
@@ -287,12 +292,12 @@ class AnytimeSPN:
 				)
 
 				if len(data_slices) == 1:
-					tasks.append((local_data, parent, children_pos, scope, True, False, None))
+					tasks.append((local_data, parent, children_pos, scope, True, False, None, False))
 					continue
 				
 				# If K can be increased, find the clusters again in next iteration
 				if k < newk:
-					tasks.appendleft((local_data, parent, children_pos, scope, False, True, newk))
+					tasks.appendleft((local_data, parent, children_pos, scope, False, True, newk, False))
 
 				#Create sum node
 				node = Sum()
@@ -306,12 +311,14 @@ class AnytimeSPN:
 
 					node.children.append(None)
 					node.weights.append(proportion)
-					tasks.append((data_slice, node, len(node.children) - 1, scope, False, False, None))
+					tasks.append((data_slice, node, len(node.children) - 1, scope, False, False, None, False))
 					
 
 				if k == newk:
+					i = 0
 					for data_slice, scope_slice, proportion in data_slices:
-						tasks.append((data_slice, node, len(node.children) - 1, scope, False, False, None))
+						tasks.append((data_slice, node, i, scope, False, False, None, False))
+						i+=1
 				# If newk > k, naiveFactorize subtrees
 				if newk > k:
 					naiveFactor = len(node.children)
@@ -324,22 +331,21 @@ class AnytimeSPN:
 				#Get the k value for next round of variable splitting
 				if op_params is not None:
 					n = op_params
-
 				split_start_t = perf_counter()
 				data_slices = self.split_cols(local_data, ds_context, scope, n)
 				split_end_t = perf_counter()
 				logging.debug(
 					"\t\tfound {} col clusters (in {:.5f} secs)".format(len(data_slices), split_end_t - split_start_t)
 				)
-
+				print(len(data_slices))
 				if len(data_slices) == 1:
-					tasks.append((local_data, parent, children_pos, scope, False, True, None))
+					tasks.append((local_data, parent, children_pos, scope, False, True, None, False))
 					assert np.shape(data_slices[0][0]) == np.shape(local_data)
 					assert data_slices[0][1] == scope
 					continue
 
 				if n < local_data.shape[1]:
-					tasks.appendleft((local_data, parent, children_pos, scope, True, False, n+1))
+					tasks.appendleft((local_data, parent, children_pos, scope, True, False, n+1, False))
 
 				node = Product()
 				node.scope.extend(scope)
@@ -347,14 +353,22 @@ class AnytimeSPN:
 
 				for data_slice, scope_slice, _ in data_slices:
 					assert isinstance(scope_slice, list), "slice must be a list"
-
+					print(scope_slice)
 					node.children.append(None)
-					tasks.append((data_slice, node, len(node.children) - 1, scope_slice, False, False, None))
+					if len(scope_slice) > 1:
+						tasks.append((data_slice, node, len(node.children) - 1, scope_slice, False, False, None, False))
+					else:
+						tasks.append((data_slice, node, len(node.children) - 1, scope_slice, False, False, None, True))
+				print(node.children)
 
 				if n == local_data.shape[1]:
+					i=0
 					for data_slice, scope_slice, _ in data_slices:
-						tasks.append((data_slice, node, len(node.children) - 1, scope_slice, False, False, None))
-
+						if len(scope_slice) > 1:
+							tasks.append((data_slice, node, i, scope_slice, False, False, None, False))
+						else:
+							tasks.append((data_slice, node, i, scope_slice, False, False, None, True))
+						i+=1
 				if n < local_data.shape[1]:
 					naiveFactor = len(node.children)
 				continue
@@ -410,6 +424,16 @@ class AnytimeSPN:
 						node.__class__.__name__, scope, leaf_end_t - leaf_start_t
 					)
 				)
+
+				if naiveFactor == 1:
+					spn = Copy(self.return_spn())
+					self.id += 1
+					print(f"\n\n\n\nSPN {self.id} created\n\n\n\n")
+					print(get_structure_stats(spn))
+					self.spns.append(spn)
+					
+					
+				naiveFactor = max(0, naiveFactor-1)
 
 			else:
 				raise Exception("Invalid operation: " + operation)

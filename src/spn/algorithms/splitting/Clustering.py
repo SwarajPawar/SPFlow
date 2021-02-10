@@ -57,37 +57,40 @@ def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17):
 		centers = kmeans.cluster_centers_
 		p = dim + 1
 
-		obic = np.zeros(k)
+		try:
+			obic = np.zeros(k)
 
-		for i in range(k):
-			rn = np.size(np.where(clusters == i))
-			var = np.sum((local_data[clusters == i] - centers[i])**2)/float(rn - 1)
-			obic[i] = loglikelihood(rn, rn, var, dim, 1) - p/2.0*math.log(rn)
+			for i in range(k):
+				rn = np.size(np.where(clusters == i))
+				var = np.sum((local_data[clusters == i] - centers[i])**2)/float(rn - 1)
+				obic[i] = loglikelihood(rn, rn, var, dim, 1) - p/2.0*math.log(rn)
 
-		sk = 2 #The number of subclusters
-		nbic = np.zeros(k)
-		addk = 0
+			sk = 2 #The number of subclusters
+			nbic = np.zeros(k)
+			addk = 0
 
-		for i in range(k):
-			ci = local_data[clusters == i]
-			r = np.size(np.where(clusters == i))
+			for i in range(k):
+				ci = local_data[clusters == i]
+				r = np.size(np.where(clusters == i))
 
-			kmeans = KMeans(n_clusters=sk).fit(ci)
-			ci_labels = kmeans.labels_
-			sm = kmeans.cluster_centers_
+				kmeans = KMeans(n_clusters=sk).fit(ci)
+				ci_labels = kmeans.labels_
+				sm = kmeans.cluster_centers_
 
-			for l in range(sk):
-				rn = np.size(np.where(ci_labels == l))
-				var = np.sum((ci[ci_labels == l] - sm[l])**2)/float(rn - sk)
-				nbic[i] += loglikelihood(r, rn, var, dim, sk)
+				for l in range(sk):
+					rn = np.size(np.where(ci_labels == l))
+					var = np.sum((ci[ci_labels == l] - sm[l])**2)/float(rn - sk)
+					nbic[i] += loglikelihood(r, rn, var, dim, sk)
 
-			p = sk * (dim + 1)
-			nbic[i] -= p/2.0*math.log(r)
+				p = sk * (dim + 1)
+				nbic[i] -= p/2.0*math.log(r)
 
-			if obic[i] < nbic[i]:
-				addk += 1
-		newk = k + addk
-		return newk, split_data_by_clusters(local_data, clusters, scope, rows=True)
+				if obic[i] < nbic[i]:
+					addk += 1
+			newk = k + addk
+			return newk, split_data_by_clusters(local_data, clusters, scope, rows=True)
+		except:
+			return k, split_data_by_clusters(local_data, clusters, scope, rows=True)
 
 	return split_rows_XMeans
 

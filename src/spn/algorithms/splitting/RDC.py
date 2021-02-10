@@ -371,7 +371,7 @@ def get_split_cols_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=
 def get_split_cols_single_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None):
 	def split_cols_single_RDC_py(local_data, ds_context, scope, n=0):
 		data = local_data[:,:n]
-		ds_context = ds_context[:n]
+		print(scope)
 		n_scope = scope[:n]
 
 		meta_types = ds_context.get_meta_types_by_scope(n_scope)
@@ -403,7 +403,7 @@ def get_split_cols_single_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_lin
 def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, linear=True):
 	def split_cols_distributed_RDC_py(local_data, ds_context, scope, k=0):
 		data = local_data[:,:n]
-		ds_context = ds_context[:n]
+		#ds_context = ds_context[:n]
 		n_scope = scope[:n]
 
 		meta_types = ds_context.get_meta_types_by_scope(n_scope)
