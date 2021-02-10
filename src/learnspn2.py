@@ -63,7 +63,7 @@ test = df2.values
 ll = list()
 nodes = list()
 k1 = [i for i in range(2,max_iter+1)]
-n = [i for i in range(int(max_iter*0.5),max_iter+1)]
+n = [i for i in range(int(max_iter**0.5),max_iter+1)]
 
 i,j,k = 0,0,0
 while True:
