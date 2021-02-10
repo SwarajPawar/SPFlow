@@ -368,10 +368,11 @@ def get_split_cols_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=
 
 	return split_cols_RDC_py
 
-def get_split_cols_single_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None):
-	def split_cols_single_RDC_py(local_data, ds_context, scope, n=0):
+def get_split_cols_single_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None, n=0):
+	def split_cols_single_RDC_py(local_data, ds_context, scope, n=n):
+		n = min(n, local_data.shape[1])
 		data = local_data[:,:n]
-		print(scope)
+		#print(scope)
 		n_scope = scope[:n]
 
 		meta_types = ds_context.get_meta_types_by_scope(n_scope)
@@ -400,8 +401,9 @@ def get_split_cols_single_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_lin
 	return split_cols_single_RDC_py
 	
 	
-def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, linear=True):
-	def split_cols_distributed_RDC_py(local_data, ds_context, scope, k=0):
+def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None, n=0):
+	def split_cols_distributed_RDC_py(local_data, ds_context, scope, n=n):
+		n = min(n, local_data.shape[1])
 		data = local_data[:,:n]
 		#ds_context = ds_context[:n]
 		n_scope = scope[:n]
