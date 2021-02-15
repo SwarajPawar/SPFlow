@@ -46,52 +46,67 @@ def get_split_rows_KMeans(n_clusters=2, pre_proc=None, ohe=False, seed=17):
 
 
 def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17):
-	def split_rows_XMeans(local_data, ds_context, scope, k=2):
+	def split_rows_XMeans(local_data, ds_context, scope, k=2, n=None):
 		data = preproc(local_data, ds_context, pre_proc, ohe)
 
-		kmeans = KMeans(n_clusters=k, random_state=seed)
-		kmeans.fit(local_data)
-		clusters = kmeans.labels_
-		k1 = k
-		dim = np.size(local_data, axis=1)
-		centers = kmeans.cluster_centers_
-		p = dim + 1
+		returnk = False
+		if n is None:
+			returnk = True
+			n = 1
 
-		try:
-			obic = np.zeros(k)
+		prevk = k
+		for i in range(n):
 
-			for i in range(k):
-				rn = np.size(np.where(clusters == i))
-				var = np.sum((local_data[clusters == i] - centers[i])**2)/float(rn - 1)
-				obic[i] = loglikelihood(rn, rn, var, dim, 1) - p/2.0*math.log(rn)
+			kmeans = KMeans(n_clusters=k, random_state=seed)
+			kmeans.fit(local_data)
+			clusters = kmeans.labels_
+			dim = np.size(local_data, axis=1)
+			centers = kmeans.cluster_centers_
+			p = dim + 1
 
-			sk = 2 #The number of subclusters
-			nbic = np.zeros(k)
-			addk = 0
+			try:
+				obic = np.zeros(k)
 
-			for i in range(k):
-				ci = local_data[clusters == i]
-				r = np.size(np.where(clusters == i))
+				for i in range(k):
+					rn = np.size(np.where(clusters == i))
+					var = np.sum((local_data[clusters == i] - centers[i])**2)/float(rn - 1)
+					obic[i] = loglikelihood(rn, rn, var, dim, 1) - p/2.0*math.log(rn)
 
-				kmeans = KMeans(n_clusters=sk).fit(ci)
-				ci_labels = kmeans.labels_
-				sm = kmeans.cluster_centers_
+				sk = 2 #The number of subclusters
+				nbic = np.zeros(k)
+				addk = 0
 
-				for l in range(sk):
-					rn = np.size(np.where(ci_labels == l))
-					var = np.sum((ci[ci_labels == l] - sm[l])**2)/float(rn - sk)
-					nbic[i] += loglikelihood(r, rn, var, dim, sk)
+				for i in range(k):
+					ci = local_data[clusters == i]
+					r = np.size(np.where(clusters == i))
 
-				p = sk * (dim + 1)
-				nbic[i] -= p/2.0*math.log(r)
+					kmeans = KMeans(n_clusters=sk).fit(ci)
+					ci_labels = kmeans.labels_
+					sm = kmeans.cluster_centers_
 
-				if obic[i] < nbic[i]:
-					addk += 1
-			newk = k + addk
-			return newk, split_data_by_clusters(local_data, clusters, scope, rows=True)
-		except:
+					for l in range(sk):
+						rn = np.size(np.where(ci_labels == l))
+						var = np.sum((ci[ci_labels == l] - sm[l])**2)/float(rn - sk)
+						nbic[i] += loglikelihood(r, rn, var, dim, sk)
+
+					p = sk * (dim + 1)
+					nbic[i] -= p/2.0*math.log(r)
+
+					if obic[i] < nbic[i]:
+						addk += 1
+				if addk == 0:
+					break
+				prevk = k
+				k = k + addk	
+			except:
+				if returnk:
+					return prevk, split_data_by_clusters(local_data, clusters, scope, rows=True)
+				else:
+					return split_data_by_clusters(local_data, clusters, scope, rows=True)
+		if returnk:
 			return k, split_data_by_clusters(local_data, clusters, scope, rows=True)
-
+		else:
+			return split_data_by_clusters(local_data, clusters, scope, rows=True)
 	return split_rows_XMeans
 
 
