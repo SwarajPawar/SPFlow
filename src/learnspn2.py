@@ -54,6 +54,7 @@ path = "spn_figures"
 
 for dataset in datasets:
     
+    print(f"\n\n\n{dataset}\n\n\n")
     plot_path = f"{path}/{dataset}"
     if not pth.exists(plot_path):
         try:
