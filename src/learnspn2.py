@@ -49,7 +49,7 @@ rand_gen=None
 cpus=-1
 
 
-datasets = [["nltcs","msnbc", "kdd", "plants", "baudio", "jester", "bnetflix"]
+datasets = ["nltcs","msnbc", "kdd", "plants", "baudio", "jester", "bnetflix"]
 path = "spn_figures"
 
 for dataset in datasets:
