@@ -45,14 +45,12 @@ def get_split_rows_KMeans(n_clusters=2, pre_proc=None, ohe=False, seed=17):
 	return split_rows_KMeans
 
 
-def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17):
-	def split_rows_XMeans(local_data, ds_context, scope, k=2, n=None):
+def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17, limit=math.inf, returnk = True, n=100, k=2):
+	def split_rows_XMeans(local_data, ds_context, scope, k=k):
 		data = preproc(local_data, ds_context, pre_proc, ohe)
 
-		returnk = False
-		if n is None:
-			returnk = True
-			n = 1
+		
+		
 
 		prevk = k
 		for i in range(n):
@@ -64,6 +62,9 @@ def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17):
 			centers = kmeans.cluster_centers_
 			p = dim + 1
 
+			
+			if k>=limit:
+				break
 			try:
 				obic = np.zeros(k)
 
@@ -94,10 +95,16 @@ def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17):
 
 					if obic[i] < nbic[i]:
 						addk += 1
+					if k + addk >= limit:
+						break
 				if addk == 0:
 					break
 				prevk = k
-				k = k + addk	
+
+				k = k + addk 
+				if (k + addk) >= limit:
+					k= limit
+
 			except:
 				if returnk:
 					return prevk, split_data_by_clusters(local_data, clusters, scope, rows=True)
