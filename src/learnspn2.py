@@ -49,7 +49,7 @@ rand_gen=None
 cpus=-1
 
 
-datasets = ["nltcs","msnbc", "kdd", "plants", "baudio", "jester", "netflix"]
+datasets = [["nltcs","msnbc", "kdd", "plants", "baudio", "jester", "bnetflix"]
 path = "spn_figures"
 
 for dataset in datasets:
@@ -79,7 +79,7 @@ for dataset in datasets:
     k1 = 2 #[i for i in range(1,5)]
     
     n = int(max_iter**0.5)  #[i for i in range(int(max_iter**0.5),max_iter+1,2)]
-    step = (max_iter - (max_iter**0.5))/20
+    step = (max_iter - (max_iter**0.5))/10
     print(step)
 
     i,j,k = 0,0,0
