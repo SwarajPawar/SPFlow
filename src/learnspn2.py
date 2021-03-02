@@ -50,8 +50,12 @@ cpus=-1
 
 
 datasets = ["nltcs","msnbc", "kdd", "plants", "baudio", "jester", "bnetflix"]
+<<<<<<< HEAD
 #datasets = ["msnbc"]
 path = "single/spn_figures"
+=======
+path = "spn_figures"
+>>>>>>> 0a181f64ae71d5e08106e91f253d5f0affced64b
 
 for dataset in datasets:
     
