@@ -14,8 +14,8 @@ from spn.structure.leaves.parametric.Parametric import create_parametric_leaf
 from spn.structure.leaves.piecewise.PiecewiseLinear import create_piecewise_leaf
 from spn.structure.leaves.cltree.CLTree import create_cltree_leaf
 from spn.algorithms.splitting.Conditioning import (
-	get_split_rows_naive_mle_conditioning,
-	get_split_rows_random_conditioning,
+    get_split_rows_naive_mle_conditioning,
+    get_split_rows_random_conditioning,
 )
 
 from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
@@ -49,8 +49,9 @@ rand_gen=None
 cpus=-1
 
 
-datasets = [["nltcs","msnbc", "kdd", "plants", "baudio", "jester", "bnetflix"]
-path = "spn_figures"
+datasets = ["nltcs","msnbc", "kdd", "plants", "baudio", "jester", "bnetflix"]
+
+path = "test"
 
 for dataset in datasets:
     
@@ -72,15 +73,16 @@ for dataset in datasets:
     ds_context.add_domains(data)
 
     df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
-    test = df2.values
+    test = df2.values[:1000]
+    print(test.shape)
 
     ll = list()
     nodes = list()
     k1 = 2 #[i for i in range(1,5)]
+    past3 = list()
     
     n = int(max_iter**0.5)  #[i for i in range(int(max_iter**0.5),max_iter+1,2)]
-    step = (max_iter - (max_iter**0.5))/10
-    print(step)
+    step = (max_iter - (max_iter**0.5))/15
 
     i,j,k = 0,0,0
     while True:
@@ -102,9 +104,16 @@ for dataset in datasets:
             test_data = np.array(instance).reshape(-1, var)
             total_ll += log_likelihood(spn, test_data)[0][0]
         ll.append(total_ll/len(test))
+        
+        if len(ll)>3:
+            past3 = ll[-3:]
+            if round(np.std(past3), 2) <= 0.01:
+                break
 
+        '''
         if n==max_iter:
             break
+        '''
         print("\n\n\n\n\n")
         print(k1,round(n))
         print(nodes[k])
@@ -117,11 +126,11 @@ for dataset in datasets:
         
         plt.close()
         # plot line 
-        plt.plot(ll) 
+        plt.plot(ll, marker="o") 
         plt.title(f"{dataset} Log Likelihood")
         plt.savefig(f"{path}/{dataset}/ll.png", dpi=100)
         plt.close()
-        plt.plot(nodes) 
+        plt.plot(nodes, marker="o") 
         plt.title(f"{dataset} Nodes")
         plt.savefig(f"{path}/{dataset}/nodes.png", dpi=100)
         plt.close()
@@ -135,16 +144,17 @@ for dataset in datasets:
 
     plt.close()
     # plot line 
-    plt.plot(ll) 
+    plt.plot(ll, marker="o") 
     #plt.show()
     plt.title(f"{dataset} Log Likelihood")
     plt.savefig(f"{path}/{dataset}/ll.png", dpi=100)
     plt.close()
-    plt.plot(nodes) 
+    plt.plot(nodes, marker="o") 
     #plt.show()
     plt.title(f"{dataset} Nodes")
     plt.savefig(f"{path}/{dataset}/nodes.png", dpi=100)
     plt.close()
+
 
 
 
