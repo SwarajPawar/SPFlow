@@ -50,17 +50,10 @@ cpus=-1
 
 
 datasets = ["nltcs","msnbc", "kdd", "plants", "baudio", "jester", "bnetflix"]
-<<<<<<< HEAD
 
 path = "test"
-=======
-<<<<<<< HEAD
-#datasets = ["msnbc"]
-path = "single/spn_figures"
-=======
-path = "spn_figures"
->>>>>>> 0a181f64ae71d5e08106e91f253d5f0affced64b
->>>>>>> f58251ebccaa5128008e261d6329e04366fc939b
+
+
 
 for dataset in datasets:
     
@@ -92,11 +85,7 @@ for dataset in datasets:
     
     n = int(max_iter**0.5)  #[i for i in range(int(max_iter**0.5),max_iter+1,2)]
     step = (max_iter - (max_iter**0.5))/15
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> f58251ebccaa5128008e261d6329e04366fc939b
     i,j,k = 0,0,0
     while True:
         split_cols = get_split_cols_single_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
