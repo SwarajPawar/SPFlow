@@ -49,8 +49,9 @@ rand_gen=None
 cpus=-1
 
 
-datasets = [["nltcs","msnbc", "kdd", "plants", "baudio", "jester", "bnetflix"]
-path = "spn_figures"
+datasets = ["nltcs","msnbc", "kdd", "plants", "baudio", "jester", "bnetflix"]
+#datasets = ["msnbc"]
+path = "single/spn_figures"
 
 for dataset in datasets:
     
@@ -79,12 +80,11 @@ for dataset in datasets:
     k1 = 2 #[i for i in range(1,5)]
     
     n = int(max_iter**0.5)  #[i for i in range(int(max_iter**0.5),max_iter+1,2)]
-    step = (max_iter - (max_iter**0.5))/10
-    print(step)
-
+    step = (max_iter - (max_iter**0.5))/15
+    
     i,j,k = 0,0,0
     while True:
-        split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
+        split_cols = get_split_cols_single_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
         split_rows = get_split_rows_XMeans(limit=k1, returnk=False)
         nextop = get_next_operation(min_instances_slice)
 
