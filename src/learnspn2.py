@@ -49,9 +49,9 @@ rand_gen=None
 cpus=-1
 
 
-datasets = ["nltcs","msnbc", "kdd", "plants", "baudio", "jester", "bnetflix"]
-
-path = "test"
+#datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
+datasets = ["nltcs"]
+path = "test1"
 
 
 
@@ -67,7 +67,7 @@ for dataset in datasets:
             sys.exit()
             
     df = pd.read_csv(f"spn/data/binary/{dataset}.ts.data", sep=',')
-    data = df.values
+    data = df.values[:-1000]
     print(data.shape)
     max_iter = data.shape[1]
     samples, var = data.shape
@@ -75,7 +75,7 @@ for dataset in datasets:
     ds_context.add_domains(data)
 
     df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
-    test = df2.values
+    test = df.values[-1000:]
     print(test.shape)
 
     ll = list()
@@ -84,7 +84,7 @@ for dataset in datasets:
     past3 = list()
     
     n = int(max_iter**0.5)  #[i for i in range(int(max_iter**0.5),max_iter+1,2)]
-    step = (max_iter - (max_iter**0.5))/15
+    step = (max_iter - (max_iter**0.5))/20
 
     i,j,k = 0,0,0
     while True:
