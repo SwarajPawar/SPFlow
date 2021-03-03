@@ -82,7 +82,7 @@ for dataset in datasets:
     ds_context.add_domains(data)
 
     df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
-    test = df2.values[:1000]
+    test = df2.values
     print(test.shape)
 
     ll = list()
