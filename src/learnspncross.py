@@ -127,6 +127,7 @@ for dataset in datasets:
 				total_ll += log_likelihood(spn, test_data)[0][0]
 			ll.append(total_ll/len(test))
 			
+                        '''
 			if len(ll)>3:
 				past3 = ll[-3:]
 				if round(np.std(past3), 2) <= 0.01:
@@ -135,7 +136,7 @@ for dataset in datasets:
 			'''
 			if n==max_iter:
 				break
-			'''
+			
 			print("\n\n\n\n\n")
 			print(k1,round(n))
 			print(nodes[k])
