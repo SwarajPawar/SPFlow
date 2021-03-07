@@ -20,7 +20,6 @@ from spn.algorithms.splitting.Conditioning import (
 
 from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
 from spn.algorithms.splitting.RDC import get_split_cols_single_RDC_py, get_split_cols_distributed_RDC_py
-from sklearn.cross_validation import train_test_split
 from sklearn.model_selection import KFold
 import logging
 
@@ -69,10 +68,10 @@ for dataset in datasets:
 			
 	df = pd.read_csv(f"spn/data/binary/{dataset}.ts.data", sep=',')
 	data1 = df.values
-	print(data.shape)
+	print(data1.shape)
 	df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
 	data2 = df2.values
-	print(test.shape)
+	print(data2.shape)
 	data = np.concatenate((data1, data2))
 
 
@@ -80,7 +79,7 @@ for dataset in datasets:
 
 
 	max_iter = data.shape[1]
-	var = data.shape
+	rows, var = data.shape
 	ds_context = Context(meta_types=[MetaType.DISCRETE]*var)
 	ds_context.add_domains(data)
 

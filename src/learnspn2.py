@@ -50,7 +50,7 @@ cpus=-1
 
 
 #datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
-datasets = ["nltcs"]
+datasets = ["kdd"]
 path = "test1"
 
 
@@ -67,7 +67,7 @@ for dataset in datasets:
             sys.exit()
             
     df = pd.read_csv(f"spn/data/binary/{dataset}.ts.data", sep=',')
-    data = df.values[
+    data = df.values
     print(data.shape)
     max_iter = data.shape[1]
     samples, var = data.shape
@@ -106,16 +106,16 @@ for dataset in datasets:
             test_data = np.array(instance).reshape(-1, var)
             total_ll += log_likelihood(spn, test_data)[0][0]
         ll.append(total_ll/len(test))
-        
+        '''
         if len(ll)>3:
             past3 = ll[-3:]
             if round(np.std(past3), 2) <= 0.01:
                 break
-
         '''
+        
         if n==max_iter:
             break
-        '''
+        
         print("\n\n\n\n\n")
         print(k1,round(n))
         print(nodes[k])
