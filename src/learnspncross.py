@@ -14,8 +14,8 @@ from spn.structure.leaves.parametric.Parametric import create_parametric_leaf
 from spn.structure.leaves.piecewise.PiecewiseLinear import create_piecewise_leaf
 from spn.structure.leaves.cltree.CLTree import create_cltree_leaf
 from spn.algorithms.splitting.Conditioning import (
-    get_split_rows_naive_mle_conditioning,
-    get_split_rows_random_conditioning,
+	get_split_rows_naive_mle_conditioning,
+	get_split_rows_random_conditioning,
 )
 
 from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
@@ -57,125 +57,126 @@ path = "cross"
 kfold = KFold(n_splits=3)
 
 for dataset in datasets:
-    
-    print(f"\n\n\n{dataset}\n\n\n")
-    plot_path = f"{path}/{dataset}"
-    if not pth.exists(plot_path):
-        try:
-            os.makedirs(plot_path)
-        except OSError:
-            print ("Creation of the directory %s failed" % plot_path)
-            sys.exit()
-            
-    df = pd.read_csv(f"spn/data/binary/{dataset}.ts.data", sep=',')
-    data1 = df.values
-    print(data.shape)
-    df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
-    data2 = df2.values
-    print(test.shape)
-    data = np.concatenate((data1, data2))
+	
+	print(f"\n\n\n{dataset}\n\n\n")
+	plot_path = f"{path}/{dataset}"
+	if not pth.exists(plot_path):
+		try:
+			os.makedirs(plot_path)
+		except OSError:
+			print ("Creation of the directory %s failed" % plot_path)
+			sys.exit()
+			
+	df = pd.read_csv(f"spn/data/binary/{dataset}.ts.data", sep=',')
+	data1 = df.values
+	print(data.shape)
+	df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
+	data2 = df2.values
+	print(test.shape)
+	data = np.concatenate((data1, data2))
 
 
 
 
 
-    max_iter = data.shape[1]
-    var = data.shape
-    ds_context = Context(meta_types=[MetaType.DISCRETE]*var)
-    ds_context.add_domains(data)
+	max_iter = data.shape[1]
+	var = data.shape
+	ds_context = Context(meta_types=[MetaType.DISCRETE]*var)
+	ds_context.add_domains(data)
 
-    
-    i = 0
-    for traini, testi in kfold.split(data):
+	
+	i = 0
+	for traini, testi in kfold.split(data):
 
-    	train, test = data[traini], data[testi]
-    	plot_path = f"{path}/{dataset}/{i}"
-	    if not pth.exists(plot_path):
-	        try:
-	            os.makedirs(plot_path)
-	        except OSError:
-	            print ("Creation of the directory %s failed" % plot_path)
-	            sys.exit()
-	    i+=1
+		i+=1
+		train, test = data[traini], data[testi]
+		plot_path = f"{path}/{dataset}/{i}"
+		if not pth.exists(plot_path):
+			try:
+				os.makedirs(plot_path)
+			except OSError:
+				print ("Creation of the directory %s failed" % plot_path)
+				sys.exit()
+		
 
-	    ll = list()
-	    nodes = list()
-	    k1 = 2 #[i for i in range(1,5)]
-	    past3 = list()
-	    
-	    n = int(max_iter**0.5)  #[i for i in range(int(max_iter**0.5),max_iter+1,2)]
-	    step = (max_iter - (max_iter**0.5))/20
+		ll = list()
+		nodes = list()
+		k1 = 2 #[i for i in range(1,5)]
+		past3 = list()
+		
+		n = int(max_iter**0.5)  #[i for i in range(int(max_iter**0.5),max_iter+1,2)]
+		step = (max_iter - (max_iter**0.5))/20
 
-	    k = 0
-	    while True:
-	        split_cols = get_split_cols_single_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
-	        split_rows = get_split_rows_XMeans(limit=k1, returnk=False)
-	        nextop = get_next_operation(min_instances_slice)
+		k = 0
+		while True:
+			split_cols = get_split_cols_single_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
+			split_rows = get_split_rows_XMeans(limit=k1, returnk=False)
+			nextop = get_next_operation(min_instances_slice)
 
-	        spn = learn_structure(train, ds_context, split_rows, split_cols, leaves, nextop)
+			spn = learn_structure(train, ds_context, split_rows, split_cols, leaves, nextop)
 
-	        nodes.append(get_structure_stats_dict(spn)["nodes"])
-	        from spn.io.Graphics import plot_spn
+			nodes.append(get_structure_stats_dict(spn)["nodes"])
+			from spn.io.Graphics import plot_spn
 
-	        plot_spn(spn, f'{path}/{dataset}/{i}/spn{k}.png')
+			plot_spn(spn, f'{path}/{dataset}/{i}/spn{k}.png')
 
-	        from spn.algorithms.Inference import log_likelihood
-	        total_ll = 0
-	        for instance in test:
-	            import numpy as np
-	            test_data = np.array(instance).reshape(-1, var)
-	            total_ll += log_likelihood(spn, test_data)[0][0]
-	        ll.append(total_ll/len(test))
-	        
-	        if len(ll)>3:
-	            past3 = ll[-3:]
-	            if round(np.std(past3), 2) <= 0.01:
-	                break
+			from spn.algorithms.Inference import log_likelihood
+			total_ll = 0
+			for instance in test:
+				import numpy as np
+				test_data = np.array(instance).reshape(-1, var)
+				total_ll += log_likelihood(spn, test_data)[0][0]
+			ll.append(total_ll/len(test))
+			
+			if len(ll)>3:
+				past3 = ll[-3:]
+				if round(np.std(past3), 2) <= 0.01:
+					break
 
-	        '''
-	        if n==max_iter:
-	            break
-	        '''
-	        print("\n\n\n\n\n")
-	        print(k1,round(n))
-	        print(nodes[k])
-	        print(ll[k])
-	        print(ll)
-	        print(nodes)
-	        print("\n\n\n\n\n")
-	        
-	        k+=1
-	        
-	        plt.close()
-	        # plot line 
-	        plt.plot(ll, marker="o") 
-	        plt.title(f"{dataset} Log Likelihood")
-	        plt.savefig(f"{path}/{dataset}/{i}/ll.png", dpi=100)
-	        plt.close()
-	        plt.plot(nodes, marker="o") 
-	        plt.title(f"{dataset} Nodes")
-	        plt.savefig(f"{path}/{dataset}/{i}/nodes.png", dpi=100)
-	        plt.close()
-	        
-	        
-	        n = min(n+step, max_iter)
-	        k1 += 1
+			'''
+			if n==max_iter:
+				break
+			'''
+			print("\n\n\n\n\n")
+			print(k1,round(n))
+			print(nodes[k])
+			print(ll[k])
+			print(ll)
+			print(nodes)
+			print("\n\n\n\n\n")
+			
+			k+=1
+			
+			plt.close()
+			# plot line 
+			plt.plot(ll, marker="o") 
+			plt.title(f"{dataset} Log Likelihood")
+			plt.savefig(f"{path}/{dataset}/{i}/ll.png", dpi=100)
+			plt.close()
+			plt.plot(nodes, marker="o") 
+			plt.title(f"{dataset} Nodes")
+			plt.savefig(f"{path}/{dataset}/{i}/nodes.png", dpi=100)
+			plt.close()
+			
+			
+			n = min(n+step, max_iter)
+			k1 += 1
 
-	    print("Log Likelihood",ll)
-	    print("Nodes",nodes)
+		print("Log Likelihood",ll)
+		print("Nodes",nodes)
 
-	    plt.close()
-	    # plot line 
-	    plt.plot(ll, marker="o") 
-	    #plt.show()
-	    plt.title(f"{dataset} Log Likelihood")
-	    plt.savefig(f"{path}/{dataset}/{i}/ll.png", dpi=100)
-	    plt.close()
-	    plt.plot(nodes, marker="o") 
-	    #plt.show()
-	    plt.title(f"{dataset} Nodes")
-	    plt.savefig(f"{path}/{dataset}/{i}/nodes.png", dpi=100)
-	    plt.close()
+		plt.close()
+		# plot line 
+		plt.plot(ll, marker="o") 
+		#plt.show()
+		plt.title(f"{dataset} Log Likelihood")
+		plt.savefig(f"{path}/{dataset}/{i}/ll.png", dpi=100)
+		plt.close()
+		plt.plot(nodes, marker="o") 
+		#plt.show()
+		plt.title(f"{dataset} Nodes")
+		plt.savefig(f"{path}/{dataset}/{i}/nodes.png", dpi=100)
+		plt.close()
 
 
 
