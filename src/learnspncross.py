@@ -68,7 +68,7 @@ for dataset in datasets:
 			
 	df = pd.read_csv(f"spn/data/binary/{dataset}.ts.data", sep=',')
 	data = df.values
-	print(data1.shape)
+	print(data.shape)
 	df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
 	data2 = df2.values
 	print(data2.shape)
