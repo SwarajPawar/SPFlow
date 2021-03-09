@@ -22,6 +22,7 @@ from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
 from spn.algorithms.splitting.RDC import get_split_cols_single_RDC_py, get_split_cols_distributed_RDC_py
 from sklearn.model_selection import KFold
 import logging
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -92,7 +93,7 @@ for dataset in datasets:
 			break 
 
 		train, test = data[traini], data[testi]
-		test = test[:2000]
+		test = random.sample(test, 2000)
 		plot_path = f"{path}/{dataset}/{i}"
 		if not pth.exists(plot_path):
 			try:
