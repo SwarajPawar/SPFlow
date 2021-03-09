@@ -88,7 +88,11 @@ for dataset in datasets:
 	for traini, testi in kfold.split(data):
 
 		i+=1
+		if i!=10:
+			continue 
+
 		train, test = data[traini], data[testi]
+		test = test[:2000]
 		plot_path = f"{path}/{dataset}/{i}"
 		if not pth.exists(plot_path):
 			try:
@@ -96,8 +100,7 @@ for dataset in datasets:
 			except OSError:
 				print ("Creation of the directory %s failed" % plot_path)
 				sys.exit()
-                if i!=10:
-                    continue
+		
 
 		ll = list()
 		nodes = list()
