@@ -50,7 +50,7 @@ cpus=-1
 
 
 #datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
-datasets = ["msnbc"]
+datasets = ["kdd"]
 path = "cross"
 
 kfold = KFold(n_splits=10)
@@ -88,8 +88,8 @@ for dataset in datasets:
 	for traini, testi in kfold.split(data):
 
 		i+=1
-		if i!=10:
-			continue 
+		if i>3:
+			break 
 
 		train, test = data[traini], data[testi]
 		test = test[:2000]
