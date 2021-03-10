@@ -93,7 +93,7 @@ for dataset in datasets:
 			break 
 
 		train, test = data[traini], data[testi]
-		test = random.sample(test, 2000)
+		test = random.sample(list(test), 2000)
 		plot_path = f"{path}/{dataset}/{i}"
 		if not pth.exists(plot_path):
 			try:
