@@ -108,7 +108,7 @@ for dataset in datasets:
 		
 	print("\n\n\n\n\n")
 	print("#Nodes: ",nodes)
-	print("Log-likelihood: ",ll
+	print("Log-likelihood: ",ll)
 	print("\n\n\n\n\n")
 		
 	   
