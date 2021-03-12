@@ -82,6 +82,8 @@ for dataset in datasets:
 	ds_context = Context(meta_types=[MetaType.DISCRETE]*var)
 	ds_context.add_domains(data)
 
+	lls = list()
+	nodes_k = list()
 	
 	i = 0
 	for traini, testi in kfold.split(data):
@@ -181,7 +183,32 @@ for dataset in datasets:
 		plt.savefig(f"{path}/{dataset}/{i}/nodes.png", dpi=100)
 		plt.close()
 
+		lls.append(ll)
+		nodes_k.append(nodes)
 
+	plt.close()
+	colors = ["aqua", "palegreen", "pink"]
+	total_ll = np.zeroes(max([len(lls[i]) for i in range(len(lls))]))
+	for i in range(len(lls)):
+		plt.plot(lls[i], marker="o", color =colors[i], label=(i+1))
+		total_ll += np.array(lls[i])
+	avg_ll = total_ll/len(lls)
+	plt.plot(avg_ll, marker="o", color ="black", label="Mean")
+	plt.title(f"{dataset} Log Likelihood")
+	plt.legend()
+	plt.savefig(f"{path}/{dataset}/ll.png", dpi=150)
+	plt.close()
+
+	total_nodes = np.zeroes(max([len(nodes_k[i]) for i in range(len(nodes_k))]))
+	for i in range(len(nodes_k)):
+		plt.plot(nodes_k[i], marker="o", color =colors[i], label=(i+1))
+		total_nodes += np.array(nodes_k[i])
+	avg_nodes = total_nodes/len(nodes_k)
+	plt.plot(avg_nodes, marker="o", color ="black", label="Mean")
+	plt.title(f"{dataset} Nodes")
+	plt.legend()
+	plt.savefig(f"{path}/{dataset}/nodes.png", dpi=150)
+	plt.close()
 
 
 
