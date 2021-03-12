@@ -80,16 +80,16 @@ for dataset in datasets:
 
     ll = list()
     nodes = list()
-    k1 = 2 #[i for i in range(1,5)]
+    k_limit = 2 #[i for i in range(1,5)]
     past3 = list()
     
     n = int(max_iter**0.5)  #[i for i in range(int(max_iter**0.5),max_iter+1,2)]
     step = (max_iter - (max_iter**0.5))/20
 
-    i,j,k = 0,0,0
+    i = 0
     while True:
-        split_cols = get_split_cols_single_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
-        split_rows = get_split_rows_XMeans(limit=k1, returnk=False)
+        split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
+        split_rows = get_split_rows_XMeans(limit=k_limit, returnk=False)
         nextop = get_next_operation(min_instances_slice)
 
         spn = learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop)
@@ -97,7 +97,7 @@ for dataset in datasets:
         nodes.append(get_structure_stats_dict(spn)["nodes"])
         from spn.io.Graphics import plot_spn
 
-        plot_spn(spn, f'{path}/{dataset}/spn{k}.png')
+        plot_spn(spn, f'{path}/{dataset}/spn{i}.png')
 
         from spn.algorithms.Inference import log_likelihood
         total_ll = 0
@@ -117,14 +117,14 @@ for dataset in datasets:
             break
         
         print("\n\n\n\n\n")
-        print(k1,round(n))
-        print(nodes[k])
-        print(ll[k])
+        print(f"X-Means Limit: {k_limit}, \tVariables for splitting: {round(n)}")
+        print("#Nodes: ",nodes[i])
+        print("Log-likelihood: ",ll[i])
         print(ll)
         print(nodes)
         print("\n\n\n\n\n")
         
-        k+=1
+        i+=1
         
         plt.close()
         # plot line 
@@ -139,7 +139,7 @@ for dataset in datasets:
         
         
         n = min(n+step, max_iter)
-        k1 += 1
+        k_limit += 1
 
     print("Log Likelihood",ll)
     print("Nodes",nodes)

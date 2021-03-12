@@ -28,7 +28,6 @@ logger = logging.getLogger(__name__)
 
 
 import warnings
-
 warnings.filterwarnings('ignore')
 
 
@@ -40,8 +39,7 @@ import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 
-cols="rdc"
-rows="kmeans"
+
 min_instances_slice=200
 threshold=0.3
 ohe=False
@@ -113,7 +111,7 @@ for dataset in datasets:
 
 		k = 0
 		while True:
-			split_cols = get_split_cols_single_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
+			split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
 			split_rows = get_split_rows_XMeans(limit=k1, returnk=False)
 			nextop = get_next_operation(min_instances_slice)
 
