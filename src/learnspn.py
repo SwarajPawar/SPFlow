@@ -18,8 +18,8 @@ from spn.algorithms.splitting.Conditioning import (
 	get_split_rows_random_conditioning,
 )
 
-from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
-from spn.algorithms.splitting.RDC import get_split_cols_single_RDC_py, get_split_cols_distributed_RDC_py
+from spn.algorithms.splitting.Clustering import get_split_rows_KMeans
+from spn.algorithms.splitting.RDC import get_split_cols_single_RDC_py, get_split_cols_RDC_py
 
 import logging
 
@@ -78,17 +78,8 @@ for dataset in datasets:
 	test = df2.values
 	print(test.shape)
 
-	ll = list()
-	nodes = list()
-	k_limit = 2 #[i for i in range(1,5)]
-	past3 = list()
-	
-	n = int(max_iter**0.5)  #[i for i in range(int(max_iter**0.5),max_iter+1,2)]
-	step = (max_iter - (max_iter**0.5))/20
-
-
-	split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
-	split_rows = get_split_rows_XMeans(limit=k_limit, returnk=False)
+	split_cols = get_split_cols_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus)
+	split_rows = get_split_rows_KMeans()
 	nextop = get_next_operation(min_instances_slice)
 
 	spn = learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop)
