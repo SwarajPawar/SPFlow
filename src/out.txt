@@ -20,7 +20,8 @@ nltcs
 
 
 
-#Nodes: 113Log-likelihood: -6.4208788522751385
+#Nodes: 113
+Log-likelihood: -6.4208788522751385
 
 
 
@@ -36,7 +37,8 @@ msnbc
 
 
 
-#Nodes: 42Log-likelihood: -6.59705998562684
+#Nodes: 42
+Log-likelihood: -6.59705998562684
 
 
 
@@ -52,7 +54,8 @@ plants
 
 
 
-#Nodes: 3819Log-likelihood: -13.87416406710313
+#Nodes: 3819
+Log-likelihood: -13.87416406710313
 
 
 
@@ -68,7 +71,8 @@ kdd
 
 
 
-#Nodes: 287Log-likelihood: -2.2653314792889714
+#Nodes: 287
+Log-likelihood: -2.2653314792889714
 
 
 
@@ -84,7 +88,8 @@ baudio
 
 
 
-#Nodes: 329Log-likelihood: -43.359889361629534
+#Nodes: 329
+Log-likelihood: -43.359889361629534
 
 
 
@@ -100,7 +105,8 @@ jester
 
 
 
-#Nodes: 255Log-likelihood: -57.02821489294516
+#Nodes: 255
+Log-likelihood: -57.02821489294516
 
 
 
@@ -116,7 +122,8 @@ bnetflix
 
 
 
-#Nodes: 338Log-likelihood: -61.299623159930995
+#Nodes: 338
+Log-likelihood: -61.299623159930995
 
 
 
