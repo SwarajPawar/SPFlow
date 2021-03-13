@@ -109,8 +109,8 @@ for dataset in datasets:
 	print("\n\n\n\n\n")
 	f = open("out.txt", "a")
 	f.write("\n\n\n\n\n")
-	f.write("#Nodes: ",nodes)
-	f.write("Log-likelihood: ",ll)
+	f.write(f"#Nodes: {nodes}")
+	f.write(f"Log-likelihood: {ll}")
 	f.write("\n\n\n\n\n")
 	f.close()
 	   
