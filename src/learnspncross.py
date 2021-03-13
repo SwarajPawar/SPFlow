@@ -49,10 +49,10 @@ cpus=-1
 
 
 #datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
-datasets = ["msnbc", "kdd"]
-path = "cross1"
+datasets = ["msnbc"]
+path = "cross"
 
-kfold = KFold(n_splits=5)
+kfold = KFold(n_splits=3)
 
 for dataset in datasets:
 	
@@ -66,12 +66,12 @@ for dataset in datasets:
 			sys.exit()
 			
 	df = pd.read_csv(f"spn/data/binary/{dataset}.ts.data", sep=',')
-	data = df.values
-	print(data.shape)
+	data1 = df.values
+	print(data1.shape)
 	df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
 	data2 = df2.values
 	print(data2.shape)
-	#data = np.concatenate((data1, data2))
+	data = np.concatenate((data1, data2))
 
 
 
@@ -89,8 +89,8 @@ for dataset in datasets:
 	for traini, testi in kfold.split(data):
 
 		i+=1
-		if i>3:
-			break 
+		if i!=3:
+			continue 
 
 		train, test = data[traini], data[testi]
 		#test = random.sample(list(test), 2000)
