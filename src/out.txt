@@ -22,7 +22,7 @@ nltcs
 
 #Nodes: 113
 Log-likelihood: -6.4208788522751385
-
+yes
 
 
 
@@ -39,7 +39,7 @@ msnbc
 
 #Nodes: 42
 Log-likelihood: -6.59705998562684
-
+yes
 
 
 
@@ -56,7 +56,7 @@ plants
 
 #Nodes: 3819
 Log-likelihood: -13.87416406710313
-
+yes
 
 
 
@@ -73,7 +73,7 @@ kdd
 
 #Nodes: 287
 Log-likelihood: -2.2653314792889714
-
+yes
 
 
 
@@ -90,7 +90,7 @@ baudio
 
 #Nodes: 329
 Log-likelihood: -43.359889361629534
-
+yes
 
 
 
@@ -107,7 +107,7 @@ jester
 
 #Nodes: 255
 Log-likelihood: -57.02821489294516
-
+yes
 
 
 
@@ -124,7 +124,7 @@ bnetflix
 
 #Nodes: 338
 Log-likelihood: -61.299623159930995
-
+yes
 
 
 

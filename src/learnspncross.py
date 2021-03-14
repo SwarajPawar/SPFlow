@@ -95,7 +95,7 @@ for dataset in datasets:
 			break 
 
 		train, test = data[traini], data[testi]
-                test = random.sample(list(test), 5000)
+		test = random.sample(list(test), 2500)
 		plot_path = f"{path}/{dataset}/{i}"
 		if not pth.exists(plot_path):
 			try:
@@ -184,9 +184,10 @@ for dataset in datasets:
 		plt.title(f"{dataset} Nodes")
 		plt.savefig(f"{path}/{dataset}/{i}/nodes.png", dpi=100)
 		plt.close()
-                f = open(f"{path}/{dataset}/{i}/stats.txt")
-                f.write(f"\nLog Likelihood : {ll}")
-                f.write(f"\nNodes : {nodes}")
+		f = open(f"{path}/{dataset}/{i}/stats.txt", "a")
+		f.write(f"\nLog Likelihood : {ll}")
+		f.write(f"\nNodes : {nodes}")
+		f.close()
 
 		lls.append(ll)
 		nodes_k.append(nodes)
