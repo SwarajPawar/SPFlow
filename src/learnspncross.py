@@ -95,7 +95,7 @@ for dataset in datasets:
 			break 
 
 		train, test = data[traini], data[testi]
-        #test = random.sample(list(test), 5000)
+                test = random.sample(list(test), 5000)
 		plot_path = f"{path}/{dataset}/{i}"
 		if not pth.exists(plot_path):
 			try:
@@ -184,13 +184,16 @@ for dataset in datasets:
 		plt.title(f"{dataset} Nodes")
 		plt.savefig(f"{path}/{dataset}/{i}/nodes.png", dpi=100)
 		plt.close()
+                f = open(f"{path}/{dataset}/{i}/stats.txt")
+                f.write(f"\nLog Likelihood : {ll}")
+                f.write(f"\nNodes : {nodes}")
 
 		lls.append(ll)
 		nodes_k.append(nodes)
 
 	plt.close()
 	colors = ["aqua", "palegreen", "pink"]
-	total_ll = np.zeroes(max([len(lls[i]) for i in range(len(lls))]))
+	total_ll = np.zeros(max([len(lls[i]) for i in range(len(lls))]))
 	for i in range(len(lls)):
 		plt.plot(lls[i], marker="o", color =colors[i], label=(i+1))
 		total_ll += np.array(lls[i])
@@ -201,7 +204,7 @@ for dataset in datasets:
 	plt.savefig(f"{path}/{dataset}/ll.png", dpi=150)
 	plt.close()
 
-	total_nodes = np.zeroes(max([len(nodes_k[i]) for i in range(len(nodes_k))]))
+	total_nodes = np.zeros(max([len(nodes_k[i]) for i in range(len(nodes_k))]))
 	for i in range(len(nodes_k)):
 		plt.plot(nodes_k[i], marker="o", color =colors[i], label=(i+1))
 		total_nodes += np.array(nodes_k[i])
