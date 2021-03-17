@@ -5,18 +5,20 @@ from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py
 from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
 from spn.algorithms.LearningWrappers import learn_mspn, learn_parametric
 from spn.algorithms.SPMNHelper import *
-
+from spn.algorithms.MEU import meu
+from spn.io.Graphics import plot_spn
 
 
 
 class Anytime_SPMN:
 
 
-	def __init__(self, dataset, partial_order , decision_nodes, utility_node, feature_names,
+	def __init__(self, dataset, partial_order , decision_nodes, utility_node, feature_names, feature_labels
 				   util_to_bin = False , output_path):
 				   
 		self.dataset = dataset
-		self.params = SPMN_Params(partial_order, decision_nodes, utility_node, feature_names, util_to_bin )
+		self.params = SPMN_Params(partial_order, decision_nodes, utility_node, feature_names, feature_labels, util_to_bin )
+		self.vars = len(feature_labels)
 
 		self.plot_path = f"{output_path}/{dataset}"
 		if not pth.exists(self.plot_path):
@@ -26,7 +28,7 @@ class Anytime_SPMN:
 				print ("Creation of the directory %s failed" % self.plot_path)
 				sys.exit()
 
-	def learn_spmn_structure(self, train_data, index, scope_index, limit=2, n=self.train_data.shape[1]):
+	def learn_spmn_structure(self, train_data, index, scope_index, limit=2, n=self.vars):
 
 
 		train_data = train_data
@@ -132,17 +134,14 @@ class Anytime_SPMN:
 		:return: learned spmn
 		"""
 
-		#self.train_data = train_data
-		#self.test_data = test_data
 
 		meu = list()
 		nodes = list()
 		past3 = list()
-		max_iter = train_data.shape[1]
 		
 		limit = 2 
-		n = int(max_iter**0.5)  
-		step = (max_iter - (max_iter**0.5))/20
+		n = int(self.vars**0.5)  
+		step = (self.vars - (self.vars**0.5))/15
 
 		i = 0
 		while(True):
@@ -154,6 +153,15 @@ class Anytime_SPMN:
 
 			nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
+			plot_spn(spmn, f'{path}/{dataset}/spn{i}.png', feature_labels=self.params.feature_labels)
+
+			total_meu = 0
+	        for instance in test_data:
+	            import numpy as np
+	            test_data = np.array([instance])
+	            total_meu += meu(spn, test_data)[0]
+	        meu.append(total_ll/len(test))
+
 			print("\n\n\n\n\n")
 	        print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
 	        print("#Nodes: ",nodes[i])
@@ -161,6 +169,13 @@ class Anytime_SPMN:
 	        print(nodes)
 	        print(meu)
 	        print("\n\n\n\n\n")
+
+
+
+			past3 = meu[-min(len(meu),3):]
+				
+			if n>=self.vars and round(np.std(past3), 3) <= 0.001:
+				break
 
 
 			i+=1
@@ -172,7 +187,7 @@ class Anytime_SPMN:
 
 class SPMN_Params():
 
-	def __init__(self, partial_order, decision_nodes, utility_node, feature_names, util_to_bin ):
+	def __init__(self, partial_order, decision_nodes, utility_node, feature_names, feature_labels, util_to_bin ):
 
 		self.partial_order = partial_order
 		self.decision_nodes = decision_nodes

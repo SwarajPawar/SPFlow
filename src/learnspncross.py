@@ -152,7 +152,6 @@ for dataset in datasets:
 			print(nodes)
 			print("\n\n\n\n\n")
 			
-			k+=1
 			
 			plt.close()
 			# plot line 
@@ -164,8 +163,14 @@ for dataset in datasets:
 			plt.title(f"{dataset} Nodes")
 			plt.savefig(f"{path}/{dataset}/{i}/nodes.png", dpi=100)
 			plt.close()
+
+
+			past3 = ll[-min(len(ll),3):]
+				
+			if n>=max_iter and round(np.std(past3), 3) <= 0.001:
+				break
 			
-			
+			k+=1
 			n = min(n+step, max_iter)
 			k1 += 1
 
