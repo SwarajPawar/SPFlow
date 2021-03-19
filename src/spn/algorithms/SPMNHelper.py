@@ -9,6 +9,7 @@ import numpy as np
 from spn.structure.Base import Context
 from spn.structure.StatisticalTypes import MetaType
 from spn.structure.leaves.parametric.Parametric import Categorical
+import math
 
 # below functions are used by learn_spmn_structure
 
@@ -72,13 +73,18 @@ def cluster(train_data, dec_vals):
     """
     cl=[]
     for i in range(0, len(dec_vals)):
-        train_data1 = train_data[[train_data[:, 0] == dec_vals[i]]]
+        train_data1 = None
+        for dec_val in dec_vals[i]:
+            if train_data1 is None:
+                train_data1 = train_data[[train_data[:, 0] == dec_vals[i]]]
+            else:
+                train_data1 = np.concatenate((train_data1, train_data[[train_data[:, 0] == dec_vals[i]]]))
         train_data2 = np.delete(train_data1, 0, 1)
         cl.append(train_data2)
 
     return cl
 
-def split_on_decision_node(train_data, decision_node=None) :
+def split_on_decision_node(train_data, decision_node=None, m=None) :
     """
 
     :param train_data: current train data with decision node at 0th column
@@ -86,9 +92,21 @@ def split_on_decision_node(train_data, decision_node=None) :
     :return: clusters split on values of decision node
     """
 
-    train_data = train_data
     dec_vals = np.unique(train_data[:, 0])   #since 0th column of current train data is decision node
-    cl = cluster(train_data, dec_vals)
+    '''
+    if m is None:
+        cl = cluster(train_data, dec_vals)
+        return cl, dec_vals
+    else:
+    '''
+    dec_vals1 = list()
+    step = int(len(dec_vals)/m)
+    for i in range(0,len(dec_vals),m):
+        vals = dec_vals[i:min(i+m, len(dec_vals))]
+        if type(vals) != list:
+            vals = [vals]
+        dec_vals1.append(vals)
+    cl = cluster(train_data, dec_vals1)
     return cl, dec_vals
 
 def get_curr_train_data_prod(train_dataa, curr_var_set):
