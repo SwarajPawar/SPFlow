@@ -80,82 +80,36 @@ for dataset in datasets:
 
 	ll = list()
 	nodes = list()
-	k_limit = 2 #[i for i in range(1,5)]
-	past3 = list()
 	
-	n = int(max_iter**0.5)  #[i for i in range(int(max_iter**0.5),max_iter+1,2)]
-	step = (max_iter - (max_iter**0.5))/20
+	split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
+	split_rows = get_split_rows_XMeans(limit=1000, returnk=False)
+	nextop = get_next_operation(min_instances_slice)
 
-	i = 0
-	while True:
-		split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
-		split_rows = get_split_rows_XMeans(limit=k_limit, returnk=False)
-		nextop = get_next_operation(min_instances_slice)
+	spn = learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop)
 
-		spn = learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop)
+	nodes.append(get_structure_stats_dict(spn)["nodes"])
+	from spn.io.Graphics import plot_spn
 
-		nodes.append(get_structure_stats_dict(spn)["nodes"])
-		from spn.io.Graphics import plot_spn
+	plot_spn(spn, f'{path}/{dataset}.png')
 
-		plot_spn(spn, f'{path}/{dataset}/spn{i}.png')
+	from spn.algorithms.Inference import log_likelihood
+	total_ll = 0
+	for instance in test:
+		import numpy as np
+		test_data = np.array(instance).reshape(-1, var)
+		total_ll += log_likelihood(spn, test_data)[0][0]
+	ll.append(total_ll/len(test))
 
-		from spn.algorithms.Inference import log_likelihood
-		total_ll = 0
-		for instance in test:
-			import numpy as np
-			test_data = np.array(instance).reshape(-1, var)
-			total_ll += log_likelihood(spn, test_data)[0][0]
-		ll.append(total_ll/len(test))
-
-		
-		print("\n\n\n\n\n")
-		print(f"X-Means Limit: {k_limit}, \tVariables for splitting: {round(n)}")
-		print("#Nodes: ",nodes[i])
-		print("Log-likelihood: ",ll[i])
-		print(ll)
-		print(nodes)
-		print("\n\n\n\n\n")
-		
-		plt.close()
-		# plot line 
-		plt.plot(ll, marker="o") 
-		plt.title(f"{dataset} Log Likelihood")
-		plt.savefig(f"{path}/{dataset}/ll.png", dpi=100)
-		plt.close()
-		plt.plot(nodes, marker="o") 
-		plt.title(f"{dataset} Nodes")
-		plt.savefig(f"{path}/{dataset}/nodes.png", dpi=100)
-		plt.close()
-		
-		past3 = ll[-min(len(ll),3):]
-				
-		if n>=max_iter and round(np.std(past3), 3) <= 0.001:
-			break
-		
-		i+=1
-		n = min(n+step, max_iter)
-		k_limit += 1
-
-	print("Log Likelihood",ll)
-	print("Nodes",nodes)
-	f = open(f"{path}/{dataset}/stats.txt", "a")
+	
+	print("\n\n\n\n\n")
+	print("#Nodes: ",nodes)
+	print("Log-likelihood: ",ll)
+	print("\n\n\n\n\n")
+	
+	f = open(f"{path}/{dataset}.txt", "a")
 	f.write(f"\n\tLog Likelihood: {ll}")
 	f.write(f"\t\tNodes: {nodes}")
 	f.close()
-
-	plt.close()
-	# plot line 
-	plt.plot(ll, marker="o") 
-	#plt.show()
-	plt.title(f"{dataset} Log Likelihood")
-	plt.savefig(f"{path}/{dataset}/ll.png", dpi=100)
-	plt.close()
-	plt.plot(nodes, marker="o") 
-	#plt.show()
-	plt.title(f"{dataset} Nodes")
-	plt.savefig(f"{path}/{dataset}/nodes.png", dpi=100)
-	plt.close()
-
 
 
 
