@@ -49,8 +49,9 @@ rand_gen=None
 cpus=-1
 
 
+datasets = ["nltcs", "plants", "baudio", "jester", "bnetflix"]
 #datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
-datasets = ["kdd"]
+#datasets = ["kdd"]
 path = "test1"
 
 
