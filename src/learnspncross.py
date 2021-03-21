@@ -23,6 +23,7 @@ from spn.algorithms.splitting.RDC import get_split_cols_single_RDC_py, get_split
 from sklearn.model_selection import KFold
 import logging
 import random
+from sklearn.model_selection import train_test_split
 
 logger = logging.getLogger(__name__)
 
@@ -53,8 +54,8 @@ cpus=-1
 datasets = ["msnbc", "kdd"]
 path = "cross1"
 
-
-kfold = KFold(n_splits=5)
+kfolds = 1
+#kfold = KFold(n_splits=5)
 
 for dataset in datasets:
 	
@@ -73,7 +74,7 @@ for dataset in datasets:
 	df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
 	data2 = df2.values
 	print(data2.shape)
-	#data = np.concatenate((data1, data2))
+	data = np.concatenate((data1, data2))
 
 
 
@@ -87,16 +88,13 @@ for dataset in datasets:
 	lls = list()
 	nodes_k = list()
 	
-	i = 0
-	for traini, testi in kfold.split(data):
+	
+	for k in range(1,kfolds+1):
+ 
 
-		i+=1
-		if i>3:
-			break 
+		train, test = train_test_split(data, test_size=0.2, shuffle=True)
 
-		train, test = data[traini], data[testi]
-		test = random.sample(list(test), 2500)
-		plot_path = f"{path}/{dataset}/{i}"
+		plot_path = f"{path}/{dataset}/{k}"
 		if not pth.exists(plot_path):
 			try:
 				os.makedirs(plot_path)
@@ -113,7 +111,7 @@ for dataset in datasets:
 		n = int(max_iter**0.5)  #[i for i in range(int(max_iter**0.5),max_iter+1,2)]
 		step = (max_iter - (max_iter**0.5))/20
 
-		k = 0
+		i = 0
 		while True:
 			split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
 			split_rows = get_split_rows_XMeans(limit=k1, returnk=False)
@@ -124,7 +122,7 @@ for dataset in datasets:
 			nodes.append(get_structure_stats_dict(spn)["nodes"])
 			from spn.io.Graphics import plot_spn
 
-			plot_spn(spn, f'{path}/{dataset}/{i}/spn{k}.png')
+			plot_spn(spn, f'{path}/{dataset}/{k}/spn{i}.png')
 
 			from spn.algorithms.Inference import log_likelihood
 			total_ll = 0
@@ -146,8 +144,8 @@ for dataset in datasets:
 			
 			print("\n\n\n\n\n")
 			print(k1,round(n))
-			print(nodes[k])
-			print(ll[k])
+			print(nodes[i])
+			print(ll[i])
 			print(ll)
 			print(nodes)
 			print("\n\n\n\n\n")
@@ -157,12 +155,18 @@ for dataset in datasets:
 			# plot line 
 			plt.plot(ll, marker="o") 
 			plt.title(f"{dataset} Log Likelihood")
-			plt.savefig(f"{path}/{dataset}/{i}/ll.png", dpi=100)
+			plt.savefig(f"{path}/{dataset}/{k}/ll.png", dpi=100)
 			plt.close()
 			plt.plot(nodes, marker="o") 
 			plt.title(f"{dataset} Nodes")
-			plt.savefig(f"{path}/{dataset}/{i}/nodes.png", dpi=100)
+			plt.savefig(f"{path}/{dataset}/{k}/nodes.png", dpi=100)
 			plt.close()
+
+			f = open(f"{path}/{dataset}/{k}/stats.txt", "w")
+			f.write(f"\n{dataset}")
+			f.write(f"\n\tLog Likelihood : {ll}")
+			f.write(f"\n\tNodes : {nodes}")
+			f.close()
 
 
 			past3 = ll[-min(len(ll),3):]
@@ -170,7 +174,7 @@ for dataset in datasets:
 			if n>=max_iter and round(np.std(past3), 3) <= 0.001:
 				break
 			
-			k+=1
+			i+=1
 			n = min(n+step, max_iter)
 			k1 += 1
 
@@ -182,17 +186,14 @@ for dataset in datasets:
 		plt.plot(ll, marker="o") 
 		#plt.show()
 		plt.title(f"{dataset} Log Likelihood")
-		plt.savefig(f"{path}/{dataset}/{i}/ll.png", dpi=100)
+		plt.savefig(f"{path}/{dataset}/{k}/ll.png", dpi=100)
 		plt.close()
 		plt.plot(nodes, marker="o") 
 		#plt.show()
 		plt.title(f"{dataset} Nodes")
-		plt.savefig(f"{path}/{dataset}/{i}/nodes.png", dpi=100)
+		plt.savefig(f"{path}/{dataset}/{k}/nodes.png", dpi=100)
 		plt.close()
-		f = open(f"{path}/{dataset}/{i}/stats.txt", "a")
-		f.write(f"\nLog Likelihood : {ll}")
-		f.write(f"\nNodes : {nodes}")
-		f.close()
+		
 
 		lls.append(ll)
 		nodes_k.append(nodes)
@@ -220,119 +221,4 @@ for dataset in datasets:
 	plt.legend()
 	plt.savefig(f"{path}/{dataset}/nodes.png", dpi=150)
 	plt.close()
-
-
-
-'''
-import numpy as np
-
-from spn.algorithms.StructureLearning import get_next_operation, learn_structure
-from spn.algorithms.CnetStructureLearning import get_next_operation_cnet, learn_structure_cnet
-from spn.algorithms.Validity import is_valid
-from spn.algorithms.Statistics import get_structure_stats_dict
-
-from spn.structure.Base import Sum, assign_ids
-
-from spn.structure.leaves.histogram.Histograms import create_histogram_leaf
-from spn.structure.leaves.parametric.Parametric import create_parametric_leaf
-from spn.structure.leaves.piecewise.PiecewiseLinear import create_piecewise_leaf
-from spn.structure.leaves.cltree.CLTree import create_cltree_leaf
-from spn.algorithms.splitting.Conditioning import (
-	get_split_rows_naive_mle_conditioning,
-	get_split_rows_random_conditioning,
-)
-
-from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
-from spn.algorithms.splitting.RDC import get_split_cols_single_RDC_py, get_split_cols_distributed_RDC_py
-
-import logging
-
-logger = logging.getLogger(__name__)
-
-
-
-
-
-
-import pandas as pd
-from spn.structure.Base import Context
-from spn.structure.StatisticalTypes import MetaType
-
-dataset = "nltcs"
-
-cols="rdc"
-rows="kmeans"
-min_instances_slice=200
-threshold=0.3
-ohe=False
-leaves = create_histogram_leaf
-rand_gen=None
-cpus=-1
-
-df = pd.read_csv(f"spn/data/binary/{dataset}.ts.data", sep=',')
-data = df.values
-print(data.shape)
-max_iter = data.shape[1]
-samples, var = data.shape
-ds_context = Context(meta_types=[MetaType.DISCRETE]*var)
-ds_context.add_domains(data)
-
-df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
-test = df2.values
-
-ll = list()
-nodes = list()
-k1 = [i for i in range(1,max_iter+1)]
-n = [i for i in range(int(max_iter**0.5),max_iter+1)]
-
-i,j,k = 0,0,0
-while True:
-		
-	split_cols=get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=n[j])
-	split_rows = get_split_rows_XMeans(n=k1[i])
-	nextop = get_next_operation(min_instances_slice)
-
-	spn = learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop)
-
-	nodes.append(get_structure_stats_dict(spn)["nodes"])
-	#from spn.io.Graphics import plot_spn
-
-	#plot_spn(spn, 'basicspn'+str(k)+'.png')
-
-	from spn.algorithms.Inference import log_likelihood
-	total_ll = 0
-	for instance in test:
-		import numpy as np
-		test_data = np.array(instance).reshape(-1, var)
-		total_ll += log_likelihood(spn, test_data)[0][0]
-	ll.append(total_ll/len(test))
-	
-	if n[j]==max_iter:
-		break
-	print("\n\n\n\n\n")
-	print(k1[i],n[j])
-	print(nodes[k])
-	print(ll[k])
-	print(ll)
-	print(nodes)
-	print("\n\n\n\n\n")
-	k+=1
-	if i<len(k1)-1:
-		i+=1
-	if j<len(k1)-1:
-		j+=1
-
-import matplotlib.pyplot as plt 
-
-print(ll)
-print(nodes)
-# plot line 
-plt.plot(ll) 
-plt.show()
-plt.plot(nodes) 
-plt.show()
-
-
-
-'''
 
