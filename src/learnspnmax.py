@@ -81,7 +81,7 @@ for dataset in datasets:
 	ll = list()
 	nodes = list()
 	
-	split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
+	split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=max_iter)
 	split_rows = get_split_rows_XMeans(limit=1000, returnk=False)
 	nextop = get_next_operation(min_instances_slice)
 
