@@ -127,6 +127,11 @@ for dataset in datasets:
 		plt.title(f"{dataset} Nodes")
 		plt.savefig(f"{path}/{dataset}/nodes.png", dpi=100)
 		plt.close()
+
+		f = open(f"{path}/{dataset}/stats.txt", "w")
+		f.write(f"\n\tLog Likelihood: {ll}")
+		f.write(f"\n\t\tNodes: {nodes}")
+		f.close()
 		
 		past3 = ll[-min(len(ll),3):]
 				
