@@ -50,7 +50,7 @@ rand_gen=None
 cpus=-1
 
 
-datasets = ["nltcs", "plants", "baudio", "jester", "bnetflix"]
+datasets = ["baudio", "jester", "bnetflix"]
 #datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
 #datasets = ["kdd"]
 path = "test1"
@@ -77,7 +77,7 @@ for dataset in datasets:
 	ds_context.add_domains(data)
 
 	df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
-	test = random.sample(list(df2.values), 1500)
+	test = np.array(random.sample(list(df2.values), 1500))
 	print(test.shape)
 
 	ll = list()
