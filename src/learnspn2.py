@@ -50,10 +50,20 @@ rand_gen=None
 cpus=-1
 
 
-datasets = ["nltcs", "plants", "baudio", "jester", "bnetflix"]
+datasets = ["baudio", "jester", "bnetflix"]
 #datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
 #datasets = ["kdd"]
 path = "test1"
+
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+   
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+    # Print New Line on Complete
+    if iteration == total: 
+        print()
 
 
 
@@ -77,7 +87,7 @@ for dataset in datasets:
 	ds_context.add_domains(data)
 
 	df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
-	test = random.sample(list(df2.values), 1500)
+	test = np.array(random.sample(list(df2.values), 1500))
 	print(test.shape)
 
 	ll = list()
@@ -158,15 +168,3 @@ for dataset in datasets:
 	plt.title(f"{dataset} Nodes")
 	plt.savefig(f"{path}/{dataset}/nodes.png", dpi=100)
 	plt.close()
-
-
-
-def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
-   
-    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
-    filledLength = int(length * iteration // total)
-    bar = fill * filledLength + '-' * (length - filledLength)
-    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
-    # Print New Line on Complete
-    if iteration == total: 
-        print()
