@@ -92,7 +92,7 @@ for dataset in datasets:
 	for k in range(1,kfolds+1):
  
 
-		train, test = train_test_split(data, test_size=0.1, shuffle=True)
+		train, test = train_test_split(data, test_size=0.2, shuffle=True)
 		test = np.array(random.sample(list(test), 1500))
 
 		plot_path = f"{path}/{dataset}/{k}"
