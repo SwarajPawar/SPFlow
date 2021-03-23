@@ -35,6 +35,7 @@ warnings.filterwarnings('ignore')
 import pandas as pd
 from spn.structure.Base import Context
 from spn.structure.StatisticalTypes import MetaType
+from spn.io.ProgressBar import printProgressBar
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
@@ -54,16 +55,6 @@ datasets = ["jester", "bnetflix"]
 #datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
 #datasets = ["kdd"]
 path = "test1"
-
-def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
-   
-    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
-    filledLength = int(length * iteration // total)
-    bar = fill * filledLength + '-' * (length - filledLength)
-    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
-    # Print New Line on Complete
-    if iteration == total: 
-        print()
 
 
 
@@ -116,7 +107,7 @@ for dataset in datasets:
 		for j, instance in enumerate(test):
 			test_data = np.array(instance).reshape(-1, var)
 			total_ll += log_likelihood(spn, test_data)[0][0]
-			printProgressBar(j+1, len(test), prefix = 'Evaluation Progress:', suffix = 'Complete', length = 50)
+			printProgressBar(j+1, len(test), prefix = f'Evaluation Progress {i}:', suffix = 'Complete', length = 50)
 		ll.append(total_ll/len(test))
 
 		

@@ -36,6 +36,7 @@ warnings.filterwarnings('ignore')
 import pandas as pd
 from spn.structure.Base import Context
 from spn.structure.StatisticalTypes import MetaType
+from spn.io.ProgressBar import printProgressBar
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
@@ -131,6 +132,7 @@ for dataset in datasets:
 				import numpy as np
 				test_data = np.array(instance).reshape(-1, var)
 				total_ll += log_likelihood(spn, test_data)[0][0]
+				printProgressBar(j+1, len(test), prefix = f'Evaluation Progress {i}:', suffix = 'Complete', length = 50)
 			ll.append(total_ll/len(test))
 			
 			'''
