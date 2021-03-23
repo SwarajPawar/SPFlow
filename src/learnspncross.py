@@ -52,9 +52,9 @@ cpus=-1
 #datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
 
 datasets = ["msnbc", "kdd"]
-path = "cross1"
+path = "random_cross"
 
-kfolds = 1
+kfolds = 3
 #kfold = KFold(n_splits=5)
 
 for dataset in datasets:
@@ -69,8 +69,8 @@ for dataset in datasets:
 			sys.exit()
 			
 	df = pd.read_csv(f"spn/data/binary/{dataset}.ts.data", sep=',')
-	data = df.values
-	print(data.shape)
+	data1 = df.values
+	print(data1.shape)
 	df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
 	data2 = df2.values
 	print(data2.shape)
@@ -92,7 +92,7 @@ for dataset in datasets:
 	for k in range(1,kfolds+1):
  
 
-		train, test = train_test_split(data, test_size=0.2, shuffle=True)
+		train, test = train_test_split(data, test_size=0.3, shuffle=True)
 		test = np.array(random.sample(list(test), 1500))
 
 		plot_path = f"{path}/{dataset}/{k}"

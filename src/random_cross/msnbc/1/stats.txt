@@ -1,0 +1,4 @@
+
+msnbc
+	Log Likelihood : [-6.598725441978524]
+	Nodes : [37]
