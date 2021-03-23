@@ -128,7 +128,7 @@ for dataset in datasets:
 
 			from spn.algorithms.Inference import log_likelihood
 			total_ll = 0
-			for instance in test:
+			for j, instance in enumerate(test):
 				import numpy as np
 				test_data = np.array(instance).reshape(-1, var)
 				total_ll += log_likelihood(spn, test_data)[0][0]
