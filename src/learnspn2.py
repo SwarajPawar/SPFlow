@@ -50,7 +50,7 @@ rand_gen=None
 cpus=-1
 
 
-datasets = ["baudio", "jester", "bnetflix"]
+datasets = ["jester", "bnetflix"]
 #datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
 #datasets = ["kdd"]
 path = "test1"
@@ -146,7 +146,7 @@ for dataset in datasets:
 		
 		past3 = ll[-min(len(ll),3):]
 				
-		if n>=max_iter and round(np.std(past3), 3) <= 0.001:
+		if n>=max_iter and round(np.std(past3), 3) <= 0.005:
 			break
 		
 		i+=1
