@@ -1,0 +1,20 @@
+nltcs
+	Log Likelihood: [-6.05057148300942]		Nodes: [2152]
+
+msnbc
+	Log Likelihood: [-6.045740974137786]		Nodes: [5142]
+
+plants
+	Log Likelihood: [-13.328004042213157]		Nodes: [10671]
+
+kdd
+	Log Likelihood: [-2.1610551668591897]		Nodes: [3963]
+
+baudio
+	Log Likelihood: [-40.07111208519845]		Nodes: [13621]
+
+jester
+	Log Likelihood: [-53.10895478609421]		Nodes: [16118]
+
+bnetflix
+	Log Likelihood: [-57.05938603881737]		Nodes: [4718]
