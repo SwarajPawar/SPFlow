@@ -76,7 +76,7 @@ for dataset in datasets:
 	data2 = df2.values
 	print(data2.shape)
 	data = np.concatenate((data1, data2))
-
+	print(data.shape)
 
 
 
@@ -91,7 +91,7 @@ for dataset in datasets:
 	
 	
 	#for k in range(1,kfolds+1):
-	
+
 	k = 1
 	for train, test in kfold.split(data):
 		#train, test = train_test_split(data, test_size=0.3, shuffle=True)
@@ -105,7 +105,8 @@ for dataset in datasets:
 				print ("Creation of the directory %s failed" % plot_path)
 				sys.exit()
 		
-
+		print(train.shape)
+		print(test.shape)
 		ll = list()
 		nodes = list()
 		k1 = 2 #[i for i in range(1,5)]
