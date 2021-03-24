@@ -52,10 +52,10 @@ cpus=-1
 
 #datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
 
-datasets = ["msnbc", "kdd"]
+datasets = ["kdd"]
 path = "random_cross"
 
-kfolds = 3
+kfolds = 5
 #kfold = KFold(n_splits=5)
 
 for dataset in datasets:
@@ -90,7 +90,7 @@ for dataset in datasets:
 	nodes_k = list()
 	
 	
-	for k in range(1,kfolds+1):
+	for k in range(4,kfolds+4):
  
 
 		train, test = train_test_split(data, test_size=0.3, shuffle=True)
