@@ -50,13 +50,13 @@ rand_gen=None
 cpus=-1
 
 
-#datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
+datasets = ["nltcs", "plants", "baudio", "jester", "bnetflix"]
 
-datasets = ["kdd"]
-path = "random_cross"
+#datasets = ["kdd"]
+path = "cross_new"
 
-kfolds = 5
-#kfold = KFold(n_splits=5)
+#kfolds = 3
+kfold = KFold(n_splits=3, shuffle=True)
 
 for dataset in datasets:
 	
@@ -90,11 +90,12 @@ for dataset in datasets:
 	nodes_k = list()
 	
 	
-	for k in range(4,kfolds+4):
- 
-
-		train, test = train_test_split(data, test_size=0.3, shuffle=True)
-		test = np.array(random.sample(list(test), 1500))
+	for k in range(1,kfolds+1):
+ 	
+ 	k = 1
+	for train, test in kfold.split(data):
+		#train, test = train_test_split(data, test_size=0.3, shuffle=True)
+		#test = np.array(random.sample(list(test), 1500))
 
 		plot_path = f"{path}/{dataset}/{k}"
 		if not pth.exists(plot_path):
@@ -200,6 +201,7 @@ for dataset in datasets:
 
 		lls.append(ll)
 		nodes_k.append(nodes)
+		k+=1
 
 	plt.close()
 	colors = ["aqua", "palegreen", "pink"]
