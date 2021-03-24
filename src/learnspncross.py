@@ -90,7 +90,7 @@ for dataset in datasets:
 	nodes_k = list()
 	
 	
-	for k in range(1,kfolds+1):
+	#for k in range(1,kfolds+1):
  	
  	k = 1
 	for train, test in kfold.split(data):
