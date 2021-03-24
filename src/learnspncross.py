@@ -208,6 +208,7 @@ for dataset in datasets:
 	colors = ["aqua", "palegreen", "pink"]
 	total_ll = np.zeros(max([len(lls[i]) for i in range(len(lls))]))
 	for i in range(len(lls)):
+		lls[i] = np.concatenate((lls[i], np.zeros(len(total_ll)-len(lls[i]))))
 		plt.plot(lls[i], marker="o", color =colors[i], label=(i+1))
 		total_ll += np.array(lls[i])
 	avg_ll = total_ll/len(lls)
@@ -219,6 +220,7 @@ for dataset in datasets:
 
 	total_nodes = np.zeros(max([len(nodes_k[i]) for i in range(len(nodes_k))]))
 	for i in range(len(nodes_k)):
+		nodes_k[i] = np.concatenate((nodes_k[i], np.zeros(len(total_nodes)-len(nodes_k[i]))))
 		plt.plot(nodes_k[i], marker="o", color =colors[i], label=(i+1))
 		total_nodes += np.array(nodes_k[i])
 	avg_nodes = total_nodes/len(nodes_k)
