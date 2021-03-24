@@ -7,6 +7,8 @@ Created on March 30, 2018
 import numpy as np
 
 from spn.algorithms.StructureLearning import get_next_operation, learn_structure
+from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py
+from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
 from spn.algorithms.CnetStructureLearning import get_next_operation_cnet, learn_structure_cnet
 from spn.algorithms.Validity import is_valid
 
@@ -109,8 +111,8 @@ def learn_mspn_with_missing(
 def learn_mspn(
     data,
     ds_context,
-    cols="rdc",
-    rows="kmeans",
+    k_limit=2,
+    n=None,
     min_instances_slice=200,
     threshold=0.3,
     initial_scope=None,
@@ -126,8 +128,13 @@ def learn_mspn(
     if rand_gen is None:
         rand_gen = np.random.RandomState(17)
 
+    if n is None:
+        n = data.shape[1]
+
     def l_mspn(data, ds_context, cols, rows, min_instances_slice, threshold, ohe):
-        split_cols, split_rows = get_splitting_functions(cols, rows, ohe, threshold, rand_gen, cpus)
+
+        split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
+        split_rows = get_split_rows_XMeans(limit=k_limit, returnk=False)
 
         nextop = get_next_operation(min_instances_slice)
 

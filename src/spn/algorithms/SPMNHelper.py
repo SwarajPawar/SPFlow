@@ -65,7 +65,7 @@ def get_ds_context_sum(curr_train_data, scope, index, scope_index, params):
 
     return ds_context
 
-def cluster(train_data, dec_vals):
+def anytime_cluster(train_data, dec_vals):
     """
 
     :param dec_vals: values of variable
@@ -76,15 +76,15 @@ def cluster(train_data, dec_vals):
         train_data1 = None
         for dec_val in dec_vals[i]:
             if train_data1 is None:
-                train_data1 = train_data[[train_data[:, 0] == dec_vals[i]]]
+                train_data1 = train_data[[train_data[:, 0] == dec_val]]
             else:
-                train_data1 = np.concatenate((train_data1, train_data[[train_data[:, 0] == dec_vals[i]]]))
+                train_data1 = np.concatenate((train_data1, train_data[[train_data[:, 0] == dec_val]]))
         train_data2 = np.delete(train_data1, 0, 1)
         cl.append(train_data2)
 
     return cl
 
-def split_on_decision_node(train_data, decision_node=None, m=None) :
+def anytime_split_on_decision_node(train_data, decision_node=None, m=None) :
     """
 
     :param train_data: current train data with decision node at 0th column
@@ -99,14 +99,37 @@ def split_on_decision_node(train_data, decision_node=None, m=None) :
         return cl, dec_vals
     else:
     '''
-    dec_vals1 = list()
-    step = int(len(dec_vals)/m)
-    for i in range(0,len(dec_vals),m):
-        vals = dec_vals[i:min(i+m, len(dec_vals))]
-        if type(vals) != list:
-            vals = [vals]
-        dec_vals1.append(vals)
-    cl = cluster(train_data, dec_vals1)
+    m = min(m, len(dec_vals))
+    dec_vals1 = [list() for i in range(m)]
+    for i in range(len(dec_vals)):
+        dec_vals1[i%m].append(dec_vals[i])
+    cl = anytime_cluster(train_data, dec_vals1)
+    return cl, dec_vals1
+
+def cluster(train_data, dec_vals):
+    """
+
+    :param dec_vals: values of variable
+    :return: clusters of train_data grouped together based on values of the variables
+    """
+    cl=[]
+    for i in range(0, len(dec_vals)):
+        train_data1 = train_data[[train_data[:, 0] == dec_vals[i]]]
+        train_data2 = np.delete(train_data1, 0, 1)
+        cl.append(train_data2)
+
+    return cl
+
+def split_on_decision_node(train_data, decision_node=None) :
+    """
+
+    :param train_data: current train data with decision node at 0th column
+    :param decision_node:
+    :return: clusters split on values of decision node
+    """
+
+    dec_vals = np.unique(train_data[:, 0]) 
+    cl = cluster(train_data, dec_vals)
     return cl, dec_vals
 
 def get_curr_train_data_prod(train_dataa, curr_var_set):

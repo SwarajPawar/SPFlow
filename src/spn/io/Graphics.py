@@ -49,7 +49,7 @@ def get_networkx_obj(spn, feature_labels=None):
             g.add_edge(c.id, n.id, weight=edge_label)
 
             if isinstance(n, Max):
-                edge_label = np.round(n.dec_values[i], 2)
+                edge_label = str(n.dec_values[i])
             g.add_edge(c.id, n.id, weight=edge_label)
 
     return g, labels

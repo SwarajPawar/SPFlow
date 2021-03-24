@@ -6,6 +6,7 @@ from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
 from spn.algorithms.LearningWrappers import learn_mspn, learn_parametric
 from spn.algorithms.SPMNHelper import *
 from spn.algorithms.MEU import meu
+from spn.algorithms.Inference import log_likelihood
 from spn.io.Graphics import plot_spn
 
 
@@ -13,8 +14,8 @@ from spn.io.Graphics import plot_spn
 class Anytime_SPMN:
 
 
-	def __init__(self, dataset, partial_order , decision_nodes, utility_node, feature_names, feature_labels
-				   util_to_bin = False , output_path):
+	def __init__(self, dataset, output_path, partial_order , decision_nodes, utility_node, feature_names, feature_labels
+				   util_to_bin = False):
 				   
 		self.dataset = dataset
 		self.params = SPMN_Params(partial_order, decision_nodes, utility_node, feature_names, feature_labels, util_to_bin )
@@ -28,16 +29,19 @@ class Anytime_SPMN:
 				print ("Creation of the directory %s failed" % self.plot_path)
 				sys.exit()
 
-	def learn_spmn_structure(self, train_data, index, scope_index, limit=2, n=self.vars):
+	def learn_spmn_structure(self, train_data, index, scope_index, limit=2, n=self.vars, dec_limit = None):
 
 
-		train_data = train_data
 		curr_var_set = params.partial_order[index]
 
 		if self.params.partial_order[index][0] in  self.params.decision_nodes:
 
 			decision_node = self.params.partial_order[index][0]
-			cl, dec_vals= split_on_decision_node(train_data, curr_var_set)
+			c1, dec_vals = None, None
+			if not dec_limit:
+				cl, dec_vals= anytime_split_on_decision_node(train_data, curr_var_set)
+			else:
+				cl, dec_vals= split_on_decision_node(train_data, curr_var_set)
 			spn0 = []
 			index= index+1
 			set_next_operation("None")
@@ -134,7 +138,7 @@ class Anytime_SPMN:
 		:return: learned spmn
 		"""
 
-
+		ll = list()
 		meu = list()
 		nodes = list()
 		past3 = list()
@@ -155,12 +159,20 @@ class Anytime_SPMN:
 
 			plot_spn(spmn, f'{path}/{dataset}/spn{i}.png', feature_labels=self.params.feature_labels)
 
-			total_meu = 0
+			total_ll = 0
 	        for instance in test_data:
-	            import numpy as np
 	            test_data = np.array([instance])
-	            total_meu += meu(spn, test_data)[0]
-	        meu.append(total_ll/len(test))
+	            total_meu += log_likelihood(spn, test_data)[0]
+	        ll.append(total_ll/len(test))
+
+	        from spn.algorithms.Inference import log_likelihood
+			total_ll = 0
+			for j, instance in enumerate(test):
+				import numpy as np
+				test_data = np.array(instance).reshape(-1, var)
+				total_ll += log_likelihood(spn, test_data)[0][0]
+				printProgressBar(j+1, len(test), prefix = f'Evaluation Progress {i}:', suffix = 'Complete', length = 50)
+			ll.append(total_ll/len(test))
 
 			print("\n\n\n\n\n")
 	        print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
@@ -172,7 +184,7 @@ class Anytime_SPMN:
 
 
 
-			past3 = meu[-min(len(meu),3):]
+			past3 = ll[-min(len(meu),3):]
 				
 			if n>=self.vars and round(np.std(past3), 3) <= 0.001:
 				break

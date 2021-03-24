@@ -50,6 +50,11 @@ def get_scope_vars(dataset_name):
         var_set.remove(d)
     return var_set
 
+def get_feature_names(dataset_name):
+
+    partial_order = get_partial_order(dataset_name)
+    var_set = [var for var_set in partial_order for var in var_set]
+    return var_set
 
 
 def get_partial_order(dataset_name):
