@@ -91,8 +91,8 @@ for dataset in datasets:
 	
 	
 	#for k in range(1,kfolds+1):
- 	
- 	k = 1
+	
+	k = 1
 	for train, test in kfold.split(data):
 		#train, test = train_test_split(data, test_size=0.3, shuffle=True)
 		#test = np.array(random.sample(list(test), 1500))
