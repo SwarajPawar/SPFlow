@@ -93,9 +93,11 @@ for dataset in datasets:
 	#for k in range(1,kfolds+1):
 
 	k = 1
-	for train, test in kfold.split(data):
+	for trainidx, testidx in kfold.split(data):
 		#train, test = train_test_split(data, test_size=0.3, shuffle=True)
 		#test = np.array(random.sample(list(test), 1500))
+
+		train, test = data[trainidx], data[testidx]
 
 		plot_path = f"{path}/{dataset}/{k}"
 		if not pth.exists(plot_path):
@@ -104,9 +106,7 @@ for dataset in datasets:
 			except OSError:
 				print ("Creation of the directory %s failed" % plot_path)
 				sys.exit()
-		
-		print(train.shape)
-		print(test.shape)
+
 		ll = list()
 		nodes = list()
 		k1 = 2 #[i for i in range(1,5)]
