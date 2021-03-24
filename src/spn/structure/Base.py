@@ -15,6 +15,7 @@ class Node(object):
     def __init__(self):
         self.id = 0
         self.scope = []
+        self.count = 1
 
     @property
     def name(self):
@@ -113,8 +114,11 @@ class Leaf(Node):
 
 
 class Max(Node):
-    def __init__(self, dec_values=None, children=None, feature_name = None):
+    def __init__(self, dec_idx=None, dec_values=None, children=None, feature_name=None):
         Node.__init__(self)
+
+        self.dec_idx = dec_idx
+
         if dec_values is None:
             dec_values = []
         self.dec_values = dec_values
@@ -127,6 +131,27 @@ class Max(Node):
             children = []
         self.children = children
 
+
+# class LatentInterface(Leaf):
+#     def __init__(self, interface_idx, bin_val=0, scope=None):
+#         Leaf.__init__(self, scope=scope)
+#
+#         self.interface_idx = interface_idx
+#         self.bin_val = bin_val      # 1 if data passes through corresponding interface node
+#         self.bottom_up_val = None   # likelihood or meu value of the corresponding interface node in the next time step
+
+
+class InterfaceSwitch(Node):
+    def __init__(self, interface_winner=None, children=None):
+        Node.__init__(self)
+
+        self.interface_winner = interface_winner
+
+        if children is None:
+            children = []
+        else:
+            self.scope = children[0].scope  # all children have same cope.
+        self.children = children
 
 class Context:
     def __init__(self, meta_types=None, domains=None, parametric_types=None, scope=None, feature_names=None):
@@ -150,9 +175,8 @@ class Context:
             for p in parametric_types:
                 self.meta_types.append(p.type.meta_type)
             self.parametric_types = dict(zip(self.scope, self.parametric_types))
-            
+
         self.meta_types = dict(zip(self.scope, self.meta_types ))
-        
 
     def get_meta_types_by_scope(self, scopes):
         return [self.meta_types[s] for s in scopes]
@@ -178,8 +202,9 @@ class Context:
             max_val = np.nanmax(data[:, col])
             domain_values = [min_val, max_val]
 
+            if feature_meta_type == MetaType.REAL or feature_meta_type == MetaType.BINARY or \
+                    feature_meta_type == MetaType.UTILITY:
 
-            if feature_meta_type == MetaType.REAL or feature_meta_type == MetaType.BINARY:
                 domain.append(domain_values)
             elif feature_meta_type == MetaType.DISCRETE:
                 domain.append(np.arange(domain_values[0], domain_values[1] + 1, 1))

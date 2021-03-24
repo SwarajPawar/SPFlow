@@ -1,0 +1,6 @@
+IDnum	Rework_Decision	Logic_board_fail	IO_board_fail	System_State	Rework_Outcome	Rework_Cost
+1	Logic_board	Yes	No	Failed	L0_IO1	175
+2	IO_board	Yes	Yes	Failed	L0_IO0	300
+3	IO_board	Yes	No	Failed	L0_IO1	225
+4	Logic_board	Yes	Yes	Failed	L0_IO0	300
+5	Logic_board	Yes	Yes	Failed	L0_IO0	300

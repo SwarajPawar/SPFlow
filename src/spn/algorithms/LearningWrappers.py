@@ -7,8 +7,6 @@ Created on March 30, 2018
 import numpy as np
 
 from spn.algorithms.StructureLearning import get_next_operation, learn_structure
-from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py
-from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
 from spn.algorithms.CnetStructureLearning import get_next_operation_cnet, learn_structure_cnet
 from spn.algorithms.Validity import is_valid
 
@@ -43,7 +41,7 @@ def learn_classifier(data, ds_context, spn_learn_wrapper, label_idx, **kwargs):
     return spn
 
 
-def get_splitting_functions(cols, rows, ohe, threshold, rand_gen, n_jobs, k=2):
+def get_splitting_functions(cols, rows, ohe, threshold, rand_gen, n_jobs):
     from spn.algorithms.splitting.Clustering import get_split_rows_KMeans, get_split_rows_TSNE, get_split_rows_GMM
     from spn.algorithms.splitting.PoissonStabilityTest import get_split_cols_poisson_py
     from spn.algorithms.splitting.RDC import get_split_cols_RDC_py, get_split_rows_RDC_py
@@ -62,7 +60,7 @@ def get_splitting_functions(cols, rows, ohe, threshold, rand_gen, n_jobs, k=2):
         if rows == "rdc":
             split_rows = get_split_rows_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=n_jobs)
         elif rows == "kmeans":
-            split_rows = get_split_rows_KMeans(n_clusters=k)
+            split_rows = get_split_rows_KMeans()
         elif rows == "tsne":
             split_rows = get_split_rows_TSNE()
         elif rows == "gmm":
@@ -111,8 +109,8 @@ def learn_mspn_with_missing(
 def learn_mspn(
     data,
     ds_context,
-    k_limit=2,
-    n=None,
+    cols="rdc",
+    rows="kmeans",
     min_instances_slice=200,
     threshold=0.3,
     initial_scope=None,
@@ -128,13 +126,8 @@ def learn_mspn(
     if rand_gen is None:
         rand_gen = np.random.RandomState(17)
 
-    if n is None:
-        n = data.shape[1]
-
     def l_mspn(data, ds_context, cols, rows, min_instances_slice, threshold, ohe):
-
-        split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
-        split_rows = get_split_rows_XMeans(limit=k_limit, returnk=False)
+        split_cols, split_rows = get_splitting_functions(cols, rows, ohe, threshold, rand_gen, cpus)
 
         nextop = get_next_operation(min_instances_slice)
 
@@ -209,3 +202,37 @@ def learn_cnet(
         learn_param = memory.cache(learn_param)
 
     return learn_param(data, ds_context, conditioning, min_instances_slice)
+
+
+def learn_mspn_for_spmn(
+    data,
+    ds_context,
+    cols="rdc",
+    rows="kmeans",
+    min_instances_slice=200,
+    threshold=0.3,
+    initial_scope=None,
+    ohe=False,
+    leaves=None,
+    memory=None,
+    rand_gen=None,
+    cpus=-1,
+):
+    if leaves is None:
+        from spn.structure.leaves.spmnLeaves.SPMNLeaf import create_spmn_leaf
+        leaves = create_spmn_leaf
+
+    if rand_gen is None:
+        rand_gen = np.random.RandomState(17)
+
+    def l_mspn(data, ds_context, cols, rows, min_instances_slice, threshold, ohe):
+        split_cols, split_rows = get_splitting_functions(cols, rows, ohe, threshold, rand_gen, cpus)
+
+        nextop = get_next_operation(min_instances_slice)
+
+        return learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop, initial_scope=initial_scope)
+
+    if memory:
+        l_mspn = memory.cache(l_mspn)
+
+    return l_mspn(data, ds_context, cols, rows, min_instances_slice, threshold, ohe)

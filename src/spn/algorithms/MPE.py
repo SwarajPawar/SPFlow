@@ -5,9 +5,10 @@ Created on July 02, 2018
 """
 from spn.algorithms.Inference import log_likelihood, sum_log_likelihood, prod_log_likelihood
 from spn.algorithms.Validity import is_valid
-from spn.structure.Base import Product, Sum, get_nodes_by_type, eval_spn_top_down
+from spn.structure.Base import Product, Sum, InterfaceSwitch, get_nodes_by_type, eval_spn_top_down
 import numpy as np
 import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +37,7 @@ def mpe_sum(node, parent_result, data=None, lls_per_node=None, rand_gen=None):
 
     parent_result = merge_input_vals(parent_result)
 
+    # logging.debug(f'sum node {node}')
     w_children_log_probs = np.zeros((len(parent_result), len(node.weights)))
     for i, c in enumerate(node.children):
         w_children_log_probs[:, i] = lls_per_node[parent_result, c.id] + np.log(node.weights[i])
@@ -47,6 +49,24 @@ def mpe_sum(node, parent_result, data=None, lls_per_node=None, rand_gen=None):
     for i, c in enumerate(node.children):
         children_row_ids[c] = parent_result[max_child_branches == i]
 
+    return children_row_ids
+
+
+def mpe_interface_switch(node, parent_result, data=None, lls_per_node=None):
+    if len(parent_result) == 0:
+        return None
+
+    logging.debug(f'in function mpe_interface_switch()')
+    parent_result = merge_input_vals(parent_result)
+    children_row_ids = {}
+    interface_winner = node.interface_winner
+    logging.debug(f'interface_winner {interface_winner}')
+
+    for i, c in enumerate(node.children):
+        logging.debug(f'child {i}')
+        children_row_ids[c] = parent_result[interface_winner == i]
+
+    logging.debug(f'children_row_ids {children_row_ids}')
     return children_row_ids
 
 
@@ -67,7 +87,7 @@ def get_mpe_top_down_leaf(node, input_vals, data=None, mode=0):
     data[input_vals[data_nans], node.scope] = mode
 
 
-_node_top_down_mpe = {Product: mpe_prod, Sum: mpe_sum}
+_node_top_down_mpe = {Product: mpe_prod, Sum: mpe_sum, InterfaceSwitch: mpe_interface_switch}
 _node_bottom_up_mpe = {}
 _node_bottom_up_mpe_log = {Sum: sum_log_likelihood, Product: prod_log_likelihood}
 

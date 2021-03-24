@@ -1,0 +1,6 @@
+Pnum	Partial_Order
+1	System_State
+2	Rework_Decision
+3	Logic_board_fail
+3	IO_board_fail
+3	Rework_Outcome
