@@ -95,7 +95,7 @@ for dataset in datasets:
 	k = 1
 	for trainidx, testidx in kfold.split(data):
 		#train, test = train_test_split(data, test_size=0.3, shuffle=True)
-		#test = np.array(random.sample(list(test), 1500))
+		#test = np.array(random.sample(list(data[testidx), 00))
 
 		train, test = data[trainidx], data[testidx]
 
@@ -144,8 +144,6 @@ for dataset in datasets:
 					break
 
 			'''
-			if n==max_iter:
-				break
 			
 			print("\n\n\n\n\n")
 			print(k1,round(n))
