@@ -50,7 +50,7 @@ rand_gen=None
 cpus=-1
 
 
-datasets = ["nltcs", "plants", "baudio", "jester", "bnetflix"]
+datasets = ["baudio", "jester", "bnetflix"]
 
 #datasets = ["kdd"]
 path = "cross_new"
@@ -95,7 +95,7 @@ for dataset in datasets:
 	k = 1
 	for trainidx, testidx in kfold.split(data):
 		#train, test = train_test_split(data, test_size=0.3, shuffle=True)
-		#test = np.array(random.sample(list(data[testidx), 00))
+		test = np.array(random.sample(list(data[testidx]), 2000))
 
 		train, test = data[trainidx], data[testidx]
 
@@ -174,7 +174,7 @@ for dataset in datasets:
 
 			past3 = ll[-min(len(ll),3):]
 				
-			if n>=max_iter and round(np.std(past3), 3) <= 0.001:
+			if i>30 or (n>=max_iter and round(np.std(past3), 3) <= 0.005):
 				break
 			
 			i+=1
