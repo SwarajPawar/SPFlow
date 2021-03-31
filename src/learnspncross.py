@@ -50,9 +50,9 @@ rand_gen=None
 cpus=-1
 
 
-datasets = ["baudio", "jester", "bnetflix"]
+datasets = ["jester", "bnetflix"]
 
-#datasets = ["kdd"]
+datasets = ["plants"]
 path = "cross_new"
 
 #kfolds = 3
@@ -95,6 +95,9 @@ for dataset in datasets:
 	k = 1
 	for trainidx, testidx in kfold.split(data):
 		#train, test = train_test_split(data, test_size=0.3, shuffle=True)
+		if k!=3:
+			k+=1
+			continue
 		test = np.array(random.sample(list(data[testidx]), 2000))
 
 		train, test = data[trainidx], data[testidx]
@@ -202,6 +205,7 @@ for dataset in datasets:
 		nodes_k.append(nodes)
 		k+=1
 
+	'''
 	plt.close()
 	colors = ["aqua", "palegreen", "pink"]
 	total_ll = np.zeros(max([len(lls[i]) for i in range(len(lls))]))
@@ -227,4 +231,4 @@ for dataset in datasets:
 	plt.legend()
 	plt.savefig(f"{path}/{dataset}/nodes.png", dpi=150)
 	plt.close()
-
+	'''
