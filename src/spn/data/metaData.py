@@ -87,17 +87,17 @@ def get_partial_order(dataset_name):
 def get_feature_labels(dataset_name):
 
     if dataset_name == 'Dataset5':
-       return  ['SS', 'LBF', 'IBF', 'RO', 'RC']
+       return  ['SS', 'RD', 'LBF', 'IBF', 'RO', 'RC']
     if dataset_name == 'Dataset1':
-        return ['ES', 'Pr']
+        return ['ES', 'ED', 'Pr']
     if dataset_name == 'Dataset2':
-        return ['TR', 'SI', 'RH', 'Dfa', "Dws", 'Q']
+        return ['TD', 'TR', 'SI', 'TRD', 'RH', 'Dfa', "Dws", 'Q']
     if dataset_name == 'Dataset3':
-        return ['CTR', 'MM', 'MsR', 'MsD', 'TD', 'LE']
+        return ['CT', 'CTR', 'MM', 'Ms', 'MsR', 'MsD', 'Tr' 'TD', 'LE']
     if dataset_name == 'Dataset4':
-        return ['HTR', 'HS', 'CMT', 'RRB', 'Q']
+        return ['Sc', 'HTR', 'HS', 'TC', 'CMT', 'RRB', 'Q']
     if dataset_name == 'Dataset6':
-        return ['IT', 'CWS', 'SR', 'AC']
+        return ['IT', 'CWS', 'SR', 'SI', 'AC']
 
 
 

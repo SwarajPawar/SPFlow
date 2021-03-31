@@ -236,3 +236,44 @@ def learn_mspn_for_spmn(
         l_mspn = memory.cache(l_mspn)
 
     return l_mspn(data, ds_context, cols, rows, min_instances_slice, threshold, ohe)
+
+
+
+def learn_mspn_for_aspmn(
+    data,
+    ds_context,
+    cols="rdc",
+    rows="kmeans",
+    min_instances_slice=200,
+    threshold=0.3,
+    initial_scope=None,
+    ohe=False,
+    leaves=None,
+    memory=None,
+    rand_gen=None,
+    cpus=-1,
+):
+    if leaves is None:
+        from spn.structure.leaves.spmnLeaves.SPMNLeaf import create_spmn_leaf
+        leaves = create_spmn_leaf
+
+    if rand_gen is None:
+        rand_gen = np.random.RandomState(17)
+
+    '''
+    if n is None:
+        n = data.shape[1]
+    '''
+    def l_mspn(data, ds_context, cols, rows, min_instances_slice, threshold, ohe):
+        split_cols, split_rows = get_splitting_functions(cols, rows, ohe, threshold, rand_gen, cpus)
+        #split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
+        #split_rows = get_split_rows_XMeans(limit=k_limit, returnk=False)
+
+        nextop = get_next_operation(min_instances_slice)
+
+        return learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop, initial_scope=initial_scope)
+
+    if memory:
+        l_mspn = memory.cache(l_mspn)
+
+    return l_mspn(data, ds_context, cols, rows, min_instances_slice, threshold, ohe)

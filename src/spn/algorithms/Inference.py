@@ -50,8 +50,9 @@ def max_log_likelihood(node, children, data=None, dtype=np.float64):
     decision_value_given = data[:, node.dec_idx]
     max_value = np.argmax(llchildren, axis=1)
     d_given = np.full(decision_value_given.shape[0], np.nan)
-    mapd = {node.dec_values[i]:i for i in range(len(node.dec_values))}
-    for k, v in mapd.items(): d_given[decision_value_given==k] = v
+    mapd = {tuple(node.dec_values[i]):i for i in range(len(node.dec_values))}
+    for k, v in mapd.items(): 
+    	d_given[decision_value_given in list(k)] = v
     # if data contains a decision value use that otherwise use max
     
     child_idx = np.select([np.isnan(d_given), True],

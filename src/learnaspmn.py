@@ -15,12 +15,16 @@ import sys, os
 import random
 
 from sklearn.model_selection import train_test_split
-from spmn.metaData import *
+from spn.data.metaData import *
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
 from spn.algorithms.ASPMN import Anytime_SPMN
+import matplotlib.pyplot as plt
+from os import path as pth
+import sys, os
 
-datasets = [f"Dataset{i+1}" for i in range(6)]
+datasets = ["Dataset1"]
+#datasets = [f"Dataset{i+1}" for i in range(6)]
 
 path = "initial"
 
@@ -36,8 +40,17 @@ for dataset in datasets:
 		except OSError:
 			print ("Creation of the directory %s failed" % plot_path)
 			sys.exit()
+
+
+	partial_order = get_partial_order(dataset)
+	utility_node = get_utilityNode(dataset)
+	decision_nodes = get_decNode(dataset)
+	feature_names = get_feature_names(dataset)
+	feature_labels = get_feature_labels(dataset)
+	meta_types = [MetaType.DISCRETE]*(len(feature_names)-1)+[MetaType.UTILITY]
+
 			
-	df = pd.read_csv(f"spmn/data/{dataset}/{dataset}.tsv", sep='\t')
+	df = pd.read_csv(f"spn/data/{dataset}/{dataset}.tsv", sep='\t')
 
 	df1, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
 	col_ind = column_titles.index(utility_node[0]) 
@@ -51,14 +64,6 @@ for dataset in datasets:
 	data = df.values
 	train, test = train_test_split(data, test_size=0.2, shuffle=True)
 
-	partial_order = get_partial_order(dataset)
-	utility_node = get_utilityNode(dataset)
-	decision_nodes = get_decNode(dataset)
-	feature_names = get_feature_names(dataset)
-	feature_labels = get_feature_labels(dataset)
-	meta_types = [MetaType.DISCRETE]*(len(feature_names)-1)+[MetaType.UTILITY]
-
-
 	
-	aspmn = Anytime_SPMN(dataset, output_path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, util_to_bin = False)
-	aspmn.learn_aspmn(train, test)
+	aspmn = Anytime_SPMN(dataset, plot_path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=True, util_to_bin = False)
+    aspmn.learn_aspmn(train, test)
