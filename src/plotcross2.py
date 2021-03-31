@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 path = "cross_new"
-datasets = ["nltcs"]
+datasets = ["kdd"]
 
 upper = {"nltcs":
 	{"ll": [-6.05057148300942], "n": [2152]},
@@ -41,7 +41,7 @@ for dataset in datasets:
     plt.close()
     total_ll = np.zeros(min([len(lls[i]) for i in range(len(lls))]))
     upperll = [upper[dataset]["ll"]] * len(total_ll)
-    #plt.plot(upperll, linestyle="dotted", color ="blue", label="Upper Limit")
+    plt.plot(upperll, linestyle="dotted", color ="blue", label="Upper Limit")
     for i in range(len(lls)):
     	plt.plot(lls[i], marker="o", color =colors[i], label=(i+1))
     	total_ll += np.array(lls[i][:len(total_ll)])
@@ -55,7 +55,7 @@ for dataset in datasets:
     
     total_nodes = np.zeros(min([len(nodes_k[i]) for i in range(len(nodes_k))]))
     uppern = [upper[dataset]["n"]] * len(total_nodes)
-    #plt.plot(uppern, linestyle="dotted", color ="blue", label="Upper Limit")
+    plt.plot(uppern, linestyle="dotted", color ="blue", label="Upper Limit")
     for i in range(len(nodes_k)):
     	plt.plot(nodes_k[i], marker="o", color =colors[i], label=(i+1))
     	total_nodes += np.array(nodes_k[i][:len(total_nodes)])

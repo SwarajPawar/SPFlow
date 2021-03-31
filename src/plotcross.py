@@ -4,8 +4,8 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
-path = "random_cross"
-dataset = "kdd"
+path = "cross_new"
+dataset = "plants"
 
 lls = [
 [-2.6999631950496066, -2.6929220902184388, -2.6686910602829874, -2.6752548453676406, -2.622097149569958, -2.6248032299708446, -2.6005517902370756, -2.5064257905334673, -2.5090047098214106, -2.515366050692692, -2.4845095364364, -2.4843519259581504, -2.4743975703543124, -2.4670233167238482, -2.472126944659297, -2.4589484083702993, -2.4704531907015665, -2.471330017820101, -2.450403504268459, -2.4385643707232614, -2.4356116857001746],
@@ -28,27 +28,19 @@ nodes_k =  [
 [338, 667, 469, 577, 716, 858, 970, 1064, 1073, 1200, 1344, 1559, 1467, 1522, 1494, 2020, 2171, 2254, 2441, 2309, 2839]
 ]
 
+ll = [-23.11986972804157, -21.107254892079887, -18.345241565188054, -17.725701040476565, -17.48559625319842, -16.82845691343037, -16.35883313958367, -16.265409979391134, -15.864112766531761, -15.38944573426223, -15.054048398716072, -14.691002306272015, -14.491897849329026, -14.236577922378501, -14.067416750978285, -13.780033797533008, -13.669627469089415, -13.46965824920569, -13.375391327341323, -13.33329918313037, -13.30049355570176, -13.257075115211821, -13.256613381915784, -13.214332551705754, -13.196153702889076, -13.241104443665973]
+nodes = [372, 682, 1157, 1488, 1516, 1858, 2047, 2321, 3192, 3535, 4446, 5175, 5997, 7474, 8152, 10272, 11690, 12055, 12581, 13606, 13343, 13294, 13130, 13615, 15087, 13774]
+
 plt.close()
-colors = ["aqua", "palegreen", "pink", "lime", "orangered", "blueviolet", "gold"]
-total_ll = np.zeros(max([len(lls[i]) for i in range(len(lls))]))
-for i in range(len(lls)):
-	plt.plot(lls[i], marker="o", color =colors[i], label=(i+1))
-	total_ll += np.array(lls[i])
-avg_ll = total_ll/len(lls)
-plt.plot(avg_ll, marker="o", color ="black", label="Mean")
+plt.plot(ll, marker="o")
+
 plt.title(f"{dataset} Log Likelihood")
-plt.legend()
-plt.savefig(f"{path}/{dataset}/ll.png", dpi=150)
+plt.savefig(f"{path}/{dataset}/2/ll.png", dpi=150)
 plt.close()
 
-total_nodes = np.zeros(max([len(nodes_k[i]) for i in range(len(nodes_k))]))
-for i in range(len(nodes_k)):
-	plt.plot(nodes_k[i], marker="o", color =colors[i], label=(i+1))
-	total_nodes += np.array(nodes_k[i])
-avg_nodes = total_nodes/len(nodes_k)
-plt.plot(avg_nodes, marker="o", color ="black", label="Mean")
+plt.plot(nodes, marker="o")
+	
 plt.title(f"{dataset} Nodes")
-plt.legend()
-plt.savefig(f"{path}/{dataset}/nodes.png", dpi=150)
+plt.savefig(f"{path}/{dataset}/2/nodes.png", dpi=150)
 plt.close()
 

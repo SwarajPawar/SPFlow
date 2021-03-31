@@ -405,11 +405,10 @@ def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, no
 	def split_cols_distributed_RDC_py(local_data, ds_context, scope, n=n):
 		n = min(n, local_data.shape[1])
 
-		random_idx =  random.shuffle(list(range(local_data.shape[1])))
-		random_vars, rem_vars = random_idx[:n], random_idx[n:]
-		data = local_data[:,random_vars]
+		
+		data = local_data[:,:n]
 		#ds_context = ds_context[:n]
-		n_scope = scope[random_vars]
+		n_scope = scope[:n]
 
 		meta_types = ds_context.get_meta_types_by_scope(n_scope)
 		domains = ds_context.get_domains_by_scope(n_scope)
@@ -431,30 +430,23 @@ def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, no
 		n_clusters = max(clusters)
 		
 
-		final_clusters = np.zeros(local_data.shape[1])
+		remaining = [0]*(local_data.shape[1] - len(clusters))
 
-		for i in range(local_data.shape[1]):
-			if i in random_vars:
-				final_clusters[i] = clusters[random_vars.index(i)]
+
 
 		if n_clusters == 1:
-			j = 0
-			while len(rem_vars) > 0 and j < len(random_vars):
-				random.shuffle(rem_vars)
-				i = rem_vars[0]
-				rem_vars=rem_vars[1:]
-				final_clusters[i] = 2
-				j+=1
-		n_clusters = 2
+			cluster2, remaining = remaining[:len(clusters)], remaining[len(clusters):]
+			cluster2 = [2]*len(cluster2)
+			clusters = clusters + cluster2
+			n_clusters = 2
 		c=0
-		while len(rem_vars) > 0:
-			random.shuffle(rem_vars)
-			i = rem_vars[0]
-			rem_vars=rem_vars[1:]
-			final_clusters[i] = c+1
+		for i in range(len(remaining)):
+			remaining[i] = c+1
 			c = (c+1)%n_clusters
 
-		return split_data_by_clusters(local_data, final_clusters, scope, rows=False)
+		clusters = np.array(clusters + remaining)
+
+		return split_data_by_clusters(local_data, clusters, scope, rows=False)
 
 	return split_cols_distributed_RDC_py
 
