@@ -404,8 +404,9 @@ def get_split_cols_single_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_lin
 def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None, n=0):
 	def split_cols_distributed_RDC_py(local_data, ds_context, scope, n=n):
 		n = min(n, local_data.shape[1])
+		
 		data = local_data[:,:n]
-		#print(scope)
+		#ds_context = ds_context[:n]
 		n_scope = scope[:n]
 
 		meta_types = ds_context.get_meta_types_by_scope(n_scope)
@@ -426,16 +427,23 @@ def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, no
 
 		clusters = list(clusters)
 		n_clusters = max(clusters)
-		
+
 		remaining = [0]*(local_data.shape[1] - len(clusters))
-		
+
+
+
+		if n_clusters == 1:
+			cluster2, remaining = remaining[:len(clusters)], remaining[len(clusters):]
+			cluster2 = [2]*len(cluster2)
+			clusters = clusters + cluster2
+			n_clusters = 2
 		c=0
 		for i in range(len(remaining)):
 			remaining[i] = c+1
 			c = (c+1)%n_clusters
-		
-		clusters = np.array(clusters + remaining)		
-		
+
+		clusters = np.array(clusters + remaining)
+
 		return split_data_by_clusters(local_data, clusters, scope, rows=False)
 
 	return split_cols_distributed_RDC_py
