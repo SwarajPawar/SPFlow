@@ -98,7 +98,7 @@ for dataset in datasets:
 		if k!=3:
 			k+=1
 			continue
-		test = np.array(random.sample(list(data[testidx]), 2000))
+		test = np.array(random.sample(list(data[testidx]), 1500))
 
 		train, test = data[trainidx], data[testidx]
 
