@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 path = "cross_new"
-datasets = ["kdd"]
+datasets = ["plants"]
 
 upper = {"nltcs":
 	{"ll": [-6.05057148300942], "n": [2152]},

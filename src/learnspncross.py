@@ -95,8 +95,9 @@ for dataset in datasets:
 	k = 1
 	for trainidx, testidx in kfold.split(data):
 		#train, test = train_test_split(data, test_size=0.3, shuffle=True)
-                test = np.array(random.sample(list(data[testidx]), 1500))`
+		
 		train, test = data[trainidx], data[testidx]
+		test = np.array(random.sample(list(data[testidx]), 1500))
 
 		plot_path = f"{path}/{dataset}/{k}"
 		if not pth.exists(plot_path):
