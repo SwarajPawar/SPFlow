@@ -52,7 +52,7 @@ cpus=-1
 
 datasets = ["jester", "bnetflix"]
 
-datasets = ["plants"]
+#datasets = ["plants"]
 path = "cross_new"
 
 #kfolds = 3
@@ -95,11 +95,7 @@ for dataset in datasets:
 	k = 1
 	for trainidx, testidx in kfold.split(data):
 		#train, test = train_test_split(data, test_size=0.3, shuffle=True)
-		if k!=3:
-			k+=1
-			continue
-		test = np.array(random.sample(list(data[testidx]), 1500))
-
+                test = np.array(random.sample(list(data[testidx]), 1500))`
 		train, test = data[trainidx], data[testidx]
 
 		plot_path = f"{path}/{dataset}/{k}"
