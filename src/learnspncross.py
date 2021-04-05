@@ -52,7 +52,7 @@ cpus=-1
 
 datasets = ["jester", "bnetflix"]
 
-#datasets = ["plants"]
+datasets = ["msnbc"]
 path = "cross_new"
 
 #kfolds = 3
@@ -97,7 +97,7 @@ for dataset in datasets:
 		#train, test = train_test_split(data, test_size=0.3, shuffle=True)
 		
 		train, test = data[trainidx], data[testidx]
-		test = np.array(random.sample(list(data[testidx]), 1500))
+		test = np.array(random.sample(list(data[testidx]), 5000))
 
 		plot_path = f"{path}/{dataset}/{k}"
 		if not pth.exists(plot_path):
