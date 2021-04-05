@@ -59,16 +59,15 @@ class AnytimeSPN:
 		self.ds_context = ds_context
 				
 		print(f"\n\n\n{dataset}\n\n\n")
-		self.plot_path = f"{output_path}/{dataset}"
-		if not pth.exists(plot_path):
+		if not pth.exists(f"{output_path}/{dataset}"):
 			try:
-				os.makedirs(plot_path)
+				os.makedirs(f"{output_path}/{dataset}")
 			except OSError:
 				print ("Creation of the directory %s failed" % plot_path)
 				sys.exit()
 
 
-	def learn_aspn(self, train, test):
+	def learn_aspn(self, train, test, k=None):
 			
 	
 		self.max_iter = train.shape[1]
@@ -94,7 +93,10 @@ class AnytimeSPN:
 			nodes.append(get_structure_stats_dict(spn)["nodes"])
 			from spn.io.Graphics import plot_spn
 
-			plot_spn(spn, f'{path}/{dataset}/spn{i}.png')
+			if k is None:
+				plot_spn(spn, f'{output_path}/{dataset}/spn{i}.png')
+			else:
+				plot_spn(spn, f'{output_path}/{dataset}/{k}/spn{i}.png')
 
 			from spn.algorithms.Inference import log_likelihood
 			total_ll = 0
@@ -106,50 +108,86 @@ class AnytimeSPN:
 
 			
 			print("\n\n\n\n\n")
+			print("Iteration {i}:\n")
 			print(f"X-Means Limit: {k_limit}, \tVariables for splitting: {round(n)}")
 			print("#Nodes: ",nodes[i])
 			print("Log-likelihood: ",ll[i])
-			print(ll)
-			print(nodes)
 			print("\n\n\n\n\n")
 			
 			plt.close()
-			# plot line 
 			plt.plot(ll, marker="o") 
 			plt.title(f"{dataset} Log Likelihood")
-			plt.savefig(f"{path}/{dataset}/ll.png", dpi=100)
+			plt.savefig(f"{output_path}/{dataset}/ll.png", dpi=100)
+			if k is None:
+				plt.savefig(f"{output_path}/{dataset}/ll.png", dpi=100)
+			else:
+				plt.savefig(f"{output_path}/{dataset}/{k}/ll.png", dpi=100)
 			plt.close()
+			
 			plt.plot(nodes, marker="o") 
 			plt.title(f"{dataset} Nodes")
-			plt.savefig(f"{path}/{dataset}/nodes.png", dpi=100)
+			if k is None:
+				plt.savefig(f"{output_path}/{dataset}/nodes.png", dpi=100)
+			else:
+				plt.savefig(f"{output_path}/{dataset}/{k}/nodes.png", dpi=100)
 			plt.close()
 
-			f = open(f"{path}/{dataset}/stats.txt", "w")
+			if k is None:
+				f = open(f"{output_path}/{dataset}/stats.txt", "w")
+			else:
+				f = open(f"{output_path}/{dataset}/{k}/stats.txt", "w")
 			f.write(f"\n\tLog Likelihood: {ll}")
 			f.write(f"\n\t\tNodes: {nodes}")
 			f.close()
 			
 			past3 = ll[-min(len(ll),3):]
 					
-			if n>=max_iter and round(np.std(past3), 3) <= 0.005:
+			if n>=max_iter and round(np.std(past3), 3) <= 0.001:
 				break
 			
 			i+=1
 			n = min(n+step, max_iter)
 			k_limit += 1
 
+		print("Final interation")
 		print("Log Likelihood",ll)
 		print("Nodes",nodes)
 
-		plt.close()
-		# plot line 
-		plt.plot(ll, marker="o") 
-		#plt.show()
-		plt.title(f"{dataset} Log Likelihood")
-		plt.savefig(f"{path}/{dataset}/ll.png", dpi=100)
-		plt.close()
-		plt.plot(nodes, marker="o") 
-		#plt.show()
-		plt.title(f"{dataset} Nodes")
-		plt.savefig(f"{path}/{dataset}/nodes.png", dpi=100)
-		plt.close()
+	def learn_aspn_kfold(self, data, k):
+	
+		from sklearn.model_selection import KFold
+		
+		kfold = KFold(n_splits=k, shuffle=True)
+		
+		k = 1
+		for trainidx, testidx in kfold.split(data):
+			
+			train, test = data[trainidx], data[testidx]
+			self.learn_aspn(train, test, k=k)
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			

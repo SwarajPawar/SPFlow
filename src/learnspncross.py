@@ -137,13 +137,6 @@ for dataset in datasets:
 				printProgressBar(j+1, len(test), prefix = f'Evaluation Progress {i}:', suffix = 'Complete', length = 50)
 			ll.append(total_ll/len(test))
 			
-			'''
-			if len(ll)>3:
-				past3 = ll[-3:]
-				if round(np.std(past3), 2) <= 0.01:
-					break
-
-			'''
 			
 			print("\n\n\n\n\n")
 			print(k1,round(n))
