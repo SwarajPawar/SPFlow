@@ -4,8 +4,8 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
-path = "cross_new"
-datasets = ["plants"]
+path = "cross"
+datasets = ["msnbc"]
 
 upper = {"nltcs":
 	{"ll": [-6.05057148300942], "n": [2152]},
@@ -39,8 +39,9 @@ for dataset in datasets:
         nodes_k.append([float(x) for x in nodes])
         
     plt.close()
+    maxlen = max([len(lls[i]) for i in range(len(lls))])
     total_ll = np.zeros(min([len(lls[i]) for i in range(len(lls))]))
-    upperll = [upper[dataset]["ll"]] * len(total_ll)
+    upperll = [upper[dataset]["ll"]] * maxlen
     plt.plot(upperll, linestyle="dotted", color ="blue", label="Upper Limit")
     for i in range(len(lls)):
     	plt.plot(lls[i], marker="o", color =colors[i], label=(i+1))
@@ -49,12 +50,12 @@ for dataset in datasets:
     plt.plot(avg_ll, marker="o", color ="black", label="Mean")
     plt.title(f"{dataset} Log Likelihood")
     plt.legend()
-    plt.savefig(f"{path}/{dataset}/ll.png", dpi=150)
+    plt.savefig(f"{path}/{dataset}/ll_.png", dpi=150)
     plt.close()
     
     
     total_nodes = np.zeros(min([len(nodes_k[i]) for i in range(len(nodes_k))]))
-    uppern = [upper[dataset]["n"]] * len(total_nodes)
+    uppern = [upper[dataset]["n"]] * maxlen
     plt.plot(uppern, linestyle="dotted", color ="blue", label="Upper Limit")
     for i in range(len(nodes_k)):
     	plt.plot(nodes_k[i], marker="o", color =colors[i], label=(i+1))
@@ -63,6 +64,6 @@ for dataset in datasets:
     plt.plot(avg_nodes, marker="o", color ="black", label="Mean")
     plt.title(f"{dataset} Nodes")
     plt.legend()
-    plt.savefig(f"{path}/{dataset}/nodes.png", dpi=150)
+    plt.savefig(f"{path}/{dataset}/nodes_.png", dpi=150)
     plt.close()
 
