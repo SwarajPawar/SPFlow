@@ -4,7 +4,7 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
-path = "cross"
+path = "cross_new"
 datasets = ["msnbc"]
 
 upper = {"nltcs":
