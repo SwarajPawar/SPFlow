@@ -370,14 +370,17 @@ def get_split_cols_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=
 
 def get_split_cols_single_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None, n=0):
 	def split_cols_single_RDC_py(local_data, ds_context, scope, n=n):
+
+		#Value of n should not exceed totatl variables in the data
 		n = min(n, local_data.shape[1])
+		#Get first n variables
 		data = local_data[:,:n]
-		#print(scope)
 		n_scope = scope[:n]
 
 		meta_types = ds_context.get_meta_types_by_scope(n_scope)
 		domains = ds_context.get_domains_by_scope(n_scope)
 
+		# Split the n variables using RDC
 		clusters = getIndependentRDCGroups_py(
 			data,
 			threshold,
@@ -393,9 +396,12 @@ def get_split_cols_single_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_lin
 
 		clusters = list(clusters)
 		n_clusters = max(clusters)
+
+		#Make a new cluster of the same size if only one cluster found
 		if n_clusters==1:
 			clusters = np.array(clusters + [2]*(local_data.shape[1] - n))
 		else:
+			#Else add all the remaining variables randomly to any one cluster
 			rand = random.randint(1,n_clusters)
 			clusters = np.array(clusters + [rand]*(local_data.shape[1] - n))
 
@@ -470,16 +476,17 @@ def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, no
 
 def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None, n=0):
 	def split_cols_distributed_RDC_py(local_data, ds_context, scope, n=n):
-		n = min(n, local_data.shape[1])
-
 		
+		#Value of n should not exceed totatl variables in the data
+		n = min(n, local_data.shape[1])
+		#Get first n variables
 		data = local_data[:,:n]
-		#ds_context = ds_context[:n]
 		n_scope = scope[:n]
 
 		meta_types = ds_context.get_meta_types_by_scope(n_scope)
 		domains = ds_context.get_domains_by_scope(n_scope)
 
+		#Split the variables using RDC
 		clusters = getIndependentRDCGroups_py(
 			data,
 			threshold,
@@ -496,12 +503,13 @@ def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, no
 		clusters = list(clusters)
 		n_clusters = max(clusters)
 		
-
+		#Initial remaining variable cluster numbers to 0
 		remaining = [0]*(local_data.shape[1] - len(clusters))
 
 
 
 		if n_clusters == 1:
+			#Make a new cluster of the same size if only one cluster found from the rema
 			cluster2, remaining = remaining[:len(clusters)], remaining[len(clusters):]
 			cluster2 = [2]*len(cluster2)
 			clusters = clusters + cluster2
