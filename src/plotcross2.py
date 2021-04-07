@@ -50,7 +50,7 @@ for dataset in datasets:
     plt.plot(avg_ll, marker="o", color ="black", label="Mean")
     plt.title(f"{dataset} Log Likelihood")
     plt.legend()
-    plt.savefig(f"{path}/{dataset}/ll_.png", dpi=150)
+    plt.savefig(f"{path}/{dataset}/ll.png", dpi=150)
     plt.close()
     
     
@@ -64,6 +64,6 @@ for dataset in datasets:
     plt.plot(avg_nodes, marker="o", color ="black", label="Mean")
     plt.title(f"{dataset} Nodes")
     plt.legend()
-    plt.savefig(f"{path}/{dataset}/nodes_.png", dpi=150)
+    plt.savefig(f"{path}/{dataset}/nodes.png", dpi=150)
     plt.close()
 
