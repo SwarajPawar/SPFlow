@@ -167,7 +167,7 @@ for dataset in datasets:
 
 			past3 = ll[-min(len(ll),3):]
 				
-			if i>40 or (n>=max_iter and round(np.std(past3), 3) <= 0.005):
+			if i>40 or (n>=max_iter and round(np.std(past3), 3) <= 0.001):
 				break
 			
 			i+=1
