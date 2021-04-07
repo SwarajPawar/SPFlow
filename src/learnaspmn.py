@@ -18,6 +18,7 @@ from sklearn.model_selection import train_test_split
 from spn.data.metaData import *
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
+from spn.algorithms.SPMN import SPMN
 from spn.algorithms.ASPMN import Anytime_SPMN
 import matplotlib.pyplot as plt
 from os import path as pth
@@ -65,5 +66,10 @@ for dataset in datasets:
 	train, test = train_test_split(data, test_size=0.2, shuffle=True)
 
 	
+	#spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, meta_types, cluster_by_curr_information_set = True, util_to_bin = False)
+	#spmn.learn_spmn(train)
+	#print("Done")
+
+	
 	aspmn = Anytime_SPMN(dataset, plot_path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=True, util_to_bin = False)
-    aspmn.learn_aspmn(train, test)
+	aspmn.learn_aspmn(train, test)

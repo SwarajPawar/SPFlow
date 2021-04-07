@@ -1,0 +1,5 @@
+
+Dataset4
+	Log Likelihood : -0.5943350928785097
+	MEU : 42.60624317138454
+	Nodes : 125

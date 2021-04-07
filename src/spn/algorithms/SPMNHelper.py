@@ -184,13 +184,13 @@ def get_split_rows_KMeans(n_clusters=2, pre_proc=None, ohe=False, seed=17):
 
 	return split_rows_KMeans
 
-def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17, limit=math.inf, returnk = True, n=100, k=2):
+def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17, limit=math.inf, returnk = False, n=100, k=2):
 	def split_rows_XMeans(local_data, ds_context, scope, k=k):
 		data = preproc(local_data, ds_context, pre_proc, ohe)
 
 		km_model = None
-
-		prevk = k
+		print("Xmeans")
+		#prevk = k
 		for i in range(n):
 
 			km_model = KMeans(n_clusters=k, random_state=seed)
@@ -237,7 +237,7 @@ def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17, limit=math.inf, ret
 						break
 				if addk == 0:
 					break
-				prevk = k
+				#prevk = k
 
 				k = k + addk 
 				if (k + addk) >= limit:

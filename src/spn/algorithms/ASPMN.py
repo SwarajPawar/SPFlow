@@ -5,8 +5,8 @@ Created on March 28, 2019
 """
 from spn.structure.Base import Sum, Product, Max
 from spn.structure.Base import assign_ids, rebuild_scopes_bottom_up
-from spn.algorithms.LearningWrappers import learn_mspn, learn_parametric, learn_mspn_for_aspmn
-from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py, get_split_cols_RDC_py
+from spn.algorithms.LearningWrappers import learn_parametric_aspmn, learn_mspn_for_aspmn
+from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py, get_split_cols_RDC_py, get_split_cols_single_RDC_py
 from spn.algorithms.SPMNHelper import *
 from spn.algorithms.MEU import meu
 from spn.algorithms.Inference import log_likelihood
@@ -58,7 +58,7 @@ class Anytime_SPMN:
 		logging.debug(f'remaining_vars_scope: {remaining_vars_scope}')
 		logging.debug(f'curr_information_set_scope: {curr_information_set_scope}')
 
-		#input()
+		print("\n")
 		# rest set is remaining variables excluding the variables in current information set
 		print(curr_information_set_scope)
 		print(remaining_vars_scope)
@@ -88,8 +88,10 @@ class Anytime_SPMN:
 
 				if self.params.util_to_bin:
 
-					last_information_set_spn = learn_parametric(remaining_vars_data,
+					last_information_set_spn = learn_parametric_aspmn(remaining_vars_data,
 																ds_context_last_information_set,
+																n=self.n,
+																k_limit=self.limit,
 																min_instances_slice=20,
 																initial_scope=remaining_vars_scope)
 
@@ -97,6 +99,8 @@ class Anytime_SPMN:
 
 					last_information_set_spn = learn_mspn_for_aspmn(remaining_vars_data,
 																   ds_context_last_information_set,
+																   n=self.n,
+																   k_limit=self.limit,
 																   min_instances_slice=20,
 																   initial_scope=remaining_vars_scope)
 
@@ -150,8 +154,8 @@ class Anytime_SPMN:
 
 				ds_context = get_ds_context(remaining_vars_data, remaining_vars_scope, self.params)
 
-				#split_cols = get_split_cols_distributed_RDC_py(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
-				split_cols = get_split_cols_RDC_py()
+				split_cols = get_split_cols_single_RDC_py(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
+				#split_cols = get_split_cols_RDC_py()
 				data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope)
 
 				logging.debug(f'{len(data_slices_prod)} slices found at data_slices_prod: ')
@@ -159,6 +163,7 @@ class Anytime_SPMN:
 				prod_children = []
 				next_remaining_vars_scope = []
 				independent_vars_scope = []
+				print("\nProduct")
 
 				for correlated_var_set_cluster, correlated_var_set_scope, weight in data_slices_prod:
 
@@ -177,8 +182,10 @@ class Anytime_SPMN:
 
 						if self.params.util_to_bin:
 
-							independent_var_set_prod_child = learn_parametric(correlated_var_set_cluster,
+							independent_var_set_prod_child = learn_parametric_aspmn(correlated_var_set_cluster,
 																			  ds_context_prod,
+																			  n=self.n,
+																			  k_limit=self.limit,
 																			  min_instances_slice=20,
 																			  initial_scope=correlated_var_set_scope)
 
@@ -186,6 +193,8 @@ class Anytime_SPMN:
 
 							independent_var_set_prod_child = learn_mspn_for_aspmn(correlated_var_set_cluster,
 																				 ds_context_prod,
+																				 n=self.n,
+																				 k_limit=self.limit,
 																				 min_instances_slice=20,
 																				 initial_scope=correlated_var_set_scope)
 						independent_vars_scope.extend(correlated_var_set_scope)
@@ -194,7 +203,6 @@ class Anytime_SPMN:
 				logging.info(f'correlated variables over entire remaining variables '
 							 f'at prod, passed for next recursion: '
 							 f'{next_remaining_vars_scope}')
-
 				# check if all variables in current information set are consumed
 				if all(var_scope in independent_vars_scope for var_scope in curr_information_set_scope):
 
@@ -215,7 +223,6 @@ class Anytime_SPMN:
 					# convert unordered sets of scope to sorted lists to keep in sync with partial order
 					next_information_set_scope = sorted(list(next_information_set_scope))
 					next_remaining_vars_scope = sorted(list(next_remaining_vars_scope))
-
 				self.set_next_operation('Sum')
 
 				next_remaining_vars_data = column_slice_data_by_scope(remaining_vars_data,
@@ -312,6 +319,14 @@ class Anytime_SPMN:
 		:param
 		:return: learned spmn
 		"""
+		original_stats = {
+		    "Dataset1": {"ll" : -1.0903135560503194, "meu" : 1922639.5, 'nodes' : 22},
+		    "Dataset2": {"ll" : -1.1461735112245122, "meu" : 54.92189449375, 'nodes' : 51},
+		    "Dataset3": {"ll" : -1.3292497032277288, "meu" : 3.11376125, 'nodes' : 49},
+		    "Dataset4": {"ll" : -0.5943350928785097, "meu" : 42.60624317138454, 'nodes' : 125},
+		    "Dataset5": {"ll" : -0.8912294493362266, "meu" : 242.863042737567, 'nodes' : 50},
+		    "Dataset6": {"ll" : -1.8151637099020188, "meu" : -2803562.5, 'nodes' : 45}
+		}
 
 		
 		ll = list()
@@ -321,7 +336,7 @@ class Anytime_SPMN:
 		
 		limit = 2 
 		n = int(self.vars**0.5)  
-		step = 1 #(self.vars - (self.vars**0.5))/15
+		step = (self.vars - (self.vars**0.5) + 1)/10
 		d = 2
 
 		i = 0
@@ -340,15 +355,13 @@ class Anytime_SPMN:
 			print("start")
 			spmn = self.__learn_spmn_structure(train, remaining_vars_scope, curr_information_set_scope, index)
 			print("done")
+			spmn = Prune(spmn)
 			self.spmn = spmn
 
 			nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
 			plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
 
-			test_data = [[np.nan]*len(self.params.feature_names)]
-			m = meu(spmn, test_data)
-			meus.append(m[0])
 			
 			
 
@@ -358,6 +371,11 @@ class Anytime_SPMN:
 				total_ll += log_likelihood(spmn, test_data)[0][0]
 			ll.append(total_ll/len(test))
 			
+
+
+			test_data = [[np.nan]*len(self.params.feature_names)]
+			m = meu(spmn, test_data)
+			meus.append(m[0])
 
 			
 
@@ -372,16 +390,22 @@ class Anytime_SPMN:
 
 			plt.close()
 			# plot line 
-			plt.plot(ll, marker="o") 
+			plt.plot(ll, marker="o", label="Anytime")
+			plt.plot([original_stats[self.dataset]["ll"]]*len(ll), linestyle="dotted", color ="red", label="Original")
 			plt.title(f"{self.dataset} Log Likelihood")
+			plt.legend()
 			plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
 			plt.close()
-			plt.plot(meus, marker="o") 
+			plt.plot(meus, marker="o", label="Anytime")
+			plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dotted", color ="red", label="Original")
 			plt.title(f"{self.dataset} MEU")
+			plt.legend()
 			plt.savefig(f"{self.plot_path}/meu.png", dpi=100)
 			plt.close()
-			plt.plot(nodes, marker="o") 
+			plt.plot(nodes, marker="o", label="Anytime")
+			plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dotted", color ="red", label="Original")
 			plt.title(f"{self.dataset} Nodes")
+			plt.legend()
 			plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
 			plt.close()
 
@@ -403,7 +427,7 @@ class Anytime_SPMN:
 			i+=1
 			limit += 1
 			d+=1
-			n = min(n+step, self.vars)
+			n = n+step
 
 		return spmn
 

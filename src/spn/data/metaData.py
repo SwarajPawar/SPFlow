@@ -93,7 +93,7 @@ def get_feature_labels(dataset_name):
     if dataset_name == 'Dataset2':
         return ['TD', 'TR', 'SI', 'TRD', 'RH', 'Dfa', "Dws", 'Q']
     if dataset_name == 'Dataset3':
-        return ['CT', 'CTR', 'MM', 'Ms', 'MsR', 'MsD', 'Tr' 'TD', 'LE']
+        return ['CT', 'CTR', 'MM', 'Ms', 'MsR', 'MsD', 'Tr', 'TD', 'LE']
     if dataset_name == 'Dataset4':
         return ['Sc', 'HTR', 'HS', 'TC', 'CMT', 'RRB', 'Q']
     if dataset_name == 'Dataset6':

@@ -31,9 +31,14 @@ def meu_sum(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
 def meu_prod(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
     # product node just passes up the utils of whichever child contains util nodes
     meu_children = meu_per_node[:,[child.id for child in node.children]]
+    for meu_child in np.isnan(meu_children[0]):
+        if not meu_child:
+            meu_per_node[:,node.id] = meu_children[~np.isnan(meu_children)]
+            return
+    meu_per_node[:,node.id] = np.nan
     # the line below works because product nodes should have only one child containing the utility node.
     # if more than one utility column is allowed this will have to change.
-    meu_per_node[:,node.id] = meu_children[~np.isnan(meu_children)]
+    
 
 def meu_max(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
     meu_children = meu_per_node[:, [child.id for child in node.children]]

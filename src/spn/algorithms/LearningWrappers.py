@@ -12,6 +12,9 @@ from spn.algorithms.Validity import is_valid
 
 from spn.structure.Base import Sum, assign_ids
 
+from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py
+from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
+
 from spn.structure.leaves.histogram.Histograms import create_histogram_leaf
 from spn.structure.leaves.parametric.Parametric import create_parametric_leaf
 from spn.structure.leaves.piecewise.PiecewiseLinear import create_piecewise_leaf
@@ -242,8 +245,8 @@ def learn_mspn_for_spmn(
 def learn_mspn_for_aspmn(
     data,
     ds_context,
-    cols="rdc",
-    rows="kmeans",
+    n=None,
+    k_limit=2,
     min_instances_slice=200,
     threshold=0.3,
     initial_scope=None,
@@ -260,14 +263,14 @@ def learn_mspn_for_aspmn(
     if rand_gen is None:
         rand_gen = np.random.RandomState(17)
 
-    '''
+    
     if n is None:
         n = data.shape[1]
-    '''
-    def l_mspn(data, ds_context, cols, rows, min_instances_slice, threshold, ohe):
-        split_cols, split_rows = get_splitting_functions(cols, rows, ohe, threshold, rand_gen, cpus)
-        #split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
-        #split_rows = get_split_rows_XMeans(limit=k_limit, returnk=False)
+    
+    def l_mspn(data, ds_context, min_instances_slice, threshold, ohe):
+        #split_cols, split_rows = get_splitting_functions(cols, rows, ohe, threshold, rand_gen, cpus)
+        split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
+        split_rows = get_split_rows_XMeans(limit=k_limit, returnk=False)
 
         nextop = get_next_operation(min_instances_slice)
 
@@ -276,4 +279,43 @@ def learn_mspn_for_aspmn(
     if memory:
         l_mspn = memory.cache(l_mspn)
 
-    return l_mspn(data, ds_context, cols, rows, min_instances_slice, threshold, ohe)
+    return l_mspn(data, ds_context, min_instances_slice, threshold, ohe)
+
+def learn_parametric_aspmn(
+    data,
+    ds_context,
+    n=None,
+    k_limit=2,
+    min_instances_slice=200,
+    min_features_slice=1,
+    multivariate_leaf=False,
+    threshold=0.3,
+    initial_scope=None,
+    ohe=False,
+    leaves=None,
+    memory=None,
+    rand_gen=None,
+    cpus=-1,
+):
+    if leaves is None:
+        leaves = create_parametric_leaf
+
+    if rand_gen is None:
+        rand_gen = np.random.RandomState(17)
+
+    if n is None:
+        n = data.shape[1]
+
+    def learn_param(data, ds_context, min_instances_slice, threshold, ohe):
+        #split_cols, split_rows = get_splitting_functions(cols, rows, ohe, threshold, rand_gen, cpus)
+        split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
+        split_rows = get_split_rows_XMeans(limit=k_limit, returnk=False)
+
+        nextop = get_next_operation(min_instances_slice, min_features_slice, multivariate_leaf)
+
+        return learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop, initial_scope=initial_scope)
+
+    if memory:
+        learn_param = memory.cache(learn_param)
+
+    return learn_param(data, ds_context, min_instances_slice, threshold, ohe)
