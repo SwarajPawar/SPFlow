@@ -6,7 +6,7 @@ Created on March 28, 2019
 from spn.structure.Base import Sum, Product, Max
 from spn.structure.Base import assign_ids, rebuild_scopes_bottom_up
 from spn.algorithms.LearningWrappers import learn_parametric_aspmn, learn_mspn_for_aspmn
-from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py, get_split_cols_RDC_py, get_split_cols_single_RDC_py
+from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py1, get_split_cols_RDC_py, get_split_cols_single_RDC_py
 from spn.algorithms.SPMNHelper import *
 from spn.algorithms.MEU import meu
 from spn.algorithms.Inference import log_likelihood
@@ -40,7 +40,7 @@ class Anytime_SPMN:
 		self.cluster_by_curr_information_set = cluster_by_curr_information_set
 		self.spmn = None
 
-		self.vars = len(feature_labels) - len(decision_nodes)
+		self.vars = len(feature_labels)
 
 		self.plot_path = output_path
 
@@ -154,9 +154,10 @@ class Anytime_SPMN:
 
 				ds_context = get_ds_context(remaining_vars_data, remaining_vars_scope, self.params)
 
-				split_cols = get_split_cols_single_RDC_py(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
+				#split_cols = get_split_cols_single_RDC_py(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
+				split_cols = get_split_cols_distributed_RDC_py1(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
 				#split_cols = get_split_cols_RDC_py()
-				data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope)
+				data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope, rest_set_scope)
 
 				logging.debug(f'{len(data_slices_prod)} slices found at data_slices_prod: ')
 
@@ -355,7 +356,7 @@ class Anytime_SPMN:
 			print("start")
 			spmn = self.__learn_spmn_structure(train, remaining_vars_scope, curr_information_set_scope, index)
 			print("done")
-			spmn = Prune(spmn)
+			#spmn = Prune(spmn)
 			self.spmn = spmn
 
 			nodes.append(get_structure_stats_dict(spmn)["nodes"])

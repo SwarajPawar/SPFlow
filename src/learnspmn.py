@@ -26,7 +26,7 @@ import sys, os
 datasets = ["Dataset1"]
 #datasets = [f"Dataset{i+1}" for i in range(6)]
 
-path = "initial"
+path = "original"
 
 
 
@@ -65,6 +65,33 @@ for dataset in datasets:
 	train, test = train_test_split(data, test_size=0.2, shuffle=True)
 
 	
-	spmn = SPMN(dataset, plot_path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=True, util_to_bin = False)
-	spmn.learn_spmn(train, test)
+	spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, meta_types, cluster_by_curr_information_set = True, util_to_bin = False)
+	spmn = spmn.learn_spmn(train)
 	print("Done")
+	
+	
+	nodes = get_structure_stats_dict(spmn)["nodes"]
+    
+    plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
+
+
+
+
+	total_ll = 0
+	for instance in test:
+		test_data = np.array(instance).reshape(-1, len(feature_names))
+		total_ll += log_likelihood(spmn, test_data)[0][0]
+	ll = (total_ll/len(test))
+
+
+
+	test_data = [[np.nan]*len(feature_names)]
+	m = meu(spmn, test_data)
+	meus = (m[0])
+
+	f = open(f"{path}/{dataset}/stats.txt", "w")
+	f.write(f"\n{dataset}")
+	f.write(f"\n\tLog Likelihood : {ll}")
+	f.write(f"\n\tMEU : {meus}")
+	f.write(f"\n\tNodes : {nodes}")
+	f.close()

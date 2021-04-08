@@ -526,6 +526,75 @@ def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, no
 	return split_cols_distributed_RDC_py
 
 
+def get_split_cols_distributed_RDC_py1(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None, n=0):
+	def split_cols_distributed_RDC_py(local_data, ds_context, scope, rest_scope, n=n):
+		
+		#Value of n should not exceed totatl variables in the data
+		n = min(n, local_data.shape[1])
+		#Get first n variables
+		data = local_data[:,:n]
+		n_scope = scope[:n]
+
+		meta_types = ds_context.get_meta_types_by_scope(n_scope)
+		domains = ds_context.get_domains_by_scope(n_scope)
+
+		#Split the variables using RDC
+		clusters = getIndependentRDCGroups_py(
+			data,
+			threshold,
+			meta_types,
+			domains,
+			k=k,
+			s=s,
+			# ohe=True,
+			non_linearity=non_linearity,
+			n_jobs=n_jobs,
+			rand_gen=rand_gen,
+		)
+
+		clusters = list(clusters)
+		n_clusters = max(clusters)
+		
+		#Initial remaining variable cluster numbers to 0
+		remaining = [0]*(local_data.shape[1] - len(clusters))
+
+
+
+		if n_clusters == 1:
+			#Make a new cluster of the same size if only one cluster found from the rema
+			cluster2, remaining = remaining[:len(clusters)], remaining[len(clusters):]
+			cluster2 = [2]*len(cluster2)
+			clusters = clusters + cluster2
+			n_clusters = 2
+		
+		n_clusters = int(n_clusters)
+		cluster_groups = [[] for i in range(n_clusters)]
+		for i in range(len(clusters)):
+			cluster_groups[int(clusters[i])-1].append(scope[i])
+			
+			
+		c, i = 0,0 
+		while i < len(remaining):
+			'''
+			if any(var in cluster_group[c] for var in rest_scope) and scope[len(clusters)+i] in remaining:
+				remaining[i] = c+1
+			if all(var not in cluster_group[c] for var in rest_scope)) and scope[len(clusters)+i] not in remaining:
+				remaining[i] = c+1
+			'''
+			if all(var not in cluster_groups[c] for var in rest_scope) and scope[len(clusters)+i] in rest_scope:
+				if c == n_clusters - 1:
+					remaining[i] = c+1
+					i+=1
+			else:
+				remaining[i] = c+1
+				i+=1
+			c = (c+1)%n_clusters
+
+		clusters = np.array(clusters + remaining)
+
+		return split_data_by_clusters(local_data, clusters, scope, rows=False)
+
+	return split_cols_distributed_RDC_py
 
 
 def get_split_rows_RDC_py(n_clusters=2, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None):

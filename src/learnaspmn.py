@@ -37,10 +37,10 @@ import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 
-datasets = ["Dataset2"]
+datasets = ["Dataset1"]
 #datasets = [f"Dataset{i+1}" for i in range(6)]
 
-path = "new"
+path = "test"
 
 
 
@@ -85,5 +85,5 @@ for dataset in datasets:
 	print(test.shape)
 
 	
-	aspmn = Anytime_SPMN(dataset, plot_path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=True, util_to_bin = False)
+	aspmn = Anytime_SPMN(dataset, plot_path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=False, util_to_bin = False)
 	aspmn.learn_aspmn(train, test)
