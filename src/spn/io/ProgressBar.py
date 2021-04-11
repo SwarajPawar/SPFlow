@@ -1,5 +1,5 @@
 
-
+# Function to display task trogress bar
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
    
 	percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))

@@ -114,7 +114,17 @@ for dataset in datasets:
 	f.write("\n\n\n\n\n")
 	f.close()
 	   
-
+	'''
+	start = time.time()
+	spn = learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop)
+	end = time.time()
+	
+	f = open(f"{path}/runtimes.txt", "a")
+	f.write("")
+	f.write(f"\tTime: {end-start}")
+	f.write("\n\n")
+	f.close()
+	'''
 
 
 
