@@ -40,6 +40,7 @@ import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 import random
+import time
 
 cols="rdc"
 rows="kmeans"
@@ -52,15 +53,17 @@ cpus=-1
 
 
 datasets = ["jester", "bnetflix"]
-#datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
+datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
 #datasets = ["kdd"]
-path = "test1"
+path = "cross_new"
 
+iteration = {"nltcs":25,"msnbc":42, "plants":30, "kdd":22, "baudio":30, "jester":40, "bnetflix":35}
 
 
 for dataset in datasets:
 	
 	print(f"\n\n\n{dataset}\n\n\n")
+	'''
 	plot_path = f"{path}/{dataset}"
 	if not pth.exists(plot_path):
 		try:
@@ -68,6 +71,7 @@ for dataset in datasets:
 		except OSError:
 			print ("Creation of the directory %s failed" % plot_path)
 			sys.exit()
+	'''
 			
 	df = pd.read_csv(f"spn/data/binary/{dataset}.ts.data", sep=',')
 	data = df.values
@@ -85,6 +89,7 @@ for dataset in datasets:
 	nodes = list()
 	k_limit = 2 #[i for i in range(1,5)]
 	past3 = list()
+	run = list()
 	
 	n = int(max_iter**0.5)  #[i for i in range(int(max_iter**0.5),max_iter+1,2)]
 	step = (max_iter - (max_iter**0.5))/20
@@ -95,8 +100,26 @@ for dataset in datasets:
 		split_rows = get_split_rows_XMeans(limit=k_limit, returnk=False)
 		nextop = get_next_operation(min_instances_slice)
 
+		start = time.time()
 		spn = learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop)
+		end = time.time()
 
+		run.append(end-start)
+
+		plt.close()
+		# plot line 
+		plt.plot(ll, marker="o") 
+		plt.title(f"{dataset} Runtime")
+		plt.savefig(f"{path}/{dataset}/runtime.png", dpi=100)
+		plt.close()
+
+		f = open(f"{path}/{dataset}/runtime.txt", "w")
+		f.write(f"\n\tRun time: {run}")
+		f.close()
+
+		if i >iteration[dataset]:
+			break
+		'''
 		nodes.append(get_structure_stats_dict(spn)["nodes"])
 		from spn.io.Graphics import plot_spn
 
@@ -139,11 +162,12 @@ for dataset in datasets:
 				
 		if n>=max_iter and round(np.std(past3), 3) <= 0.005:
 			break
-		
+		'''
 		i+=1
 		n = min(n+step, max_iter)
 		k_limit += 1
 
+	'''
 	print("Log Likelihood",ll)
 	print("Nodes",nodes)
 
@@ -159,3 +183,4 @@ for dataset in datasets:
 	plt.title(f"{dataset} Nodes")
 	plt.savefig(f"{path}/{dataset}/nodes.png", dpi=100)
 	plt.close()
+	'''
