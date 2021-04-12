@@ -49,8 +49,7 @@ leaves = create_histogram_leaf
 rand_gen=None
 cpus=-1
 
-
-datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
+datasets = ["baudio", "jester", "bnetflix"]
 #datasets = ["kdd"]
 path = "maxlimit"
 
