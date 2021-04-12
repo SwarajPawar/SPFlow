@@ -108,7 +108,7 @@ for dataset in datasets:
 
 		plt.close()
 		# plot line 
-		plt.plot(ll, marker="o") 
+		plt.plot(run, marker="o") 
 		plt.title(f"{dataset} Runtime")
 		plt.savefig(f"{path}/{dataset}/runtime.png", dpi=100)
 		plt.close()
