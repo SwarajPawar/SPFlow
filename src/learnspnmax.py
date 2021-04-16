@@ -50,7 +50,7 @@ rand_gen=None
 cpus=-1
 
 datasets = ["baudio", "jester", "bnetflix"]
-#datasets = ["kdd"]
+datasets = ["plants"]
 path = "maxlimit"
 
 
@@ -117,12 +117,13 @@ for dataset in datasets:
 	start = time.time()
 	spn = learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop)
 	end = time.time()
-	
+	print(end-start)
+	'''
 	f = open(f"{path}/runtimes.txt", "a")
 	f.write(f"\n\n\n{dataset}:")
 	f.write(f"\tTime: {end-start}")
 	f.write("\n\n")
 	f.close()
-
+	'''
 
 

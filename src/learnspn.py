@@ -38,6 +38,7 @@ from spn.structure.StatisticalTypes import MetaType
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
+import time
 
 cols="rdc"
 rows="kmeans"
@@ -50,7 +51,7 @@ cpus=-1
 
 
 datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
-#datasets = ["kdd"]
+datasets = ["plants"]
 path = "original"
 
 
@@ -87,7 +88,7 @@ for dataset in datasets:
 	split_cols = get_split_cols_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus)
 	split_rows = get_split_rows_KMeans()
 	nextop = get_next_operation(min_instances_slice)
-
+	'''
 	spn = learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop)
 
 	from spn.io.Graphics import plot_spn
@@ -118,7 +119,8 @@ for dataset in datasets:
 	start = time.time()
 	spn = learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop)
 	end = time.time()
-	
+	print(end-start)
+	'''
 	f = open(f"{path}/runtimes.txt", "a")
 	f.write("")
 	f.write(f"\tTime: {end-start}")

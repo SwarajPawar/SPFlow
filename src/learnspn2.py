@@ -54,7 +54,7 @@ cpus=-1
 
 datasets = ["jester", "bnetflix"]
 datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
-#datasets = ["kdd"]
+datasets = ["kdd", "baudio", "jester", "bnetflix"]
 path = "cross_new"
 
 iteration = {"nltcs":25,"msnbc":42, "plants":30, "kdd":22, "baudio":30, "jester":40, "bnetflix":35}
