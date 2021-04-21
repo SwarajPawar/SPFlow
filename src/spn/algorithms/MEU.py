@@ -96,7 +96,7 @@ def meu(node, input_data,
 def eval_spmn_bottom_up_meu(root, eval_functions, meu_per_node=None, data=None, lls_per_node=None):
     """
       evaluates an spn top to down
-      :param root: spnt root
+      :param root: spn root
       :param eval_functions: is a dictionary that contains k:Class of the node, v:lambda function that receives as parameters (node, [parent_results], args**) and returns {child : intermediate_result}. This intermediate_result will be passed to child as parent_result. If intermediate_result is None, no further propagation occurs
       :param all_results: is a dictionary that contains k:Class of the node, v:result of the evaluation of the lambda function for that node.
       :param parent_result: initial input to the root node

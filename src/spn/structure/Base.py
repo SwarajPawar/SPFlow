@@ -415,6 +415,8 @@ def eval_spn_bottom_up(node, eval_functions, all_results=None, debug=False, **ar
     :param args: free parameters that will be fed to the lambda functions.
     :return: the result of computing and propagating all the values throught the network
     """
+    print(eval_functions)
+    input()
 
     nodes = get_topological_order(node)
 

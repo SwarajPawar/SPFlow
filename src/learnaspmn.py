@@ -37,10 +37,10 @@ import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 
-datasets = ["Dataset1"]
-datasets = [f"Dataset{i+1}" for i in range(6)]
+
 datasets = ['Export_Textiles', 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
-path = "new_split"
+datasets = ['Export_Textiles']
+path = "test"
 
 
 

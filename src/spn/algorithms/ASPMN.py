@@ -115,8 +115,8 @@ class Anytime_SPMN:
 			logging.info(f'Encountered Decision Node: {decision_node}')
 
 			# cluster the data from remaining variables w.r.t values of decision node
-			clusters_on_next_remaining_vars, dec_vals = anytime_split_on_decision_node(remaining_vars_data, self.d)
-			#clusters_on_next_remaining_vars, dec_vals = split_on_decision_node(remaining_vars_data)
+			#clusters_on_next_remaining_vars, dec_vals = anytime_split_on_decision_node(remaining_vars_data, self.d)
+			clusters_on_next_remaining_vars, dec_vals = split_on_decision_node(remaining_vars_data)
 
 			decision_node_children_spns = []
 			index += 1
@@ -362,7 +362,7 @@ class Anytime_SPMN:
 
 			nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
-			plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
+			#plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
 
 			
 			
@@ -373,6 +373,7 @@ class Anytime_SPMN:
 				total_ll += log_likelihood(spmn, test_data)[0][0]
 			ll.append(total_ll/len(test))
 			
+			break
 
 
 			test_data = [[np.nan]*len(self.params.feature_names)]
