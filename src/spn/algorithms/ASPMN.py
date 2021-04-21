@@ -322,12 +322,12 @@ class Anytime_SPMN:
 		"""
 		
 		original_stats = {
-		    'Export_Textiles': {"ll" : -1.0903135560503194, "meu" : 1922639.5, 'nodes' : 22},
-		    'Test_Strep': {"ll" : -1.1461735112245122, "meu" : 54.92189449375, 'nodes' : 51},
-		    'LungCancer_Staging': {"ll" : -1.3292497032277288, "meu" : 3.11376125, 'nodes' : 49},
-		    'HIV_Screening': {"ll" : -0.5943350928785097, "meu" : 42.60624317138454, 'nodes' : 125},
-		    'Computer_Diagnostician': {"ll" : -0.8912294493362266, "meu" : 242.863042737567, 'nodes' : 50},
-		    'Powerplant_Airpollution': {"ll" : -1.8151637099020188, "meu" : -2803562.5, 'nodes' : 45}
+			'Export_Textiles': {"ll" : -1.0903135560503194, "meu" : 1922639.5, 'nodes' : 22},
+			'Test_Strep': {"ll" : -1.1461735112245122, "meu" : 54.92189449375, 'nodes' : 51},
+			'LungCancer_Staging': {"ll" : -1.3292497032277288, "meu" : 3.11376125, 'nodes' : 49},
+			'HIV_Screening': {"ll" : -0.5943350928785097, "meu" : 42.60624317138454, 'nodes' : 125},
+			'Computer_Diagnostician': {"ll" : -0.8912294493362266, "meu" : 242.863042737567, 'nodes' : 50},
+			'Powerplant_Airpollution': {"ll" : -1.8151637099020188, "meu" : -2803562.5, 'nodes' : 45}
 		}
 
 		
@@ -345,7 +345,7 @@ class Anytime_SPMN:
 		while(True):
 
 			index = 0
-                        print(i)
+						print(i)
 			curr_information_set_scope = np.array(range(len(self.params.partial_order[0]))).tolist()
 			remaining_vars_scope = np.array(range(len(self.params.feature_names))).tolist()
 			print(curr_information_set_scope)
