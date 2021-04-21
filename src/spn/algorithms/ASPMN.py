@@ -338,13 +338,14 @@ class Anytime_SPMN:
 		
 		limit = 2 
 		n = int(self.vars**0.5)  
-		step = (self.vars - (self.vars**0.5) + 1)/10
+		step = (self.vars - (self.vars**0.5))/10
 		d = 2
 
 		i = 0
 		while(True):
 
 			index = 0
+                        print(i)
 			curr_information_set_scope = np.array(range(len(self.params.partial_order[0]))).tolist()
 			remaining_vars_scope = np.array(range(len(self.params.feature_names))).tolist()
 			print(curr_information_set_scope)

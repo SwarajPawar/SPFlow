@@ -77,7 +77,7 @@ for dataset in datasets:
 
 	data = df.values
 	train, test = train_test_split(data, test_size=0.2, shuffle=False)
-	#test = test[:2000]
+	test = test[:2000]
 
 
 	
