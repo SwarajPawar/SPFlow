@@ -139,7 +139,6 @@ def add_node_likelihood(node_type, lambda_func, log_lambda_func=None):
 def likelihood(node, data, dtype=np.float64, node_likelihood=_node_likelihood, lls_matrix=None, debug=False):
     all_results = {}
 
-    print(node_likelihood)
     if debug:
         assert len(data.shape) == 2, "data must be 2D, found: {}".format(data.shape)
         original_node_likelihood = node_likelihood
