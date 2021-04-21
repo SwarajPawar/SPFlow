@@ -115,8 +115,8 @@ class Anytime_SPMN:
 			logging.info(f'Encountered Decision Node: {decision_node}')
 
 			# cluster the data from remaining variables w.r.t values of decision node
-			clusters_on_next_remaining_vars, dec_vals = anytime_split_on_decision_node(remaining_vars_data, self.d)
-			#clusters_on_next_remaining_vars, dec_vals = split_on_decision_node(remaining_vars_data)
+			#clusters_on_next_remaining_vars, dec_vals = anytime_split_on_decision_node(remaining_vars_data, self.d)
+			clusters_on_next_remaining_vars, dec_vals = split_on_decision_node(remaining_vars_data)
 
 			decision_node_children_spns = []
 			index += 1

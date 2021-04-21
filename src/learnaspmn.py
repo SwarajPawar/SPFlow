@@ -40,7 +40,7 @@ import sys, os
 datasets = ["Dataset1"]
 datasets = [f"Dataset{i+1}" for i in range(6)]
 datasets = ['Export_Textiles', 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
-path = "new_split"
+path = "nomax"
 
 
 
@@ -77,7 +77,7 @@ for dataset in datasets:
 
 	data = df.values
 	train, test = train_test_split(data, test_size=0.2, shuffle=False)
-	test = test[:2000]
+	#test = test[:2000]
 
 
 	
