@@ -345,7 +345,7 @@ class Anytime_SPMN:
 		while(True):
 
 			index = 0
-						print(i)
+			print(i)
 			curr_information_set_scope = np.array(range(len(self.params.partial_order[0]))).tolist()
 			remaining_vars_scope = np.array(range(len(self.params.feature_names))).tolist()
 			print(curr_information_set_scope)
