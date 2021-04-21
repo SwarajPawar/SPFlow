@@ -39,9 +39,9 @@ import sys, os
 
 
 datasets = ['Export_Textiles', 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
-datasets = ['Export_Textiles']
+#datasets = ['Export_Textiles']
 path = "test"
-
+path = "nomax"
 
 
 for dataset in datasets:
@@ -77,7 +77,7 @@ for dataset in datasets:
 
 	data = df.values
 	train, test = train_test_split(data, test_size=0.2, shuffle=False)
-	test = test[:2000]
+	#test = test[:2000]
 
 
 	
