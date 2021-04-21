@@ -338,7 +338,7 @@ class Anytime_SPMN:
 		
 		limit = 2 
 		n = int(self.vars**0.5)  
-		step = (self.vars - (self.vars**0.5))/10
+		step = (self.vars - (self.vars**0.5) + 1)/10
 		d = 2
 
 		i = 0
@@ -374,7 +374,6 @@ class Anytime_SPMN:
 				total_ll += log_likelihood(spmn, test_data)[0][0]
 			ll.append(total_ll/len(test))
 			
-			break
 
 
 			test_data = [[np.nan]*len(self.params.feature_names)]
