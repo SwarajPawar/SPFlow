@@ -13,7 +13,7 @@ def get_decNode(dataset_name):
     elif dataset_name == 'HIV_Screening':
         return ['Screen', 'Treat_Counsel']
     elif dataset_name == 'Powerplant_Airpollution':
-        return ['Strike_Intervention']
+        return ['Installation_Type', 'Strike_Intervention']
     else:
         print(dataset_name)
 
@@ -60,25 +60,30 @@ def get_feature_names(dataset_name):
 def get_partial_order(dataset_name):
 
     if dataset_name == 'Computer_Diagnostician':
-        partialOrder = [['System_State'], ['Rework_Decision'], ['Logic_board_fail', 'IO_board_fail', 'Rework_Outcome', 'Rework_Cost' ]]
+        #partialOrder = [['System_State'], ['Rework_Decision'], ['Logic_board_fail', 'IO_board_fail', 'Rework_Outcome', 'Rework_Cost' ]]
+        partialOrder = [['Logic_board_fail', 'IO_board_fail','System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
         return partialOrder
     if dataset_name == 'Export_Textiles':
         partialOrder = [['Economical_State'], ['Export_Decision'],['Profit']]
         return partialOrder
     if dataset_name == 'Test_Strep':
-        partialOrder = [['Test_Decision'],['Test_Result', 'Streptococcal_Infection'],['Treatment_Decision'],
+        partialOrder = [['Test_Decision'],['Streptococcal_Infection', 'Test_Result'],['Treatment_Decision'],
                         ['Rheumatic_Heart_Disease', 'Die_from_Anaphylaxis', 'Days_with_sore_throat', 'QALE']]
         return partialOrder
     if dataset_name == 'LungCancer_Staging':
-        partialOrder = [['CT'],['CTResult', 'Mediastinal_Metastases'],['Mediastinoscopy'],
+        #partialOrder = [['CT'],['CTResult', 'Mediastinal_Metastases'],['Mediastinoscopy'],
+                               #['Mediastinoscopy_Result', 'Mediastinoscopy_death'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
+        partialOrder = [['CT'],['Mediastinal_Metastases', 'CTResult'],['Mediastinoscopy'],
                                ['Mediastinoscopy_Result', 'Mediastinoscopy_death'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
         return partialOrder
     if dataset_name == 'HIV_Screening':
-        partialOrder = [['Screen'], ['HIV_Test_Result', 'HIV_Status'],['Treat_Counsel'],
+        #partialOrder = [['Screen'], ['HIV_Test_Result', 'HIV_Status'],['Treat_Counsel'],
+                        #['Compliance_Medical_Therapy',	'Reduce_Risky_Behavior', 'QALE']]
+        partialOrder = [['Screen'], ['HIV_Status', 'HIV_Test_Result'],['Treat_Counsel'],
                         ['Compliance_Medical_Therapy',	'Reduce_Risky_Behavior', 'QALE']]
         return partialOrder
     if dataset_name == 'Powerplant_Airpollution':
-        partialOrder = ['Installation_Type','Coal_Worker_Strike','Strike_Resolution'],['Strike_Intervention'],['Additional_Cost']
+        partialOrder = [['Installation_Type'],['Coal_Worker_Strike'],['Strike_Intervention'],['Strike_Resolution'],['Additional_Cost']]
         return partialOrder
     else:
         print(dataset_name)
@@ -87,17 +92,17 @@ def get_partial_order(dataset_name):
 def get_feature_labels(dataset_name):
 
     if dataset_name == 'Computer_Diagnostician':
-       return  ['SS', 'RD', 'LBF', 'IBF', 'RO', 'RC']
+       return  ['LBF', 'IBF', 'SS', 'RD', 'RO', 'RC']
     if dataset_name == 'Export_Textiles':
         return ['ES', 'ED', 'Pr']
     if dataset_name == 'Test_Strep':
-        return ['TD', 'TR', 'SI', 'TRD', 'RH', 'Dfa', "Dws", 'Q']
+        return ['TD', 'SI', 'TR', 'TRD', 'RH', 'Dfa', "Dws", 'Q']
     if dataset_name == 'LungCancer_Staging':
-        return ['CT', 'CTR', 'MM', 'Ms', 'MsR', 'MsD', 'Tr', 'TD', 'LE']
+        return ['CT', 'MM', 'CTR', 'Ms', 'MsR', 'MsD', 'Tr', 'TD', 'LE']
     if dataset_name == 'HIV_Screening':
-        return ['Sc', 'HTR', 'HS', 'TC', 'CMT', 'RRB', 'Q']
+        return ['Sc', 'HS', 'HTR', 'TC', 'CMT', 'RRB', 'Q']
     if dataset_name == 'Powerplant_Airpollution':
-        return ['IT', 'CWS', 'SR', 'SI', 'AC']
+        return ['IT', 'CWS', 'SI', 'SR', 'AC']
 
 
 

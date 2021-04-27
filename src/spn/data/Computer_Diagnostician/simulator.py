@@ -6,39 +6,33 @@ from collections import Counter
 import pandas as pd
 import random
 
-	
-data = pd.read_csv("Computer_Diagnostician.tsv", sep="\t")
+'''
+Logic_board:
+0: No
+1: Yes
 
-data = data.values[:,1:]
+IO_board
+0: No
+1: Yes
 
-print(data.shape)
-data = [tuple(x) for x in data]
+Status
+0: Failed
+1: Operational
 
-
-
-unique = []
-
-for x in data:
-	if x not in unique:
-		unique.append(x)
-		
-#freq1 = Counter(np.array(data)[:,0])
-freq2 = Counter(np.array(data)[:,1])
-freq3 = Counter(np.array(data)[:,2])
-
-#reward = {(x[0], x[1]):x[2] for x in unique}
-#print(unique)
-#print(freq1)
-print(freq2)
-print(freq3)
+Outcome
+0: L0_IO0
+1: L0_IO1
+2: L1_IO0
 
 
-reward = dict()
-for x in unique:
-	if x[1:5] not in reward:
-		reward[x[1:5]] = {x[0] : x[5]}
-	else:
-		reward[x[1:5]][x[0]] = x[5]
+
+Decision:
+0: Logic_board
+1: IO_board
+
+'''
+
+
 
 '''
 [('Logic_board', 'Yes', 'No', 'Failed', 'L0_IO1', 175), 
@@ -50,8 +44,8 @@ for x in unique:
 ('IO_board', 'Yes', 'Yes', 'Failed', 'L0_IO0', 300), 
 ('IO_board', 'Yes', 'No', 'Failed', 'L0_IO1', 225)]
 
-Logic_board 	Counter({'Yes': 42126, 'No': 7874})      {'Yes': 0.85, 'No': 0.15}             
-IO_board 		Counter({'No': 41549, 'Yes': 8451})		{'Yes': 0.83, 'No': 0.17}
+Logic_board 	Counter({'Yes': 42126, 'No': 7874})      {'Yes': 0.84, 'No': 0.16}             
+IO_board 		Counter({'No': 41549, 'Yes': 8451})		{'Yes': 0.17, 'No': 0.83}
 '''
 	
 print(reward)
@@ -60,10 +54,10 @@ print(reward)
 class Computer_Diagnostician:
 
 	def __init__(self):
-		self.rewards = {('Yes', 'No', 'Failed', 'L0_IO1'): {'Logic_board': 175, 'IO_board': 225}, 
-						('Yes', 'Yes', 'Failed', 'L0_IO0'): {'IO_board': 300, 'Logic_board': 300}, 
-						('No', 'No', 'Operational', 'L0_IO0'): {'IO_board': 300, 'Logic_board': 300}, 
-						('No', 'Yes', 'Failed', 'L1_IO0'): {'IO_board': 125, 'Logic_board': 200}}
+		self.rewards = {(1, 0, 0, 1): {0: 175, 1: 225}, 
+						(1, 1, 0, 0): {1: 300, 0: 300}, 
+						(0, 0, 0, 0): {1: 300, 0: 300}, 
+						(0, 1, 0, 2): {1: 125, 0: 200}}
 
 
 						
@@ -71,29 +65,29 @@ class Computer_Diagnostician:
 		
 			
 		p = random.random()
-		if p<0.6:
-			Logic_board = 'Yes'
+		if p<0.84:
+			Logic_board = 1
 		else:
-			Logic_board = 'No'
+			Logic_board = 0
 			
 		p = random.random()
-		if p<0.6:
-			IO_board = 'Yes'
+		if p<0.17:
+			IO_board = 1
 		else:
-			IO_board = 'No'
+			IO_board = 0
 			
-		if Logic_board == 'Yes' and IO_board == 'Yes':
-			Status = 'Failed'
-			Outcome = 'L0_IO0'
-		elif Logic_board == 'Yes' and IO_board == 'No':
-			Status = 'Failed'
-			Outcome = 'L0_IO1'
-		elif Logic_board == 'No' and IO_board == 'Yes':
-			Status = 'Failed'
-			Outcome = 'L1_IO0'
-		elif Logic_board == 'No' and IO_board == 'No':
-			Status = 'Operational'
-			Outcome = 'L0_IO0'
+		if Logic_board == 1 and IO_board == 1:
+			Status = 0
+			Outcome = 0
+		elif Logic_board == 1 and IO_board == 0:
+			Status = 0
+			Outcome = 1
+		elif Logic_board == 0 and IO_board == 1:
+			Status = 0
+			Outcome = 2
+		elif Logic_board == 0 and IO_board == 0:
+			Status = 0
+			Outcome = 0
 			
 		self.state = (Logic_board, IO_board, Status, Outcome)
 			

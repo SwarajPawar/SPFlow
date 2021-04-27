@@ -363,7 +363,7 @@ class Anytime_SPMN:
 
 			nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
-			#plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
+			plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
 
 			
 			

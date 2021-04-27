@@ -92,7 +92,34 @@ def meu(node, input_data,
     result = meu_per_node[:,node.id]
     return result
 
+def get_meus_and_lls(node, input_data,
+        node_bottom_up_meu=_node_bottom_up_meu,
+        in_place=False):
+    # valid, err = is_valid(node)
+    # assert valid, err
+    if in_place:
+        data = input_data
+    else:
+        data = np.array(input_data)
+    # assumes utility is only one and is at the last
+    # print("input data:", input_data[:, -1])
+    assert np.isnan(data[:, -1]), "Please specify utility variable as NaN"
+    nodes = get_nodes_by_type(node)
+    likelihood_per_node = np.zeros((data.shape[0], len(nodes)))
+    meu_per_node = np.zeros((data.shape[0], len(nodes)))
+    meu_per_node.fill(np.nan)
+    # one pass bottom up evaluating the likelihoods
+    likelihood(node, data, dtype=data.dtype, lls_matrix=likelihood_per_node)
+    eval_spmn_bottom_up_meu(
+            node,
+            _node_bottom_up_meu,
+            meu_per_node=meu_per_node,
+            data=data,
+            lls_per_node=likelihood_per_node
+        )
+    return meu_per_node, likelihood_per_node
 
+    
 def eval_spmn_bottom_up_meu(root, eval_functions, meu_per_node=None, data=None, lls_per_node=None):
     """
       evaluates an spn top to down
