@@ -12,6 +12,8 @@ from spn.algorithms.MEU import meu
 from spn.algorithms.Inference import log_likelihood
 from spn.algorithms.Statistics import get_structure_stats_dict
 from spn.io.Graphics import plot_spn
+from spn.data.simulator import get_env
+from spn.algorithms.MEU import best_next_decision
 import logging
 import numpy as np
 import matplotlib.pyplot as plt
@@ -334,6 +336,7 @@ class Anytime_SPMN:
 		ll = list()
 		meus = list()
 		nodes = list()
+		avg_rewards = list()
 		past3 = list()
 		
 		limit = 2 
@@ -380,6 +383,22 @@ class Anytime_SPMN:
 			m = meu(spmn, test_data)
 			meus.append(m[0])
 
+			env = get_env(self.dataset)
+			rewards = list()
+			
+			
+			for z in range(100):
+				
+				state = env.reset()  #
+				while(True):
+					output = best_next_decision(spmn, state)
+					#output = spmn_topdowntraversal_and_bestdecisions(spmn, test_data)
+					action = output[0][0]
+					state, reward, done = env.step(action)
+					if done:
+						rewards.append(reward)
+						break
+			avg_rewards.append(sum(rewards)/len(rewards))
 			
 
 			print("\n\n\n\n\n")
@@ -387,6 +406,7 @@ class Anytime_SPMN:
 			print("#Nodes: ",nodes[i])
 			print("log_likelihood: ",ll[i])
 			print("MEU: ",meus[i])
+			print("Average rewards: ",avg_rewards[i])
 			print(nodes)
 			print(meus)
 			print("\n\n\n\n\n")
@@ -411,12 +431,19 @@ class Anytime_SPMN:
 			plt.legend()
 			plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
 			plt.close()
+			plt.plot(avg_rewards, marker="o", label="Anytime")
+			#plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dotted", color ="red", label="Original")
+			plt.title(f"{self.dataset} Average Rewards")
+			plt.legend()
+			plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
+			plt.close()
 
 			f = open(f"{self.plot_path}/stats.txt", "w")
 			f.write(f"\n{self.dataset}")
 			f.write(f"\n\tLog Likelihood : {ll}")
 			f.write(f"\n\tMEU : {meus}")
 			f.write(f"\n\tNodes : {nodes}")
+			f.write(f"\n\tAverage Rewards : {avg_rewards}")
 			f.close()
 
 

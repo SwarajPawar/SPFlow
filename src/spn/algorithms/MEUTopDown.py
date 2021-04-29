@@ -116,7 +116,7 @@ def spmn_topdowntraversal_and_bestdecisions(
     _node_functions_top_down = node_functions[0].copy()
     _node_functions_top_down.update({Max: max_best_dec_with_meu})
     _node_functions_bottom_up = node_functions[2].copy()
-    print(f'_node_functions_bottom_up {_node_functions_bottom_up}')
+    #print(f'_node_functions_bottom_up {_node_functions_bottom_up}')
 
     nodes = get_nodes_by_type(node)
 

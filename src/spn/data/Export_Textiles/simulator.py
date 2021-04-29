@@ -6,24 +6,25 @@ import collections
 import pandas as pd
 import random
 
-'''
-State:
-0: 'Same'
-1: 'Severely_bad'
-2: 'Slightly_worse'
+class Export_Textiles:
 
-Action:
-0: 'Now'
-1: 'After_6_mos'
-2: 'After_12_mos'
-'''
+	'''
+	State:
+	0: 'Same'
+	1: 'Severely_bad'
+	2: 'Slightly_worse'
 
-{('Same', 'After_12_mos', 210000.0): 1332, ('Same', 'Now', 2726000.0): 1329, ('Same', 'After_6_mos', 2357000.0): 1316, ('Slightly_worse', 'Now', 1870000.0): 1052, ('Slightly_worse', 'After_6_mos', 1694500.0): 1022, ('Severely_bad', 'Now', -711000.0): 1019, ('Severely_bad', 'After_12_mos', 766000.0): 1016, ('Severely_bad', 'After_6_mos', 900500.0): 982, ('Slightly_worse', 'After_12_mos', 1425000.0): 932}
+	Action:
+	0: 'Now'
+	1: 'After_6_mos'
+	2: 'After_12_mos'
+	'''
 
-
-class ExportTextiles:
 
 	def __init__(self):
+		
+		#rewards[Economical_State][Export_Decision]
+
 		self.rewards = {1: 
 							{1: 900500.0, 
 							0: -711000.0, 
@@ -39,15 +40,30 @@ class ExportTextiles:
 						}
 						
 	def reset(self):
-		p = random.random()
-		if p<0.4:
-			self.state = 0
-		elif p<0.7:
-			self.state = 1
-		else:
-			self.state = 2
+
+		self.Economical_State = np.nan
+		self.Export_Decision = np.nan
+		self.Profit = np.nan
+
+
+		return self.state()
 			
 	def step(self, action):
 		
-		return self.rewards[self.state][action]
+		self.Export_Decision = action
+
+		p = random.random()
+		if p<0.4:
+			self.Economical_State = 0
+		elif p<0.7:
+			self.Economical_State = 1
+		else:
+			self.Economical_State = 2
+
+		self.Profit = self.rewards[self.Economical_State][self.Export_Decision]
+
+		return self.state(), self.Profit, True
+
+	def state(self):
+		return [[self.Economical_State, self.Export_Decision, self.Profit]]
 

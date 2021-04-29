@@ -19,14 +19,15 @@ from spn.data.metaData import *
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
 from spn.algorithms.SPMN import SPMN
+from spn.algorithms.MEUTopDown import spmn_topdowntraversal_and_bestdecisions
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 
-datasets = ["Dataset1"]
+datasets = ["Export_Textiles"]
 #datasets = [f"Dataset{i+1}" for i in range(6)]
 
-path = "original"
+path = "test_dec"
 
 
 
@@ -52,7 +53,8 @@ for dataset in datasets:
 			
 	df = pd.read_csv(f"spn/data/{dataset}/{dataset}.tsv", sep='\t')
 
-	df1, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
+	df, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
+	'''
 	col_ind = column_titles.index(utility_node[0]) 
 	df_without_utility = df1.drop(df1.columns[col_ind], axis=1)
 	from sklearn.preprocessing import LabelEncoder
@@ -60,7 +62,7 @@ for dataset in datasets:
 	df_without_utility_categorical = df_without_utility.apply(LabelEncoder().fit_transform)  
 	df_utility = df1.iloc[:, col_ind]
 	df = pd.concat([df_without_utility_categorical, df_utility], axis=1, sort=False)
-
+	'''
 	data = df.values
 	train, test = train_test_split(data, test_size=0.2, shuffle=True)
 
@@ -76,13 +78,12 @@ for dataset in datasets:
 
 
 
-
+    '''
 	total_ll = 0
 	for instance in test:
 		test_data = np.array(instance).reshape(-1, len(feature_names))
 		total_ll += log_likelihood(spmn, test_data)[0][0]
 	ll = (total_ll/len(test))
-
 
 
 	test_data = [[np.nan]*len(feature_names)]
@@ -95,3 +96,17 @@ for dataset in datasets:
 	f.write(f"\n\tMEU : {meus}")
 	f.write(f"\n\tNodes : {nodes}")
 	f.close()
+	'''
+
+	from spn.data.Export_Textiles.simulator import ExportTextiles
+
+	env = ExportTextiles()
+	test_data = [[0, np.nan, np.nan]]
+	output = spmn_topdowntraversal_and_bestdecisions(spmn, test_data)
+	print(output)
+	test_data = [[1, np.nan, np.nan]]
+	output = spmn_topdowntraversal_and_bestdecisions(spmn, test_data)
+	print(output)
+	test_data = [[2, np.nan, np.nan]]
+	output = spmn_topdowntraversal_and_bestdecisions(spmn, test_data)
+	print(output)
