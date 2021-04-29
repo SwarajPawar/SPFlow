@@ -121,7 +121,7 @@ class LungCancer_Staging:
 
 			if self.Mediastinoscopy == 1:
 				p = random.random()
-				if Mediastinal_Metastases == 1:
+				if self.Mediastinal_Metastases == 1:
 					if p<0.82:
 						self.Mediastinoscopy_Result = 1
 					else:
