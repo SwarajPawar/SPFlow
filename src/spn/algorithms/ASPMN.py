@@ -337,10 +337,11 @@ class Anytime_SPMN:
 		meus = list()
 		nodes = list()
 		avg_rewards = list()
+		reward_dev = list()
 		past3 = list()
 		
 		limit = 2 
-		n = int(self.vars**0.5)  
+		n = max(2, int(self.vars**0.5))  
 		step = (self.vars - (self.vars**0.5) + 1)/10
 		d = 2
 
@@ -384,10 +385,12 @@ class Anytime_SPMN:
 			meus.append(m[0])
 
 			env = get_env(self.dataset)
-			rewards = list()
-			
-			
-			for z in range(100):
+			total_reward = 0
+			trials = 5000
+			batch_size = trials / 10
+			batch = list()
+
+			for z in range(trials):
 				
 				state = env.reset()  #
 				while(True):
@@ -396,9 +399,12 @@ class Anytime_SPMN:
 					action = output[0][0]
 					state, reward, done = env.step(action)
 					if done:
-						rewards.append(reward)
+						total_reward = reward
 						break
-			avg_rewards.append(sum(rewards)/len(rewards))
+				if (z+1) % batch_size == 0:
+					batch.append(total_reward/batch_size)
+			avg_rewards.append(np.mean(batch))
+			reward_dev.append(np.std(batch))
 			
 
 			print("\n\n\n\n\n")
@@ -419,19 +425,22 @@ class Anytime_SPMN:
 			plt.legend()
 			plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
 			plt.close()
+
 			plt.plot(meus, marker="o", label="Anytime")
 			plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dotted", color ="red", label="Original")
 			plt.title(f"{self.dataset} MEU")
 			plt.legend()
 			plt.savefig(f"{self.plot_path}/meu.png", dpi=100)
 			plt.close()
+
 			plt.plot(nodes, marker="o", label="Anytime")
 			plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dotted", color ="red", label="Original")
 			plt.title(f"{self.dataset} Nodes")
 			plt.legend()
 			plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
 			plt.close()
-			plt.plot(avg_rewards, marker="o", label="Anytime")
+
+			plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
 			#plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dotted", color ="red", label="Original")
 			plt.title(f"{self.dataset} Average Rewards")
 			plt.legend()

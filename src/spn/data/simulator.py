@@ -6,12 +6,12 @@ import collections
 import pandas as pd
 import random
 
-from spn.data.simulator import Export_Textiles
-from spn.data.simulator import Computer_Diagnostician
-from spn.data.simulator import Powerplant_Airpollution
-from spn.data.simulator import HIV_Screening
-from spn.data.simulator import Test_Strep
-from spn.data.simulator import LungCancer_Staging
+from spn.data.Export_Textiles.simulator import Export_Textiles
+from spn.data.Computer_Diagnostician.simulator import Computer_Diagnostician
+from spn.data.Powerplant_Airpollution.simulator import Powerplant_Airpollution
+from spn.data.HIV_Screening.simulator import HIV_Screening
+from spn.data.Test_Strep.simulator import Test_Strep
+from spn.data.LungCancer_Staging.simulator import LungCancer_Staging
 
 
 def get_env(dataset):
