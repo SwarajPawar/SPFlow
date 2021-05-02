@@ -24,10 +24,10 @@ import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 
-datasets = ["Export_Textiles"]
+datasets = ['Export_Textiles', 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
 #datasets = [f"Dataset{i+1}" for i in range(6)]
 
-path = "test_dec"
+path = "original_new"
 
 
 
@@ -73,12 +73,12 @@ for dataset in datasets:
 	
 	
 	nodes = get_structure_stats_dict(spmn)["nodes"]
-    
-    plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
+	
+	plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
 
 
 
-    '''
+	
 	total_ll = 0
 	for instance in test:
 		test_data = np.array(instance).reshape(-1, len(feature_names))
@@ -90,23 +90,35 @@ for dataset in datasets:
 	m = meu(spmn, test_data)
 	meus = (m[0])
 
+	env = get_env(self.dataset)
+	total_reward = 0
+	trials = 10000
+	batch_size = trials / 10
+	batch = list()
+
+	for z in range(trials):
+		
+		state = env.reset()  #
+		while(True):
+			output = best_next_decision(spmn, state)
+			#output = spmn_topdowntraversal_and_bestdecisions(spmn, test_data)
+			action = output[0][0]
+			state, reward, done = env.step(action)
+			if done:
+				total_reward = reward
+				break
+		if (z+1) % batch_size == 0:
+			batch.append(total_reward/batch_size)
+
+	avg_rewards = np.mean(batch)
+	reward_dev = np.std(batch)
+	
+
 	f = open(f"{path}/{dataset}/stats.txt", "w")
 	f.write(f"\n{dataset}")
 	f.write(f"\n\tLog Likelihood : {ll}")
 	f.write(f"\n\tMEU : {meus}")
 	f.write(f"\n\tNodes : {nodes}")
+	f.write(f"\n\tAverage rewards : {avg_rewards}")
+	f.write(f"\n\t\tDeviation : {reward_dev}")
 	f.close()
-	'''
-
-	from spn.data.Export_Textiles.simulator import ExportTextiles
-
-	env = ExportTextiles()
-	test_data = [[0, np.nan, np.nan]]
-	output = spmn_topdowntraversal_and_bestdecisions(spmn, test_data)
-	print(output)
-	test_data = [[1, np.nan, np.nan]]
-	output = spmn_topdowntraversal_and_bestdecisions(spmn, test_data)
-	print(output)
-	test_data = [[2, np.nan, np.nan]]
-	output = spmn_topdowntraversal_and_bestdecisions(spmn, test_data)
-	print(output)

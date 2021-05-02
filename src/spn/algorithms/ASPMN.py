@@ -386,7 +386,7 @@ class Anytime_SPMN:
 
 			env = get_env(self.dataset)
 			total_reward = 0
-			trials = 5000
+			trials = 10000
 			batch_size = trials / 10
 			batch = list()
 
