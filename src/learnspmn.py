@@ -19,7 +19,13 @@ from spn.data.metaData import *
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
 from spn.algorithms.SPMN import SPMN
-from spn.algorithms.MEUTopDown import spmn_topdowntraversal_and_bestdecisions
+from spn.algorithms.MEU import meu
+from spn.algorithms.Inference import log_likelihood
+from spn.algorithms.Statistics import get_structure_stats_dict
+from spn.io.Graphics import plot_spn
+from spn.data.simulator import get_env
+from spn.algorithms.MEU import best_next_decision
+
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
