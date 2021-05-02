@@ -71,6 +71,7 @@ for dataset in datasets:
 	'''
 	data = df.values
 	train, test = train_test_split(data, test_size=0.2, shuffle=True)
+	test = test[:100]
 
 	
 	spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, meta_types, cluster_by_curr_information_set = True, util_to_bin = False)
