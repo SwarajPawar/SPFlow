@@ -12,18 +12,19 @@ from spn.data.metaData import get_feature_names
 
 
 
-dataset = "LungCancer_Staging"
-datasets = ['Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
+dataset = "HIV_Screening"
+datasets = ['Export_Textiles', 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
 
-data = pd.read_csv(f"spn/data/{dataset}/{dataset}_new.tsv", delimiter = "\t")
+data = pd.read_csv(f"spn/data/{dataset}/{dataset}_new1.tsv", delimiter = "\t")
 	
 data = data.values[:,1:]
-#data = data[:,4:]
+#data = data[:,3:]
 
 unique = []
 
 for x in data:
-	z = tuple((x[1], x[6], x[5], x[7], x[8]))
+	z = tuple((x[1], x[4], x[5], x[6]))
+	#z = tuple(x)
 	if z not in unique:
 		unique.append(z)
 

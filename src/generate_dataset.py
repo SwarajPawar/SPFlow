@@ -10,12 +10,12 @@ import csv
 from spn.data.simulator import get_env
 from spn.data.metaData import get_feature_names
 
-instances = 1000000
+instances = 100000
 n_actions = 2
-ext = "_new"
+ext = "_new1"
 
-#datasets = ["LungCancer_Staging"]
-#datasets = ['Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
+datasets = ['HIV_Screening']
+#datasets = ["Export_Textiles", 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
 
 for dataset in datasets:
 
