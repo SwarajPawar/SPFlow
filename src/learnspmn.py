@@ -31,7 +31,7 @@ from os import path as pth
 import sys, os
 
 datasets = ['Export_Textiles', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'Test_Strep', 'LungCancer_Staging']
-datasets = ['Export_Textiles']
+#datasets = ['Export_Textiles']
 
 path = "original_new"
 
@@ -70,8 +70,8 @@ for dataset in datasets:
 	df = pd.concat([df_without_utility_categorical, df_utility], axis=1, sort=False)
 	'''
 	data = df.values
-	train, test = train_test_split(data, test_size=0.2, shuffle=True)
-	test = test[:10]
+	train, test = train_test_split(data, test_size=0.9, shuffle=True)
+	test = test
 
 	
 	spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, meta_types, cluster_by_curr_information_set = True, util_to_bin = False)
@@ -99,7 +99,7 @@ for dataset in datasets:
 
 	env = get_env(dataset)
 	total_reward = 0
-	trials = 1000
+	trials = 10000
 	batch_size = trials / 10
 	batch = list()
 
@@ -116,7 +116,6 @@ for dataset in datasets:
 				break
 		if (z+1) % batch_size == 0:
 			batch.append(total_reward/batch_size)
-			batch = list()
 			total_reward = 0
 
 	avg_rewards = np.mean(batch)
