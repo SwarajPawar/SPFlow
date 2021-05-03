@@ -30,8 +30,8 @@ import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 
-datasets = ['Export_Textiles', 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
-#datasets = [f"Dataset{i+1}" for i in range(6)]
+datasets = ['Export_Textiles', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'Test_Strep', 'LungCancer_Staging']
+datasets = ['Export_Textiles']
 
 path = "original_new"
 
@@ -71,7 +71,7 @@ for dataset in datasets:
 	'''
 	data = df.values
 	train, test = train_test_split(data, test_size=0.2, shuffle=True)
-	
+	test = test[:10]
 
 	
 	spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, meta_types, cluster_by_curr_information_set = True, util_to_bin = False)
@@ -99,7 +99,7 @@ for dataset in datasets:
 
 	env = get_env(dataset)
 	total_reward = 0
-	trials = 10000
+	trials = 1000
 	batch_size = trials / 10
 	batch = list()
 
@@ -112,13 +112,21 @@ for dataset in datasets:
 			action = output[0][0]
 			state, reward, done = env.step(action)
 			if done:
-				total_reward = reward
+				total_reward += reward
 				break
 		if (z+1) % batch_size == 0:
 			batch.append(total_reward/batch_size)
+			batch = list()
+			total_reward = 0
 
 	avg_rewards = np.mean(batch)
 	reward_dev = np.std(batch)
+
+	print(f"\n\tLog Likelihood : {ll}")
+	print(f"\n\tMEU : {meus}")
+	print(f"\n\tNodes : {nodes}")
+	print(f"\n\tAverage rewards : {avg_rewards}")
+	print(f"\n\t\tDeviation : {reward_dev}")
 	
 
 	f = open(f"{path}/{dataset}/stats.txt", "w")
