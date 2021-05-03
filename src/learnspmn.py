@@ -25,6 +25,7 @@ from spn.algorithms.Statistics import get_structure_stats_dict
 from spn.io.Graphics import plot_spn
 from spn.data.simulator import get_env
 from spn.algorithms.MEU import best_next_decision
+from spn.io.ProgressBar import printProgressBar
 
 import matplotlib.pyplot as plt
 from os import path as pth
@@ -87,9 +88,10 @@ for dataset in datasets:
 
 	
 	total_ll = 0
-	for instance in test:
+	for j, instance in enumerate(test):
 		test_data = np.array(instance).reshape(-1, len(feature_names))
 		total_ll += log_likelihood(spmn, test_data)[0][0]
+		printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
 	ll = (total_ll/len(test))
 
 
@@ -117,6 +119,7 @@ for dataset in datasets:
 		if (z+1) % batch_size == 0:
 			batch.append(total_reward/batch_size)
 			total_reward = 0
+		printProgressBar(z+1, len(test), prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
 	avg_rewards = np.mean(batch)
 	reward_dev = np.std(batch)
