@@ -41,7 +41,7 @@ import sys, os
 datasets = ['Export_Textiles', 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
 #datasets = ['Export_Textiles']
 path = "test"
-path = "nomax"
+path = "new_nomax"
 
 
 for dataset in datasets:
@@ -76,8 +76,8 @@ for dataset in datasets:
 	df = pd.concat([df_without_utility_categorical, df_utility], axis=1, sort=False)
 
 	data = df.values
-	train, test = train_test_split(data, test_size=0.2, shuffle=False)
-	test = test[:2000]
+	train, test = train_test_split(data, test_size=0.9, shuffle=False)
+	test = test[:5000]
 
 
 	

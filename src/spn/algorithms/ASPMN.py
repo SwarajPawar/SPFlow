@@ -12,6 +12,7 @@ from spn.algorithms.MEU import meu
 from spn.algorithms.Inference import log_likelihood
 from spn.algorithms.Statistics import get_structure_stats_dict
 from spn.io.Graphics import plot_spn
+from spn.io.ProgressBar import printProgressBar
 from spn.data.simulator import get_env
 from spn.algorithms.MEU import best_next_decision
 import logging
@@ -323,6 +324,7 @@ class Anytime_SPMN:
 		:return: learned spmn
 		"""
 		
+		'''
 		original_stats = {
 			'Export_Textiles': {"ll" : -1.0903135560503194, "meu" : 1922639.5, 'nodes' : 22},
 			'Test_Strep': {"ll" : -1.1461735112245122, "meu" : 54.92189449375, 'nodes' : 51},
@@ -331,7 +333,15 @@ class Anytime_SPMN:
 			'Computer_Diagnostician': {"ll" : -0.8912294493362266, "meu" : 242.863042737567, 'nodes' : 50},
 			'Powerplant_Airpollution': {"ll" : -1.8151637099020188, "meu" : -2803562.5, 'nodes' : 45}
 		}
-
+		'''
+		original_stats = {
+			'Export_Textiles': {"ll" : -1.0892559429908522, "meu" : 1922275.95, 'nodes' : 22, 'reward':1721469.45},
+			'Test_Strep': {"ll" : -0.9112557170813002, "meu" : 54.93760881256758, 'nodes' : 100, 'reward':54.97011839999944},
+			'LungCancer_Staging': {"ll" : -1.1515872880624247, "meu" : 3.1526200852839716, 'nodes' : 260, 'reward':3.1738849999999976},
+			'HIV_Screening': {"ll" : -0.6189833438168413, "meu" : 42.63750815337698, 'nodes' : 112, 'reward':42.4838739999994},
+			'Computer_Diagnostician': {"ll" : -0.892138328151404, "meu" : 244.94, 'nodes' : 47, 'reward':244.955},
+			'Powerplant_Airpollution': {"ll" : -1.081424145432235, "meu" : -2726821.30929344245, 'nodes' : 46, 'reward':-2770200.0}
+		}
 		
 		ll = list()
 		meus = list()
@@ -373,9 +383,10 @@ class Anytime_SPMN:
 			
 
 			total_ll = 0
-			for instance in test:
+			for j, instance in enumerate(test):
 				test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
 				total_ll += log_likelihood(spmn, test_data)[0][0]
+				printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
 			ll.append(total_ll/len(test))
 			
 
@@ -384,7 +395,7 @@ class Anytime_SPMN:
 			m = meu(spmn, test_data)
 			meus.append(m[0])
 
-			env = get_env(self.dataset)
+			env = get_env(dataset)
 			total_reward = 0
 			trials = 10000
 			batch_size = trials / 10
@@ -399,10 +410,13 @@ class Anytime_SPMN:
 					action = output[0][0]
 					state, reward, done = env.step(action)
 					if done:
-						total_reward = reward
+						total_reward += reward
 						break
 				if (z+1) % batch_size == 0:
 					batch.append(total_reward/batch_size)
+					total_reward = 0
+				printProgressBar(z+1, len(test), prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+
 			avg_rewards.append(np.mean(batch))
 			reward_dev.append(np.std(batch))
 			
@@ -413,6 +427,7 @@ class Anytime_SPMN:
 			print("log_likelihood: ",ll[i])
 			print("MEU: ",meus[i])
 			print("Average rewards: ",avg_rewards[i])
+			print("Deviation: ",reward_dev[i])
 			print(nodes)
 			print(meus)
 			print("\n\n\n\n\n")
@@ -441,7 +456,7 @@ class Anytime_SPMN:
 			plt.close()
 
 			plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
-			#plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dotted", color ="red", label="Original")
+			plt.plot([original_stats[self.dataset]["reward"]]*len(nodes), linestyle="dotted", color ="red", label="Original")
 			plt.title(f"{self.dataset} Average Rewards")
 			plt.legend()
 			plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
@@ -453,6 +468,7 @@ class Anytime_SPMN:
 			f.write(f"\n\tMEU : {meus}")
 			f.write(f"\n\tNodes : {nodes}")
 			f.write(f"\n\tAverage Rewards : {avg_rewards}")
+			f.write(f"\n\t\tDeviation : {reward_dev}")
 			f.close()
 
 
