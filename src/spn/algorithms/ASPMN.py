@@ -395,7 +395,7 @@ class Anytime_SPMN:
 			m = meu(spmn, test_data)
 			meus.append(m[0])
 
-			env = get_env(dataset)
+			env = get_env(self.dataset)
 			total_reward = 0
 			trials = 10000
 			batch_size = trials / 10
@@ -415,7 +415,7 @@ class Anytime_SPMN:
 				if (z+1) % batch_size == 0:
 					batch.append(total_reward/batch_size)
 					total_reward = 0
-				printProgressBar(z+1, len(test), prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+				printProgressBar(z+1, trials, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
 			avg_rewards.append(np.mean(batch))
 			reward_dev.append(np.std(batch))
