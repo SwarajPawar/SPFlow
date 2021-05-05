@@ -42,15 +42,16 @@ def meu_max(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
     decision_value_given = data[:, node.dec_idx]
     max_value = node.dec_values[np.argmax(meu_children, axis=1)]
     # if data contains a decision value use that otherwise use max
-    # if not np.isnan(decision_value_given) and list(decision_value_given) not in node.dec_values:
-    #     meu_per_node[:, node.id] = np.nan
-    # else:
-    dec_value = np.select([np.isnan(decision_value_given), True],
-                          [max_value, decision_value_given]).astype(int)
-    dec_value_to_child_id = lambda val: node.children[list(node.dec_values).index(val)].id
-    dec_value_to_child_id = np.vectorize(dec_value_to_child_id)
-    child_id = dec_value_to_child_id(dec_value)
-    meu_per_node[:,node.id] = meu_per_node[np.arange(meu_per_node.shape[0]),child_id]
+    if not np.isnan(decision_value_given) and decision_value_given not in node.dec_values:
+        meu_per_node[:, node.id] = np.nan
+    else:
+    
+        dec_value = np.select([np.isnan(decision_value_given), True],
+                              [max_value, decision_value_given]).astype(int)
+        dec_value_to_child_id = lambda val: node.children[list(node.dec_values).index(val)].id
+        dec_value_to_child_id = np.vectorize(dec_value_to_child_id)
+        child_id = dec_value_to_child_id(dec_value)
+        meu_per_node[:,node.id] = meu_per_node[np.arange(meu_per_node.shape[0]),child_id]
 
 
 def meu_util(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
@@ -221,7 +222,7 @@ def best_next_decision(root, input_data, in_place=False):
     for node in nodes:
         if type(node) == Max:
             if node.dec_idx in dec_dict:
-                    dec_dict[node.dec_idx].union(set(node.dec_values))
+                    dec_dict[node.dec_idx] = dec_dict[node.dec_idx].union(set(node.dec_values))
             else:
                 dec_dict[node.dec_idx] = set(node.dec_values)
     next_dec_idx = None

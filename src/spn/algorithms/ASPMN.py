@@ -351,7 +351,7 @@ class Anytime_SPMN:
 		past3 = list()
 		
 		limit = 2 
-		n = max(2, int(self.vars**0.5))  
+		n = int(self.vars**0.5)
 		step = (self.vars - (self.vars**0.5) + 1)/10
 		d = 2
 
@@ -359,7 +359,8 @@ class Anytime_SPMN:
 		while(True):
 
 			index = 0
-			print(i)
+			print(f"\nIteration: {i}\n")
+			
 			curr_information_set_scope = np.array(range(len(self.params.partial_order[0]))).tolist()
 			remaining_vars_scope = np.array(range(len(self.params.feature_names))).tolist()
 			print(curr_information_set_scope)
@@ -381,7 +382,7 @@ class Anytime_SPMN:
 
 			
 			
-
+			
 			total_ll = 0
 			for j, instance in enumerate(test):
 				test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
@@ -420,7 +421,8 @@ class Anytime_SPMN:
 			avg_rewards.append(np.mean(batch))
 			reward_dev.append(np.std(batch))
 			
-
+			
+			
 			print("\n\n\n\n\n")
 			print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
 			print("#Nodes: ",nodes[i])
@@ -434,13 +436,14 @@ class Anytime_SPMN:
 
 			plt.close()
 			# plot line 
+			
 			plt.plot(ll, marker="o", label="Anytime")
 			plt.plot([original_stats[self.dataset]["ll"]]*len(ll), linestyle="dotted", color ="red", label="Original")
 			plt.title(f"{self.dataset} Log Likelihood")
 			plt.legend()
 			plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
 			plt.close()
-
+			
 			plt.plot(meus, marker="o", label="Anytime")
 			plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dotted", color ="red", label="Original")
 			plt.title(f"{self.dataset} MEU")
@@ -471,7 +474,7 @@ class Anytime_SPMN:
 			f.write(f"\n\t\tDeviation : {reward_dev}")
 			f.close()
 
-
+			
 
 			past3 = ll[-min(len(meus),3):]
 				
