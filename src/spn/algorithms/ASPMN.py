@@ -382,98 +382,99 @@ class Anytime_SPMN:
 
 			
 			
-			
-			total_ll = 0
-			for j, instance in enumerate(test):
-				test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
-				total_ll += log_likelihood(spmn, test_data)[0][0]
-				printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-			ll.append(total_ll/len(test))
-			
-
-
-			test_data = [[np.nan]*len(self.params.feature_names)]
-			m = meu(spmn, test_data)
-			meus.append(m[0])
-
-			env = get_env(self.dataset)
-			total_reward = 0
-			trials = 10000
-			batch_size = trials / 10
-			batch = list()
-
-			for z in range(trials):
+			try:
+				total_ll = 0
+				for j, instance in enumerate(test):
+					test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
+					total_ll += log_likelihood(spmn, test_data)[0][0]
+					printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
+				ll.append(total_ll/len(test))
 				
-				state = env.reset()  #
-				while(True):
-					output = best_next_decision(spmn, state)
-					#output = spmn_topdowntraversal_and_bestdecisions(spmn, test_data)
-					action = output[0][0]
-					state, reward, done = env.step(action)
-					if done:
-						total_reward += reward
-						break
-				if (z+1) % batch_size == 0:
-					batch.append(total_reward/batch_size)
-					total_reward = 0
-				printProgressBar(z+1, trials, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
-			avg_rewards.append(np.mean(batch))
-			reward_dev.append(np.std(batch))
-			
-			
-			
-			print("\n\n\n\n\n")
-			print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
-			print("#Nodes: ",nodes[i])
-			print("log_likelihood: ",ll[i])
-			print("MEU: ",meus[i])
-			print("Average rewards: ",avg_rewards[i])
-			print("Deviation: ",reward_dev[i])
-			print(nodes)
-			print(meus)
-			print("\n\n\n\n\n")
 
-			plt.close()
-			# plot line 
-			
-			plt.plot(ll, marker="o", label="Anytime")
-			plt.plot([original_stats[self.dataset]["ll"]]*len(ll), linestyle="dotted", color ="red", label="Original")
-			plt.title(f"{self.dataset} Log Likelihood")
-			plt.legend()
-			plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
-			plt.close()
-			
-			plt.plot(meus, marker="o", label="Anytime")
-			plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dotted", color ="red", label="Original")
-			plt.title(f"{self.dataset} MEU")
-			plt.legend()
-			plt.savefig(f"{self.plot_path}/meu.png", dpi=100)
-			plt.close()
+				test_data = [[np.nan]*len(self.params.feature_names)]
+				m = meu(spmn, test_data)
+				meus.append(m[0])
 
-			plt.plot(nodes, marker="o", label="Anytime")
-			plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dotted", color ="red", label="Original")
-			plt.title(f"{self.dataset} Nodes")
-			plt.legend()
-			plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
-			plt.close()
+				env = get_env(self.dataset)
+				total_reward = 0
+				trials = 10000
+				batch_size = trials / 10
+				batch = list()
 
-			plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
-			plt.plot([original_stats[self.dataset]["reward"]]*len(nodes), linestyle="dotted", color ="red", label="Original")
-			plt.title(f"{self.dataset} Average Rewards")
-			plt.legend()
-			plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
-			plt.close()
+				for z in range(trials):
+					
+					state = env.reset()  #
+					while(True):
+						output = best_next_decision(spmn, state)
+						#output = spmn_topdowntraversal_and_bestdecisions(spmn, test_data)
+						action = output[0][0]
+						state, reward, done = env.step(action)
+						if done:
+							total_reward += reward
+							break
+					if (z+1) % batch_size == 0:
+						batch.append(total_reward/batch_size)
+						total_reward = 0
+					printProgressBar(z+1, trials, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
-			f = open(f"{self.plot_path}/stats.txt", "w")
-			f.write(f"\n{self.dataset}")
-			f.write(f"\n\tLog Likelihood : {ll}")
-			f.write(f"\n\tMEU : {meus}")
-			f.write(f"\n\tNodes : {nodes}")
-			f.write(f"\n\tAverage Rewards : {avg_rewards}")
-			f.write(f"\n\t\tDeviation : {reward_dev}")
-			f.close()
+				avg_rewards.append(np.mean(batch))
+				reward_dev.append(np.std(batch))
+				
+				
+				
+				print("\n\n\n\n\n")
+				print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
+				print("#Nodes: ",nodes[-1])
+				print("log_likelihood: ",ll[-1])
+				print("MEU: ",meus[-1])
+				print("Average rewards: ",avg_rewards[-1])
+				print("Deviation: ",reward_dev[-1])
+				print(nodes)
+				print(meus)
+				print("\n\n\n\n\n")
 
+				plt.close()
+				# plot line 
+				
+				plt.plot(ll, marker="o", label="Anytime")
+				plt.plot([original_stats[self.dataset]["ll"]]*len(ll), linestyle="dotted", color ="red", label="Original")
+				plt.title(f"{self.dataset} Log Likelihood")
+				plt.legend()
+				plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
+				plt.close()
+				
+				plt.plot(meus, marker="o", label="Anytime")
+				plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dotted", color ="red", label="Original")
+				plt.title(f"{self.dataset} MEU")
+				plt.legend()
+				plt.savefig(f"{self.plot_path}/meu.png", dpi=100)
+				plt.close()
+
+				plt.plot(nodes, marker="o", label="Anytime")
+				plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dotted", color ="red", label="Original")
+				plt.title(f"{self.dataset} Nodes")
+				plt.legend()
+				plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
+				plt.close()
+
+				plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
+				plt.plot([original_stats[self.dataset]["reward"]]*len(nodes), linestyle="dotted", color ="red", label="Original")
+				plt.title(f"{self.dataset} Average Rewards")
+				plt.legend()
+				plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
+				plt.close()
+
+				f = open(f"{self.plot_path}/stats.txt", "w")
+				f.write(f"\n{self.dataset}")
+				f.write(f"\n\tLog Likelihood : {ll}")
+				f.write(f"\n\tMEU : {meus}")
+				f.write(f"\n\tNodes : {nodes}")
+				f.write(f"\n\tAverage Rewards : {avg_rewards}")
+				f.write(f"\n\t\tDeviation : {reward_dev}")
+				f.close()
+			except:
+				pass
 			
 
 			past3 = ll[-min(len(meus),3):]
