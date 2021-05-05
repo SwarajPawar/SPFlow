@@ -1,6 +1,5 @@
 
 
-
 original_stats = {
 	"Dataset1": {"ll" : -1.0903135560503194, "meu" : 1922639.5, 'nodes' : 22},
 	"Dataset2": {"ll" : -1.1461735112245122, "meu" : 54.92189449375, 'nodes' : 51},
@@ -47,13 +46,6 @@ path = "new_nomax"
 for dataset in datasets:
 	
 	print(f"\n\n\n{dataset}\n\n\n")
-	plot_path = f"{path}/{dataset}"
-	if not pth.exists(plot_path):
-		try:
-			os.makedirs(plot_path)
-		except OSError:
-			print ("Creation of the directory %s failed" % plot_path)
-			sys.exit()
 
 
 	partial_order = get_partial_order(dataset)
@@ -64,7 +56,7 @@ for dataset in datasets:
 	meta_types = [MetaType.DISCRETE]*(len(feature_names)-1)+[MetaType.UTILITY]
 
 			
-	df = pd.read_csv(f"spn/data/{dataset}/{dataset}.tsv", sep='\t')
+	df = pd.read_csv(f"spn/data/{dataset}/{dataset}_new.tsv", sep='\t')
 
 	df1, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
 	col_ind = column_titles.index(utility_node[0]) 
@@ -86,5 +78,5 @@ for dataset in datasets:
 	print(test.shape)
 
 	
-	aspmn = Anytime_SPMN(dataset, plot_path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=False, util_to_bin = False)
+	aspmn = Anytime_SPMN(dataset, path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=False, util_to_bin = False)
 	aspmn.learn_aspmn(train, test)

@@ -45,7 +45,15 @@ class Anytime_SPMN:
 
 		self.vars = len(feature_labels)
 
-		self.plot_path = output_path
+		self.plot_path = f"{output_path}/{dataset}"
+
+
+		if not pth.exists(self.plot_path):
+			try:
+				os.makedirs(self.plot_path)
+			except OSError:
+				print ("Creation of the directory %s failed" % self.plot_path)
+				sys.exit()
 
 
 	def set_next_operation(self, next_op):
@@ -318,7 +326,7 @@ class Anytime_SPMN:
 				logging.info(f'created sum node')
 				return sum_node
 
-	def learn_aspmn(self, train, test):
+	def learn_aspmn(self, train, test, k=None):
 		"""
 		:param
 		:return: learned spmn
@@ -355,6 +363,14 @@ class Anytime_SPMN:
 		step = (self.vars - (self.vars**0.5) + 1)/10
 		d = 2
 
+		if k is not None:
+			if not pth.exists(f"{self.plot_path}/{k}"):
+				try:
+					os.makedirs(f"{self.plot_path}/{k}")
+				except OSError:
+					print ("Creation of the directory %s failed" % f"{self.plot_path}/{k}")
+					sys.exit()
+
 		i = 0
 		while(True):
 
@@ -378,8 +394,10 @@ class Anytime_SPMN:
 
 			nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
-			plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
-
+			if k is None:
+				plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
+			else:
+				plot_spn(spmn, f'{self.plot_path}/{k}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
 			
 			
 			try:
@@ -438,34 +456,48 @@ class Anytime_SPMN:
 				# plot line 
 				
 				plt.plot(ll, marker="o", label="Anytime")
-				plt.plot([original_stats[self.dataset]["ll"]]*len(ll), linestyle="dotted", color ="red", label="Original")
+				plt.plot([original_stats[self.dataset]["ll"]]*len(ll), linestyle="dotted", color ="red", label="LearnSPMN")
 				plt.title(f"{self.dataset} Log Likelihood")
 				plt.legend()
-				plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
+				if k is None:
+					plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
+				else:
+					plt.savefig(f"{self.plot_path}/{k}/ll.png", dpi=100)
 				plt.close()
 				
 				plt.plot(meus, marker="o", label="Anytime")
-				plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dotted", color ="red", label="Original")
+				plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dotted", color ="red", label="LearnSPMN")
 				plt.title(f"{self.dataset} MEU")
 				plt.legend()
-				plt.savefig(f"{self.plot_path}/meu.png", dpi=100)
+				if k is None:
+					plt.savefig(f"{self.plot_path}/meu.png", dpi=100)
+				else:
+					plt.savefig(f"{self.plot_path}/{k}/meu.png", dpi=100)
 				plt.close()
 
 				plt.plot(nodes, marker="o", label="Anytime")
-				plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dotted", color ="red", label="Original")
+				plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dotted", color ="red", label="LearnSPMN")
 				plt.title(f"{self.dataset} Nodes")
 				plt.legend()
-				plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
+				if k is None:
+					plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
+				else:
+					plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
 				plt.close()
 
 				plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
-				plt.plot([original_stats[self.dataset]["reward"]]*len(nodes), linestyle="dotted", color ="red", label="Original")
+				plt.plot([original_stats[self.dataset]["reward"]]*len(nodes), linestyle="dotted", color ="red", label="LearnSPMN")
 				plt.title(f"{self.dataset} Average Rewards")
 				plt.legend()
-				plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
+				if k is None:
+					plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
+				else:
+					plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
 				plt.close()
 
-				f = open(f"{self.plot_path}/stats.txt", "w")
+				
+				f = open(f"{self.plot_path}/stats.txt", "w") if k is None else open(f"{self.plot_path}/{k}/stats.txt", "w")
+
 				f.write(f"\n{self.dataset}")
 				f.write(f"\n\tLog Likelihood : {ll}")
 				f.write(f"\n\tMEU : {meus}")
@@ -488,10 +520,92 @@ class Anytime_SPMN:
 			d+=1
 			n = n+step
 
-		return spmn
+		stats = {"ll" : ll,
+				"meu" : meus,
+				"nodes" : nodes,
+				"reward" : avg_rewards,
+				"deviation" : reward_dev
+				}
 
-		# Prune(self.spmn_structure)
-		return self.spmn_structure
+		# Prune(self.spmn)
+		return self.spmn, stats
+
+
+
+	def learn_aspmn_kfold(self, data, k):
+
+		from sklearn.model_selection import KFold
+
+		kfold = KFold(n_Splits=k, shuffle=True)
+		cmap = plt.get_cmap('gnuplot')
+
+		k_ = 1
+		k_stats = dict()
+		for trainidx, testidx in kfold.split(data):
+
+			train, test = data[trainidx], data[testidx]
+			_, stats = self.learn_aspmn(train, test, k=k_)
+			k_stats[k] = stats
+			k_+=1
+
+		plt.close()
+	    maxlen = max([len(k_stats[i+1]["ll"]) for i in range(k)])
+	    total_ll = np.zeros(min([len(k_stats[i+1]["ll"]) for i in range(k)]))
+	    originalll = [original_stats[dataset]["ll"]] * maxlen
+	    plt.plot(originalll, linestyle="dotted", color ="blue", label="LearnSPN")
+	    for i in range(k):
+	    	plt.plot(k_stats[i+1]["ll"], marker="o", color =cmap(i+1), label=(i+1))
+	    	total_ll += np.array(k_stats[i+1]["ll"][:len(total_ll)])
+	    avg_ll = total_ll/k
+	    plt.plot(avg_ll, marker="o", color ="black", label="Mean")
+	    plt.title(f"{dataset} Log Likelihood")
+	    plt.legend()
+	    plt.savefig(f"{path}/{dataset}/ll.png", dpi=150)
+	    plt.close()
+
+	    maxlen = max([len(k_stats[i+1]["nodes"]) for i in range(k)])
+	    total_n = np.zeros(min([len(k_stats[i+1]["nodes"]) for i in range(k)]))
+	    originaln = [original_stats[dataset]["nodes"]] * maxlen
+	    plt.plot(originaln, linestyle="dotted", color ="blue", label="LearnSPN")
+	    for i in range(k):
+	    	plt.plot(k_stats[i+1]["nodes"], marker="o", color =cmap(i+1), label=(i+1))
+	    	total_n += np.array(k_stats[i+1]["nodes"][:len(total_n)])
+	    avg_n = total_n/k
+	    plt.plot(avg_n, marker="o", color ="black", label="Mean")
+	    plt.title(f"{dataset} Nodes")
+	    plt.legend()
+	    plt.savefig(f"{path}/{dataset}/nodes.png", dpi=150)
+	    plt.close()
+
+	    maxlen = max([len(k_stats[i+1]["meu"]) for i in range(k)])
+	    total_meu = np.zeros(min([len(k_stats[i+1]["meu"]) for i in range(k)]))
+	    originalmeu = [original_stats[dataset]["meu"]] * maxlen
+	    plt.plot(originalmeu, linestyle="dotted", color ="blue", label="LearnSPN")
+	    for i in range(k):
+	    	plt.plot(k_stats[i+1]["meu"], marker="o", color =cmap(i+1), label=(i+1))
+	    	total_meu += np.array(k_stats[i+1]["meu"][:len(total_meu)])
+	    avg_meu = total_meu/k
+	    plt.plot(avg_meu, marker="o", color ="black", label="Mean")
+	    plt.title(f"{dataset} MEU")
+	    plt.legend()
+	    plt.savefig(f"{path}/{dataset}/meu.png", dpi=150)
+	    plt.close()
+
+	    maxlen = max([len(k_stats[i+1]["reward"]) for i in range(k)])
+	    total_r = np.zeros(min([len(k_stats[i+1]["reward"]) for i in range(k)]))
+	    originalr = [original_stats[dataset]["reward"]] * maxlen
+	    plt.plot(originalr, linestyle="dotted", color ="blue", label="LearnSPN")
+	    for i in range(k):
+	    	plt.errorbar(np.arange(len(k_stats[i+1]["reward"])), k_stats[i+1]["reward"], yerr=k_stats[i+1]["deviation"], marker="o", color =cmap(i+1), label=(i+1))
+	    	total_r += np.array(k_stats[i+1]["reward"][:len(total_r)])
+	    avg_r = total_r/k
+	    plt.plot(avg_r, marker="o", color ="black", label="Mean")
+	    plt.title(f"{dataset} Average Rewards")
+	    plt.legend()
+	    plt.savefig(f"{path}/{dataset}/reward.png", dpi=150)
+	    plt.close()
+
+
 
 
 class SPMNParams:
