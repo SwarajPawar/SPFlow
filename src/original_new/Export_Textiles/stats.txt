@@ -1,7 +1,7 @@
 
 Export_Textiles
-	Log Likelihood : -1.0890548749343167
-	MEU : 1918789.95
-	Nodes : 22
-	Average rewards : 1724052.2
-		Deviation : 15475.665724291153
+	Log Likelihood : -1.0895330076961594
+	MEU : 1722313.8158882717
+	Nodes : 38
+	Average rewards : 1725415.65
+		Deviation : 14159.095354312012
