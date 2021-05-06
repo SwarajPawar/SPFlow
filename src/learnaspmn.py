@@ -31,7 +31,7 @@ from spn.data.metaData import *
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
 from spn.algorithms.SPMN import SPMN
-from spn.algorithms.ASPMN1 import Anytime_SPMN
+from spn.algorithms.ASPMN import Anytime_SPMN
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
@@ -40,7 +40,7 @@ import sys, os
 datasets = ['Export_Textiles', 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
 #datasets = ['Export_Textiles']
 path = "test"
-path = "all_max"
+path = "no_sum"
 
 
 for dataset in datasets:
@@ -74,8 +74,8 @@ for dataset in datasets:
 
 	
 	#train, test = data[:int(data.shape[0]*0.7)], data[int(data.shape[0]*0.7):]
-	print(train.shape)
-	print(test.shape)
+	#print(train.shape)
+	#print(test.shape)
 
 	
 	aspmn = Anytime_SPMN(dataset, path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=False, util_to_bin = False)

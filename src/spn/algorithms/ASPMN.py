@@ -260,8 +260,8 @@ class Anytime_SPMN:
 				curr_op = self.get_curr_operation()
 				logging.debug(f'curr_op at sum node (cluster test): {curr_op}')
 
-				split_rows = get_split_rows_XMeans(limit=self.limit)    # from SPMNHelper.py
-				#split_rows = get_split_rows_KMeans()
+				#split_rows = get_split_rows_XMeans(limit=self.limit)    # from SPMNHelper.py
+				split_rows = get_split_rows_KMeans()
 
 				if self.cluster_by_curr_information_set:
 
@@ -349,12 +349,12 @@ class Anytime_SPMN:
 		'''
 		
 		original_stats = {
-			'Export_Textiles': {"ll" : -1.0892559429908522, "meu" : 1922275.95, 'nodes' : 28, 'reward':1721469.45},
-			'Test_Strep': {"ll" : -0.9112557170813002, "meu" : 54.93760881256758, 'nodes' : 130, 'reward':54.97011839999944},
-			'LungCancer_Staging': {"ll" : -1.1515872880624247, "meu" : 3.1526200852839716, 'nodes' : 260, 'reward':3.1738849999999976},
-			'HIV_Screening': {"ll" : -0.6189833438168413, "meu" : 42.63750815337698, 'nodes' : 112, 'reward':42.4838739999994},
-			'Computer_Diagnostician': {"ll" : -0.892138328151404, "meu" : 244.94, 'nodes' : 47, 'reward':244.955},
-			'Powerplant_Airpollution': {"ll" : -1.081424145432235, "meu" : -2726821.30929344245, 'nodes' : 46, 'reward':-2770200.0}
+			'Export_Textiles': {"ll" : -1.0895330076961594, "meu" : 1722313.8158882717, 'nodes' : 38, 'reward':1725415.65},
+			'Test_Strep': {"ll" : -0.9346136204874161, "meu" : 54.9416526618876, 'nodes' : 130, 'reward':54.939131999999425},
+			'LungCancer_Staging': {"ll" : -1.150134934153642, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.153284999999997},
+			'HIV_Screening': {"ll" : -0.6186509166805391, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.5504879999994},
+			'Computer_Diagnostician': {"ll" : -0.905791805125671, "meu" : 244.85700000000003, 'nodes' : 47, 'reward':245.27000000000004},
+			'Powerplant_Airpollution': {"ll" : -1.0794334414004707, "meu" : -2756263.244346315, 'nodes' : 46, 'reward':-2755600.0}
 		}
 		
 		ll = list()
@@ -520,7 +520,7 @@ class Anytime_SPMN:
 
 
 			i+=1
-			limit += 1
+			#limit += 1
 			d+=1
 			n = n+step
 
