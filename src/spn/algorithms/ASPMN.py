@@ -553,61 +553,61 @@ class Anytime_SPMN:
 			k_+=1
 
 		plt.close()
-	    maxlen = max([len(k_stats[i+1]["ll"]) for i in range(k)])
-	    total_ll = np.zeros(min([len(k_stats[i+1]["ll"]) for i in range(k)]))
-	    originalll = [original_stats[dataset]["ll"]] * maxlen
-	    plt.plot(originalll, linestyle="dotted", color ="blue", label="LearnSPN")
-	    for i in range(k):
-	    	plt.plot(k_stats[i+1]["ll"], marker="o", color =cmap(i+1), label=(i+1))
-	    	total_ll += np.array(k_stats[i+1]["ll"][:len(total_ll)])
-	    avg_ll = total_ll/k
-	    plt.plot(avg_ll, marker="o", color ="black", label="Mean")
-	    plt.title(f"{dataset} Log Likelihood")
-	    plt.legend()
-	    plt.savefig(f"{path}/{dataset}/ll.png", dpi=150)
-	    plt.close()
+		maxlen = max([len(k_stats[i+1]["ll"]) for i in range(k)])
+		total_ll = np.zeros(min([len(k_stats[i+1]["ll"]) for i in range(k)]))
+		originalll = [original_stats[dataset]["ll"]] * maxlen
+		plt.plot(originalll, linestyle="dotted", color ="blue", label="LearnSPN")
+		for i in range(k):
+			plt.plot(k_stats[i+1]["ll"], marker="o", color =cmap(i+1), label=(i+1))
+			total_ll += np.array(k_stats[i+1]["ll"][:len(total_ll)])
+		avg_ll = total_ll/k
+		plt.plot(avg_ll, marker="o", color ="black", label="Mean")
+		plt.title(f"{dataset} Log Likelihood")
+		plt.legend()
+		plt.savefig(f"{path}/{dataset}/ll.png", dpi=150)
+		plt.close()
 
-	    maxlen = max([len(k_stats[i+1]["nodes"]) for i in range(k)])
-	    total_n = np.zeros(min([len(k_stats[i+1]["nodes"]) for i in range(k)]))
-	    originaln = [original_stats[dataset]["nodes"]] * maxlen
-	    plt.plot(originaln, linestyle="dotted", color ="blue", label="LearnSPN")
-	    for i in range(k):
-	    	plt.plot(k_stats[i+1]["nodes"], marker="o", color =cmap(i+1), label=(i+1))
-	    	total_n += np.array(k_stats[i+1]["nodes"][:len(total_n)])
-	    avg_n = total_n/k
-	    plt.plot(avg_n, marker="o", color ="black", label="Mean")
-	    plt.title(f"{dataset} Nodes")
-	    plt.legend()
-	    plt.savefig(f"{path}/{dataset}/nodes.png", dpi=150)
-	    plt.close()
+		maxlen = max([len(k_stats[i+1]["nodes"]) for i in range(k)])
+		total_n = np.zeros(min([len(k_stats[i+1]["nodes"]) for i in range(k)]))
+		originaln = [original_stats[dataset]["nodes"]] * maxlen
+		plt.plot(originaln, linestyle="dotted", color ="blue", label="LearnSPN")
+		for i in range(k):
+			plt.plot(k_stats[i+1]["nodes"], marker="o", color =cmap(i+1), label=(i+1))
+			total_n += np.array(k_stats[i+1]["nodes"][:len(total_n)])
+		avg_n = total_n/k
+		plt.plot(avg_n, marker="o", color ="black", label="Mean")
+		plt.title(f"{dataset} Nodes")
+		plt.legend()
+		plt.savefig(f"{path}/{dataset}/nodes.png", dpi=150)
+		plt.close()
 
-	    maxlen = max([len(k_stats[i+1]["meu"]) for i in range(k)])
-	    total_meu = np.zeros(min([len(k_stats[i+1]["meu"]) for i in range(k)]))
-	    originalmeu = [original_stats[dataset]["meu"]] * maxlen
-	    plt.plot(originalmeu, linestyle="dotted", color ="blue", label="LearnSPN")
-	    for i in range(k):
-	    	plt.plot(k_stats[i+1]["meu"], marker="o", color =cmap(i+1), label=(i+1))
-	    	total_meu += np.array(k_stats[i+1]["meu"][:len(total_meu)])
-	    avg_meu = total_meu/k
-	    plt.plot(avg_meu, marker="o", color ="black", label="Mean")
-	    plt.title(f"{dataset} MEU")
-	    plt.legend()
-	    plt.savefig(f"{path}/{dataset}/meu.png", dpi=150)
-	    plt.close()
+		maxlen = max([len(k_stats[i+1]["meu"]) for i in range(k)])
+		total_meu = np.zeros(min([len(k_stats[i+1]["meu"]) for i in range(k)]))
+		originalmeu = [original_stats[dataset]["meu"]] * maxlen
+		plt.plot(originalmeu, linestyle="dotted", color ="blue", label="LearnSPN")
+		for i in range(k):
+			plt.plot(k_stats[i+1]["meu"], marker="o", color =cmap(i+1), label=(i+1))
+			total_meu += np.array(k_stats[i+1]["meu"][:len(total_meu)])
+		avg_meu = total_meu/k
+		plt.plot(avg_meu, marker="o", color ="black", label="Mean")
+		plt.title(f"{dataset} MEU")
+		plt.legend()
+		plt.savefig(f"{path}/{dataset}/meu.png", dpi=150)
+		plt.close()
 
-	    maxlen = max([len(k_stats[i+1]["reward"]) for i in range(k)])
-	    total_r = np.zeros(min([len(k_stats[i+1]["reward"]) for i in range(k)]))
-	    originalr = [original_stats[dataset]["reward"]] * maxlen
-	    plt.plot(originalr, linestyle="dotted", color ="blue", label="LearnSPN")
-	    for i in range(k):
-	    	plt.errorbar(np.arange(len(k_stats[i+1]["reward"])), k_stats[i+1]["reward"], yerr=k_stats[i+1]["deviation"], marker="o", color =cmap(i+1), label=(i+1))
-	    	total_r += np.array(k_stats[i+1]["reward"][:len(total_r)])
-	    avg_r = total_r/k
-	    plt.plot(avg_r, marker="o", color ="black", label="Mean")
-	    plt.title(f"{dataset} Average Rewards")
-	    plt.legend()
-	    plt.savefig(f"{path}/{dataset}/reward.png", dpi=150)
-	    plt.close()
+		maxlen = max([len(k_stats[i+1]["reward"]) for i in range(k)])
+		total_r = np.zeros(min([len(k_stats[i+1]["reward"]) for i in range(k)]))
+		originalr = [original_stats[dataset]["reward"]] * maxlen
+		plt.plot(originalr, linestyle="dotted", color ="blue", label="LearnSPN")
+		for i in range(k):
+			plt.errorbar(np.arange(len(k_stats[i+1]["reward"])), k_stats[i+1]["reward"], yerr=k_stats[i+1]["deviation"], marker="o", color =cmap(i+1), label=(i+1))
+			total_r += np.array(k_stats[i+1]["reward"][:len(total_r)])
+		avg_r = total_r/k
+		plt.plot(avg_r, marker="o", color ="black", label="Mean")
+		plt.title(f"{dataset} Average Rewards")
+		plt.legend()
+		plt.savefig(f"{path}/{dataset}/reward.png", dpi=150)
+		plt.close()
 
 
 
