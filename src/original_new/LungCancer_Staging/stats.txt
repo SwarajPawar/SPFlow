@@ -1,7 +1,7 @@
 
 LungCancer_Staging
-	Log Likelihood : -1.1515872880624247
-	MEU : 3.1526200852839716
-	Nodes : 260
-	Average rewards : 3.1738849999999976
-		Deviation : 0.043765243344462995
+	Log Likelihood : -1.150134934153642
+	MEU : 3.138664586296027
+	Nodes : 312
+	Average rewards : 3.153284999999997
+		Deviation : 0.0310442832901637
