@@ -69,13 +69,9 @@ class Anytime_SPMN:
 		logging.debug(f'remaining_vars_scope: {remaining_vars_scope}')
 		logging.debug(f'curr_information_set_scope: {curr_information_set_scope}')
 
-		print("\n")
 		# rest set is remaining variables excluding the variables in current information set
-		print(curr_information_set_scope)
-		print(remaining_vars_scope)
 		rest_set_scope = [var_scope for var_scope in remaining_vars_scope if
 						  var_scope not in curr_information_set_scope]
-		print(rest_set_scope)
 		logging.debug(f'rest_set_scope: {rest_set_scope}')
 
 		scope_index = sum([len(x) for x in self.params.partial_order[:index]])
@@ -175,7 +171,6 @@ class Anytime_SPMN:
 				prod_children = []
 				next_remaining_vars_scope = []
 				independent_vars_scope = []
-				print("\nProduct")
 
 				for correlated_var_set_cluster, correlated_var_set_scope, weight in data_slices_prod:
 
@@ -333,7 +328,7 @@ class Anytime_SPMN:
 		"""
 		
 		'''
-		original_stats = {
+		original_stats_old = {
 			'Export_Textiles': {"ll" : -1.0903135560503194, "meu" : 1922639.5, 'nodes' : 22},
 			'Test_Strep': {"ll" : -1.1461735112245122, "meu" : 54.92189449375, 'nodes' : 51},
 			'LungCancer_Staging': {"ll" : -1.3292497032277288, "meu" : 3.11376125, 'nodes' : 49},
@@ -342,9 +337,20 @@ class Anytime_SPMN:
 			'Powerplant_Airpollution': {"ll" : -1.8151637099020188, "meu" : -2803562.5, 'nodes' : 45}
 		}
 		'''
-		original_stats = {
+		'''
+		original_stats_new = {
 			'Export_Textiles': {"ll" : -1.0892559429908522, "meu" : 1922275.95, 'nodes' : 22, 'reward':1721469.45},
 			'Test_Strep': {"ll" : -0.9112557170813002, "meu" : 54.93760881256758, 'nodes' : 100, 'reward':54.97011839999944},
+			'LungCancer_Staging': {"ll" : -1.1515872880624247, "meu" : 3.1526200852839716, 'nodes' : 260, 'reward':3.1738849999999976},
+			'HIV_Screening': {"ll" : -0.6189833438168413, "meu" : 42.63750815337698, 'nodes' : 112, 'reward':42.4838739999994},
+			'Computer_Diagnostician': {"ll" : -0.892138328151404, "meu" : 244.94, 'nodes' : 47, 'reward':244.955},
+			'Powerplant_Airpollution': {"ll" : -1.081424145432235, "meu" : -2726821.30929344245, 'nodes' : 46, 'reward':-2770200.0}
+		}
+		'''
+		
+		original_stats = {
+			'Export_Textiles': {"ll" : -1.0892559429908522, "meu" : 1922275.95, 'nodes' : 22, 'reward':1721469.45},
+			'Test_Strep': {"ll" : -0.9112557170813002, "meu" : 54.93760881256758, 'nodes' : 130, 'reward':54.97011839999944},
 			'LungCancer_Staging': {"ll" : -1.1515872880624247, "meu" : 3.1526200852839716, 'nodes' : 260, 'reward':3.1738849999999976},
 			'HIV_Screening': {"ll" : -0.6189833438168413, "meu" : 42.63750815337698, 'nodes' : 112, 'reward':42.4838739999994},
 			'Computer_Diagnostician': {"ll" : -0.892138328151404, "meu" : 244.94, 'nodes' : 47, 'reward':244.955},
@@ -379,14 +385,12 @@ class Anytime_SPMN:
 			
 			curr_information_set_scope = np.array(range(len(self.params.partial_order[0]))).tolist()
 			remaining_vars_scope = np.array(range(len(self.params.feature_names))).tolist()
-			print(curr_information_set_scope)
-			print(remaining_vars_scope)
 			self.set_next_operation('Any')
 			self.limit = limit 
 			self.n = n  
 			self.d = d
 
-			print("start")
+			print("\nStart Learning...")
 			spmn = self.__learn_spmn_structure(train, remaining_vars_scope, curr_information_set_scope, index)
 			print("done")
 			#spmn = Prune(spmn)
