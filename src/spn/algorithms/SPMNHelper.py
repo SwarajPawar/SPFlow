@@ -189,7 +189,6 @@ def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17, limit=math.inf, ret
 		data = preproc(local_data, ds_context, pre_proc, ohe)
 
 		km_model = None
-		print("Xmeans")
 		#prevk = k
 		for i in range(n):
 

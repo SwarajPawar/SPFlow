@@ -64,7 +64,7 @@ def get_partial_order(dataset_name):
         partialOrder = [['Logic_board_fail', 'IO_board_fail','System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
         return partialOrder
     if dataset_name == 'Export_Textiles':
-        partialOrder = [['Economical_State'], ['Export_Decision'],['Profit']]
+        partialOrder = [['Export_Decision'], ['Economical_State'], ['Profit']]
         return partialOrder
     if dataset_name == 'Test_Strep':
         partialOrder = [['Test_Decision'],['Streptococcal_Infection', 'Test_Result'],['Treatment_Decision'],

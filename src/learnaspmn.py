@@ -31,7 +31,7 @@ from spn.data.metaData import *
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
 from spn.algorithms.SPMN import SPMN
-from spn.algorithms.ASPMN import Anytime_SPMN
+from spn.algorithms.ASPMN1 import Anytime_SPMN
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
@@ -40,7 +40,7 @@ import sys, os
 datasets = ['Export_Textiles', 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
 #datasets = ['Export_Textiles']
 path = "test"
-path = "new_nomax"
+path = "all_max"
 
 
 for dataset in datasets:
@@ -68,8 +68,8 @@ for dataset in datasets:
 	df = pd.concat([df_without_utility_categorical, df_utility], axis=1, sort=False)
 
 	data = df.values
-	train, test = train_test_split(data, test_size=0.8, shuffle=False)
-	test = test
+	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
+	train, test = data, random.sample(list(data), 10000)
 
 
 	
