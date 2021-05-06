@@ -71,8 +71,8 @@ for dataset in datasets:
 	df = pd.concat([df_without_utility_categorical, df_utility], axis=1, sort=False)
 	'''
 	data = df.values
-	train, test = train_test_split(data, test_size=0.9, shuffle=True)
-	test = test
+	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
+	train, test = data, random.sample(list(data), 10000)
 
 	
 	spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, meta_types, cluster_by_curr_information_set = True, util_to_bin = False)

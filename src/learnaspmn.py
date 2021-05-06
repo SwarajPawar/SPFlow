@@ -68,8 +68,8 @@ for dataset in datasets:
 	df = pd.concat([df_without_utility_categorical, df_utility], axis=1, sort=False)
 
 	data = df.values
-	train, test = train_test_split(data, test_size=0.9, shuffle=False)
-	test = test[:5000]
+	train, test = train_test_split(data, test_size=0.8, shuffle=False)
+	test = test
 
 
 	
