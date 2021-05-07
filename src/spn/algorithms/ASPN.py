@@ -177,6 +177,11 @@ class AnytimeSPN:
 		print("Log Likelihood",ll)
 		print("Nodes",nodes)
 
+		stats = {"ll" : ll,
+				"nodes" : nodes}
+
+		return self.spn, stats
+
 	#K-fold evaluation
 	def learn_aspn_kfold(self, data, k):
 	
@@ -185,10 +190,13 @@ class AnytimeSPN:
 		kfold = KFold(n_splits=k, shuffle=True)
 		
 		k = 1
+		k_stats = dict()
+
 		for trainidx, testidx in kfold.split(data):
 			
 			train, test = data[trainidx], data[testidx]
-			self.learn_aspn(train, test, k=k)
+			_, stats = self.learn_aspn(train, test, k=k)
+			k_stats[k] = stats
 			k+=1
 			
 			
