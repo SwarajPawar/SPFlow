@@ -9,15 +9,26 @@ import random
 class Export_Textiles:
 
 	'''
-	State:
+	----------------------------------------------
+	Variables and their encoded values:
+	----------------------------------------------
+
+	Economical_State:
 	0: 'Same'
 	1: 'Severely_bad'
 	2: 'Slightly_worse'
 
-	Action:
+
+	----------------------------------------------
+
+
+	Export_Decision:
 	0: 'Now'
 	1: 'After_6_mos'
 	2: 'After_12_mos'
+
+
+	-----------------------------------------------
 	'''
 
 
@@ -38,7 +49,8 @@ class Export_Textiles:
 							0: 1870000.0, 
 							2: 1425000.0}
 						}
-						
+					
+	#Initialize the variables to np.nan	
 	def reset(self):
 
 		self.Economical_State = np.nan
@@ -48,6 +60,8 @@ class Export_Textiles:
 
 		return self.state()
 			
+
+	#Perform the action and get observed variables as per the CPTs		
 	def step(self, action):
 		
 		self.Export_Decision = action
@@ -60,10 +74,12 @@ class Export_Textiles:
 		else:
 			self.Economical_State = 2
 
+		#Return the reward if all actions are done
 		self.Profit = self.rewards[self.Economical_State][self.Export_Decision]
 
 		return self.state(), self.Profit, True
 
+	#Return the state as given by the partial order
 	def state(self):
 		return [[self.Economical_State, self.Export_Decision, self.Profit]]
 

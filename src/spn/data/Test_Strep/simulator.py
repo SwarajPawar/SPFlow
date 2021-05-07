@@ -12,6 +12,11 @@ import random
 class Test_Strep:
 
 	'''
+	---------------------------------------------------
+	Variables and their encoded values:
+	---------------------------------------------------
+
+
 
 	State: 
 
@@ -36,7 +41,7 @@ class Test_Strep:
 	3: Three
 	4: Four
 
-	----------------------------------
+	-----------------------------------------------------
 
 	Actions:
 
@@ -49,7 +54,7 @@ class Test_Strep:
 	1: Yes
 
 
-
+	----------------------------------------------------
 
 
 	'''
@@ -64,7 +69,9 @@ class Test_Strep:
 						(1.0, 1.0, 4.0): 0.0,
 						(1.0, 1.0, 3.0): 0.0}
 		self.tot_dec = 2
-						
+			
+
+	#Initialize the variables to np.nan				
 	def reset(self):
 		
 		self.Test_Decision = np.nan
@@ -81,7 +88,8 @@ class Test_Strep:
 			
 		return self.state()
 
-			
+
+	#Perform the action and get observed variables as per the CPTs		
 	def step(self, action):
 		
 		self.cur_dec += 1
@@ -141,6 +149,7 @@ class Test_Strep:
 					if p<0.0063:
 						self.Rheumatic_Heart_Disease = 1
 
+		#Return the reward if all actions are done
 		if self.cur_dec == self.tot_dec:
 			self.QALE =  self.reward[(self.Rheumatic_Heart_Disease, self.Die_from_Anaphylaxis, self.Days_with_sore_throat)]
 			return self.state(), self.QALE, True
@@ -148,6 +157,7 @@ class Test_Strep:
 			return self.state(), None, False
 
 
+	#Return the state as given by the partial order
 	def state(self):
 		return [[self.Test_Decision, self.Streptococcal_Infection, self.Test_Result, self.Treatment_Decision, 
 			self.Rheumatic_Heart_Disease, self.Die_from_Anaphylaxis, self.Days_with_sore_throat, self.QALE]]

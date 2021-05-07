@@ -10,7 +10,12 @@ import random
 
 
 class HIV_Screening:
+
 	'''
+	---------------------------------------------------
+	Variables and their encoded values:
+	---------------------------------------------------
+
 
 	State: 
 
@@ -31,7 +36,7 @@ class HIV_Screening:
 	0: No
 	1: Yes
 
-	----------------------------------
+	---------------------------------------------------
 
 	Actions:
 
@@ -44,7 +49,7 @@ class HIV_Screening:
 	1: Yes
 
 
-
+	----------------------------------------------------
 
 	'''
 		
@@ -61,7 +66,8 @@ class HIV_Screening:
 						(0,0,0): 44.19
 						}
 		self.tot_dec = 2
-						
+					
+	#Initialize the variables to np.nan		
 	def reset(self):
 		
 		self.Screen = np.nan
@@ -79,7 +85,9 @@ class HIV_Screening:
 			
 			
 		return self.state()
-			
+	
+
+	#Perform the action and get observed variables as per the CPTs				
 	def step(self, action):
 		
 		self.cur_dec += 1
@@ -120,6 +128,7 @@ class HIV_Screening:
 				if p<0.8:
 					self.Reduce_Risky_Behavior = 1
 
+		#Return the reward if all actions are done
 		if self.cur_dec == self.tot_dec:
 			self.QALE =  self.reward[(self.HIV_Status, self.Compliance_Medical_Therapy, self.Reduce_Risky_Behavior)]
 			return self.state(), self.QALE, True
@@ -127,6 +136,7 @@ class HIV_Screening:
 			return self.state(), None, False
 
 
+	#Return the state as given by the partial order
 	def state(self):
 		return [[self.Screen, self.HIV_Status, self.HIV_Test_Result, self.Treat_Counsel,
 		 self.Compliance_Medical_Therapy, self.Reduce_Risky_Behavior, self.QALE]]

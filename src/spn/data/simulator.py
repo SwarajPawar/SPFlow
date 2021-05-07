@@ -14,6 +14,7 @@ from spn.data.Test_Strep.simulator import Test_Strep
 from spn.data.LungCancer_Staging.simulator import LungCancer_Staging
 
 
+#Return the simulator for the given dataset name
 def get_env(dataset):
 	if dataset == "Export_Textiles":
 		return Export_Textiles()

@@ -10,7 +10,14 @@ import random
 
 
 class Powerplant_Airpollution:
+	
+
 	'''
+	---------------------------------------------------
+	Variables and their encoded values:
+	---------------------------------------------------
+
+
 
 	State: 
 
@@ -22,7 +29,7 @@ class Powerplant_Airpollution:
 	0: Quick
 	1: Lengthy
 
-	----------------------------------
+	--------------------------------------------------
 
 	Actions:
 
@@ -34,6 +41,7 @@ class Powerplant_Airpollution:
 	0: No
 	1: Yes
 
+	----------------------------------------------------
 	'''
 	def __init__(self):
 
@@ -59,7 +67,8 @@ class Powerplant_Airpollution:
 							(1, 0): -1500000.0, 
 							(1, 1): -1500000.0}}
 		self.tot_dec = 2
-						
+
+	#Initialize the variables to np.nan							
 	def reset(self):
 		
 		self.Coal_Worker_Strike = np.nan
@@ -73,6 +82,8 @@ class Powerplant_Airpollution:
 			
 		return self.state()
 			
+
+	#Perform the action and get observed variables as per the CPTs		
 	def step(self, action):
 
 		self.cur_dec += 1
@@ -101,12 +112,14 @@ class Powerplant_Airpollution:
 				else:
 					self.Strike_Resolution = 1
 		
+		#Return the reward if all actions are done
 		if self.cur_dec == self.tot_dec:
 			self.Additional_Cost =  self.reward[(self.Coal_Worker_Strike, self.Strike_Resolution)][(self.Installation_Type, self.Strike_Intervention)]
 			return self.state(), self.Additional_Cost, True
 		else:
 			return self.state(), None, False
 			
+	#Return the state as given by the partial order
 	def state(self):
 		return [[self.Installation_Type, self.Coal_Worker_Strike, self.Strike_Intervention, self.Strike_Resolution, self.Additional_Cost]]
 

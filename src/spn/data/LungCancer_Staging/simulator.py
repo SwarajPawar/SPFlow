@@ -10,6 +10,10 @@ import random
 class LungCancer_Staging:
 
 	'''
+	---------------------------------------------------
+	Variables and their encoded values:
+	---------------------------------------------------
+
 
 	State: 
 
@@ -35,7 +39,7 @@ class LungCancer_Staging:
 	0: No
 	1: Yes
 
-	----------------------------------
+	-------------------------------------------------
 
 	Actions:
 
@@ -51,6 +55,7 @@ class LungCancer_Staging:
 	0: No
 	1: Yes
 
+	---------------------------------------------------
 
 	'''
 
@@ -64,7 +69,8 @@ class LungCancer_Staging:
 							1.0: 1.80}
 						}
 		self.tot_dec = 3
-						
+
+	#Initialize the variables to np.nan							
 	def reset(self):
 		
 		self.CT = np.nan
@@ -83,7 +89,7 @@ class LungCancer_Staging:
 		return self.state()
 		
 			
-			
+	#Perform the action and get observed variables as per the CPTs			
 	def step(self, action):
 		
 		self.cur_dec += 1
@@ -151,6 +157,7 @@ class LungCancer_Staging:
 				if p<0.002:
 					self.Treatment_Death = 1
 
+		#Return the reward if all actions are done
 		if self.cur_dec == self.tot_dec:
 			if self.Treatment_Death == 1 or self.Mediastinoscopy_death ==1:
 				self.Life_expectancy =  0
@@ -161,6 +168,7 @@ class LungCancer_Staging:
 			return self.state(), None, False
 
 
+	#Return the state as given by the partial order
 	def state(self):
 		return [[self.CT, self.Mediastinal_Metastases, self.CTResult, self.Mediastinoscopy, 
 		self.Mediastinoscopy_Result, self.Mediastinoscopy_death, self.Treatment, self.Treatment_Death, self.Life_expectancy]]
