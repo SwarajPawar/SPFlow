@@ -31,8 +31,8 @@ import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 
-datasets = ['Export_Textiles', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'Test_Strep', 'LungCancer_Staging']
-datasets = ['Export_Textiles']
+#datasets = ['Export_Textiles', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'Test_Strep', 'LungCancer_Staging']
+datasets = ['Computer_Diagnostician', 'Powerplant_Airpollution', 'Test_Strep', 'LungCancer_Staging']
 
 path = "original_new"
 
@@ -72,7 +72,7 @@ for dataset in datasets:
 	'''
 	data = df.values
 	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
-	train, test = data, random.sample(list(data), 10000)
+	train, test = data, data #random.sample(list(data), 10000)
 
 	
 	spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, meta_types, cluster_by_curr_information_set = True, util_to_bin = False)
@@ -82,7 +82,7 @@ for dataset in datasets:
 	
 	nodes = get_structure_stats_dict(spmn)["nodes"]
 	
-	plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
+	#plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
 
 
 
@@ -99,6 +99,7 @@ for dataset in datasets:
 	m = meu(spmn, test_data)
 	meus = (m[0])
 
+	'''
 	env = get_env(dataset)
 	total_reward = 0
 	trials = 10000
@@ -123,19 +124,19 @@ for dataset in datasets:
 
 	avg_rewards = np.mean(batch)
 	reward_dev = np.std(batch)
-
+	'''
 	print(f"\n\tLog Likelihood : {ll}")
 	print(f"\n\tMEU : {meus}")
 	print(f"\n\tNodes : {nodes}")
-	print(f"\n\tAverage rewards : {avg_rewards}")
-	print(f"\n\t\tDeviation : {reward_dev}")
+	#print(f"\n\tAverage rewards : {avg_rewards}")
+	#print(f"\n\t\tDeviation : {reward_dev}")
 	
 
-	f = open(f"{path}/{dataset}/stats.txt", "w")
+	f = open(f"{path}/{dataset}/stats1.txt", "w")
 	f.write(f"\n{dataset}")
 	f.write(f"\n\tLog Likelihood : {ll}")
 	f.write(f"\n\tMEU : {meus}")
 	f.write(f"\n\tNodes : {nodes}")
-	f.write(f"\n\tAverage rewards : {avg_rewards}")
-	f.write(f"\n\t\tDeviation : {reward_dev}")
+	#f.write(f"\n\tAverage rewards : {avg_rewards}")
+	#f.write(f"\n\t\tDeviation : {reward_dev}")
 	f.close()

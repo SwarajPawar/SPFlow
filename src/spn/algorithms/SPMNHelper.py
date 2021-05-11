@@ -123,8 +123,8 @@ def column_slice_data_by_scope(data, data_scope, slice_scope):
 def anytime_cluster(data, dec_vals):
 	"""
 	:param data: numpy array of data containing variable at 0th column on whose values cluster is needed
-	:param dec_vals: values of variable at that 0th column
-	:return: clusters of data (excluding the variable at 0th column) grouped together based on values of the variable
+	:param dec_vals: groups of values of variable at that 0th column
+	:return: clusters of data (excluding the variable at 0th column) grouped together based on the groups of values of the variable
 	"""
 
 	logging.debug(f'in cluster function of SPMNHelper')
@@ -133,6 +133,7 @@ def anytime_cluster(data, dec_vals):
 	for i in range(0, len(dec_vals)):
 
 		clustered_data_for_dec_val = None
+		# For each variable in a group dec_vals[i], assign the respective data to the same cluster 
 		for dec_val in dec_vals[i]:
 
 			if clustered_data_for_dec_val is None:
@@ -151,6 +152,7 @@ def anytime_cluster(data, dec_vals):
 def anytime_split_on_decision_node(data, m=None) :
 	"""
 	:param data: numpy array of data with decision node at 0th column
+	:m: number of clusters to be formed
 	:return: clusters split on values of decision node
 	"""
 
@@ -162,9 +164,11 @@ def anytime_split_on_decision_node(data, m=None) :
 	dec_vals = np.unique(data[:, 0])   # since 0th column of current train data is decision node'
 	logging.debug(f'dec_vals are {dec_vals}')
 
+	#Prepare m groups
 	m = min(m, len(dec_vals))
 	dec_vals1 = [list() for i in range(m)]
 
+	#Assign the decision values to the groups in a circular fashion
 	for i in range(len(dec_vals)):
 		dec_vals1[i%m].append(dec_vals[i])
 	
