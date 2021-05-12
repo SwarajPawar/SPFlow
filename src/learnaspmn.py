@@ -37,8 +37,8 @@ from os import path as pth
 import sys, os
 
 
-datasets = ['Export_Textiles', 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
-#datasets = ['Export_Textiles']
+datasets = ['HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'LungCancer_Staging']
+#datasets = ['Export_Textiles', 'Test_Strep', ]
 path = "test"
 path = "new_nomax"
 
@@ -69,7 +69,7 @@ for dataset in datasets:
 
 	data = df.values
 	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
-	train, test = data, random.sample(list(data), 10000)
+	train, test = data, random.sample(list(data), 2500)
 
 
 	
