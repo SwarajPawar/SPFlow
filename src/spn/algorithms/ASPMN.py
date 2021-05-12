@@ -260,8 +260,8 @@ class Anytime_SPMN:
                 curr_op = self.get_curr_operation()
                 logging.debug(f'curr_op at sum node (cluster test): {curr_op}')
 
-                #split_rows = get_split_rows_XMeans(limit=self.limit)    # from SPMNHelper.py
-                split_rows = get_split_rows_KMeans()
+                split_rows = get_split_rows_XMeans(limit=self.limit)    # from SPMNHelper.py
+                #split_rows = get_split_rows_KMeans()
 
                 if self.cluster_by_curr_information_set:
 
@@ -349,12 +349,12 @@ class Anytime_SPMN:
         '''
         
         original_stats = {
-            'Export_Textiles': {"ll" : -1.0895330076961594, "meu" : 1722313.8158882717, 'nodes' : 38, 'reward':1725415.65},
-            'Test_Strep': {"ll" : -0.9346136204874161, "meu" : 54.9416526618876, 'nodes' : 130, 'reward':54.939131999999425},
-            'LungCancer_Staging': {"ll" : -1.150134934153642, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.153284999999997},
-            'HIV_Screening': {"ll" : -0.6186509166805391, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.5504879999994},
-            'Computer_Diagnostician': {"ll" : -0.905791805125671, "meu" : 244.85700000000003, 'nodes' : 47, 'reward':245.27000000000004},
-            'Powerplant_Airpollution': {"ll" : -1.0794334414004707, "meu" : -2756263.244346315, 'nodes' : 46, 'reward':-2755600.0}
+            'Export_Textiles': {"ll" : -1.0890750655173789 "meu" : 1722313.8158882717, 'nodes' : 38, 'reward':1725415.65},
+            'Test_Strep': {"ll" : -0.9130071749277912, "meu" : 54.9416526618876, 'nodes' : 130, 'reward':54.939131999999425},
+            'LungCancer_Staging': {"ll" : -1.1489156814245234, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.153284999999997},
+            'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.5504879999994},
+            'Computer_Diagnostician': {"ll" : -0.8920749045689644, "meu" : 244.85700000000003, 'nodes' : 47, 'reward':245.27000000000004},
+            'Powerplant_Airpollution': {"ll" : -1.0796486063753, "meu" : -2756263.244346315, 'nodes' : 46, 'reward':-2755600.0}
         }
 
         max_stats = {
@@ -429,7 +429,7 @@ class Anytime_SPMN:
 
                 env = get_env(self.dataset)
                 total_reward = 0
-                trials = 10000
+                trials = 5000
                 batch_size = trials / 10
                 batch = list()
 
@@ -529,7 +529,7 @@ class Anytime_SPMN:
 
 
             i+=1
-            #limit += 1
+            limit += 1
             d+=1
             n = n+step
 

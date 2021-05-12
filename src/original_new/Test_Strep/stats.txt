@@ -1,6 +1,6 @@
 
 Test_Strep
-	Log Likelihood : -0.9346136204874161
+	Log Likelihood : -0.9130071749277912
 	MEU : 54.9416526618876
 	Nodes : 130
 	Average rewards : 54.939131999999425
