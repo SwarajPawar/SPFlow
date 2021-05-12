@@ -349,7 +349,7 @@ class Anytime_SPMN:
         '''
         
         original_stats = {
-            'Export_Textiles': {"ll" : -1.0890750655173789 "meu" : 1722313.8158882717, 'nodes' : 38, 'reward':1725415.65},
+            'Export_Textiles': {"ll" : -1.0890750655173789, "meu" : 1722313.8158882717, 'nodes' : 38, 'reward':1725415.65},
             'Test_Strep': {"ll" : -0.9130071749277912, "meu" : 54.9416526618876, 'nodes' : 130, 'reward':54.939131999999425},
             'LungCancer_Staging': {"ll" : -1.1489156814245234, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.153284999999997},
             'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.5504879999994},
