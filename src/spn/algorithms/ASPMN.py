@@ -162,15 +162,21 @@ class Anytime_SPMN:
                 ds_context = get_ds_context(remaining_vars_data, remaining_vars_scope, self.params)
 
                 #split_cols = get_split_cols_single_RDC_py(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
-                split_cols = get_split_cols_distributed_RDC_py1(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
-                #split_cols = get_split_cols_RDC_py()
-                data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope, rest_set_scope)
+                #split_cols = get_split_cols_distributed_RDC_py1(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
+                #data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope, rest_set_scope)
+                split_cols = get_split_cols_RDC_py()
+                data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope)
 
                 logging.debug(f'{len(data_slices_prod)} slices found at data_slices_prod: ')
 
                 prod_children = []
                 next_remaining_vars_scope = []
                 independent_vars_scope = []
+
+                
+                print('\n\nProduct:')
+                for cluster, scope, weight in data_slices_prod:
+                    print(scope)
 
                 for correlated_var_set_cluster, correlated_var_set_scope, weight in data_slices_prod:
 
@@ -260,8 +266,8 @@ class Anytime_SPMN:
                 curr_op = self.get_curr_operation()
                 logging.debug(f'curr_op at sum node (cluster test): {curr_op}')
 
-                split_rows = get_split_rows_XMeans(limit=self.limit)    # from SPMNHelper.py
-                #split_rows = get_split_rows_KMeans()
+                #split_rows = get_split_rows_XMeans(limit=self.limit)    # from SPMNHelper.py
+                split_rows = get_split_rows_KMeans()
 
                 if self.cluster_by_curr_information_set:
 
@@ -374,7 +380,8 @@ class Anytime_SPMN:
         past3 = list()
         
         limit = 2 
-        n = int(self.vars**0.5)
+        #n = int(self.vars**0.5)
+        n= self.vars
         step = (self.vars - (self.vars**0.5) + 1)/10
         d = 2
 
@@ -407,11 +414,12 @@ class Anytime_SPMN:
 
             nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
+            '''
             if k is None:
                 plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
             else:
                 plot_spn(spmn, f'{self.plot_path}/{k}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
-            
+            '''
             
             try:
                 total_ll = 0
@@ -426,7 +434,8 @@ class Anytime_SPMN:
                 test_data = [[np.nan]*len(self.params.feature_names)]
                 m = meu(spmn, test_data)
                 meus.append(m[0])
-
+                return
+                '''
                 env = get_env(self.dataset)
                 total_reward = 0
                 trials = 500
@@ -453,7 +462,7 @@ class Anytime_SPMN:
                 reward_dev.append(np.std(batch))
                 
                 
-                
+                '''
                 print("\n\n\n\n\n")
                 print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
                 print("#Nodes: ",nodes[-1])
@@ -465,6 +474,7 @@ class Anytime_SPMN:
                 print(meus)
                 print("\n\n\n\n\n")
 
+                '''
                 plt.close()
                 # plot line 
                 
@@ -518,6 +528,7 @@ class Anytime_SPMN:
                 f.write(f"\n\tAverage Rewards : {avg_rewards}")
                 f.write(f"\n\t\tDeviation : {reward_dev}")
                 f.close()
+                '''
             except:
                 pass
             
@@ -529,9 +540,9 @@ class Anytime_SPMN:
 
 
             i+=1
-            limit += 1
+            #limit += 1
             d+=1
-            n = n+step
+            #n = n+step
 
         stats = {"ll" : ll,
                 "meu" : meus,

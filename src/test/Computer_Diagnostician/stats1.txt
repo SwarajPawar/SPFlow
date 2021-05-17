@@ -1,5 +1,5 @@
 
 Computer_Diagnostician
-	Log Likelihood : -0.9023392839270303
+	Log Likelihood : -0.8646609309579111
 	MEU : 244.85700000000003
 	Nodes : 47
