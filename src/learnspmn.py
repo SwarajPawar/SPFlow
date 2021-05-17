@@ -32,9 +32,9 @@ from os import path as pth
 import sys, os
 
 #datasets = ['Export_Textiles', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'Test_Strep', 'LungCancer_Staging']
-datasets = ['Computer_Diagnostician', 'Powerplant_Airpollution', 'Test_Strep', 'LungCancer_Staging']
+datasets = ['Computer_Diagnostician']
 
-path = "original_new"
+path = "test"
 
 
 
@@ -72,7 +72,7 @@ for dataset in datasets:
 	'''
 	data = df.values
 	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
-	train, test = data, data #random.sample(list(data), 10000)
+	train, test = data, random.sample(list(data), 1000)
 
 	
 	spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, meta_types, cluster_by_curr_information_set = True, util_to_bin = False)
@@ -82,7 +82,7 @@ for dataset in datasets:
 	
 	nodes = get_structure_stats_dict(spmn)["nodes"]
 	
-	#plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
+	plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
 
 
 
@@ -140,3 +140,57 @@ for dataset in datasets:
 	#f.write(f"\n\tAverage rewards : {avg_rewards}")
 	#f.write(f"\n\t\tDeviation : {reward_dev}")
 	f.close()
+
+
+
+
+'''
+Computer_Diagnostician
+
+
+
+
+
+Product:
+[0, 1, 2, 3, 4, 5]
+
+
+Product:
+[0, 1, 3, 4, 5]
+[2]
+
+
+Product:
+[0, 3, 4, 5]
+[1]
+
+
+Product:
+[0]
+[3]
+[4]
+[5]
+
+
+Product:
+[0]
+[3, 5]
+[4]
+
+
+Product:
+[0]
+[1]
+[3, 5]
+[4]
+
+
+Product:
+[0]
+[1]
+[2]
+[3]
+[4]
+[5]
+Done
+'''

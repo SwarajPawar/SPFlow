@@ -37,10 +37,10 @@ from os import path as pth
 import sys, os
 
 
-datasets = ['HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'LungCancer_Staging']
-#datasets = ['Export_Textiles', 'Test_Strep', ]
+datasets = ['Export_Textiles', 'Test_Strep', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'LungCancer_Staging']
+datasets = ['Computer_Diagnostician']
 path = "test"
-path = "new_nomax"
+#path = "new_nomax"
 
 
 for dataset in datasets:
@@ -58,18 +58,11 @@ for dataset in datasets:
 			
 	df = pd.read_csv(f"spn/data/{dataset}/{dataset}_new.tsv", sep='\t')
 
-	df1, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
-	col_ind = column_titles.index(utility_node[0]) 
-	df_without_utility = df1.drop(df1.columns[col_ind], axis=1)
-	from sklearn.preprocessing import LabelEncoder
-	# transform categorical string values to categorical numerical values
-	df_without_utility_categorical = df_without_utility.apply(LabelEncoder().fit_transform)  
-	df_utility = df1.iloc[:, col_ind]
-	df = pd.concat([df_without_utility_categorical, df_utility], axis=1, sort=False)
+	df, column_titles = align_data(df, partial_order)
 
 	data = df.values
 	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
-	train, test = data, random.sample(list(data), 2500)
+	train, test = data, random.sample(list(data), 500)
 
 
 	
@@ -78,5 +71,5 @@ for dataset in datasets:
 	#print(test.shape)
 
 	
-	aspmn = Anytime_SPMN(dataset, path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=False, util_to_bin = False)
+	aspmn = Anytime_SPMN(dataset, path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=True, util_to_bin = False)
 	aspmn.learn_aspmn(train, test)
