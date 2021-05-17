@@ -162,10 +162,10 @@ class Anytime_SPMN:
                 ds_context = get_ds_context(remaining_vars_data, remaining_vars_scope, self.params)
 
                 #split_cols = get_split_cols_single_RDC_py(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
-                #split_cols = get_split_cols_distributed_RDC_py1(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
-                #data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope, rest_set_scope)
-                split_cols = get_split_cols_RDC_py()
-                data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope)
+                split_cols = get_split_cols_distributed_RDC_py1(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
+                data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope, rest_set_scope)
+                #split_cols = get_split_cols_RDC_py()
+                #data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope)
 
                 logging.debug(f'{len(data_slices_prod)} slices found at data_slices_prod: ')
 
