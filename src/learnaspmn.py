@@ -38,9 +38,9 @@ import sys, os
 
 
 datasets = ['Export_Textiles', 'Test_Strep', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'LungCancer_Staging']
-datasets = ['Computer_Diagnostician']
+#datasets = ['Computer_Diagnostician']
 path = "test"
-#path = "new_nomax"
+path = "all_max"
 
 
 for dataset in datasets:
@@ -62,7 +62,7 @@ for dataset in datasets:
 
 	data = df.values
 	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
-	train, test = data, random.sample(list(data), 500)
+	train, test = data, data #random.sample(list(data), 500)
 
 
 	

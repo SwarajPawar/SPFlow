@@ -380,8 +380,8 @@ class Anytime_SPMN:
         past3 = list()
         
         limit = 2 
-        #n = int(self.vars**0.5)
-        n= self.vars
+        n = int(self.vars**0.5)
+        #n= self.vars
         step = (self.vars - (self.vars**0.5) + 1)/10
         d = 2
 
@@ -414,12 +414,12 @@ class Anytime_SPMN:
 
             nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
-            '''
+            
             if k is None:
                 plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
             else:
                 plot_spn(spmn, f'{self.plot_path}/{k}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
-            '''
+            
             
             try:
                 total_ll = 0
@@ -435,10 +435,10 @@ class Anytime_SPMN:
                 m = meu(spmn, test_data)
                 meus.append(m[0])
                 return
-                '''
+                
                 env = get_env(self.dataset)
                 total_reward = 0
-                trials = 500
+                trials = 10000
                 batch_size = trials / 10
                 batch = list()
 
@@ -462,7 +462,7 @@ class Anytime_SPMN:
                 reward_dev.append(np.std(batch))
                 
                 
-                '''
+                
                 print("\n\n\n\n\n")
                 print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
                 print("#Nodes: ",nodes[-1])
@@ -474,7 +474,7 @@ class Anytime_SPMN:
                 print(meus)
                 print("\n\n\n\n\n")
 
-                '''
+                
                 plt.close()
                 # plot line 
                 
@@ -528,7 +528,7 @@ class Anytime_SPMN:
                 f.write(f"\n\tAverage Rewards : {avg_rewards}")
                 f.write(f"\n\t\tDeviation : {reward_dev}")
                 f.close()
-                '''
+                
             except:
                 pass
             
@@ -540,9 +540,9 @@ class Anytime_SPMN:
 
 
             i+=1
-            #limit += 1
+            limit += 1
             d+=1
-            #n = n+step
+            n = n+step
 
         stats = {"ll" : ll,
                 "meu" : meus,
