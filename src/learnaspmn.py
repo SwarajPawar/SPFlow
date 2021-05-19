@@ -1,17 +1,5 @@
 
 
-original_stats = {
-	"Dataset1": {"ll" : -1.0903135560503194, "meu" : 1922639.5, 'nodes' : 22},
-	"Dataset2": {"ll" : -1.1461735112245122, "meu" : 54.92189449375, 'nodes' : 51},
-	"Dataset3": {"ll" : -1.3292497032277288, "meu" : 3.11376125, 'nodes' : 49},
-	"Dataset4": {"ll" : -0.5943350928785097, "meu" : 42.60624317138454, 'nodes' : 125},
-	"Dataset5": {"ll" : -0.8912294493362266, "meu" : 242.863042737567, 'nodes' : 50},
-	"Dataset6": {"ll" : -1.8151637099020188, "meu" : -2803562.5, 'nodes' : 45}
-}
-
-
-
-
 import numpy as np
 
 import logging
@@ -31,7 +19,7 @@ from spn.data.metaData import *
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
 from spn.algorithms.SPMN import SPMN
-from spn.algorithms.ASPMN1 import Anytime_SPMN
+from spn.algorithms.ASPMN import Anytime_SPMN
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
@@ -40,7 +28,7 @@ import sys, os
 datasets = ['Export_Textiles', 'Test_Strep', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'LungCancer_Staging']
 #datasets = ['Computer_Diagnostician']
 path = "test"
-path = "all_max"
+path = "new"
 
 
 for dataset in datasets:
@@ -62,7 +50,7 @@ for dataset in datasets:
 
 	data = df.values
 	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
-	train, test = data, data #random.sample(list(data), 500)
+	train, test = data, np.array(random.sample(list(data), 5000))
 
 
 	

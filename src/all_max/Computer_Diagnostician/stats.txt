@@ -3,5 +3,5 @@ Computer_Diagnostician
 	Log Likelihood : [-0.8920749045689644]
 	MEU : [244.85700000000003]
 	Nodes : [47]
-	Average Rewards : [244.61749999999998]
+	Average Rewards : [245.27000000000004]
 		Deviation : [0.7649387230360315]
