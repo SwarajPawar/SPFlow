@@ -143,9 +143,6 @@ class SPMN:
                 next_remaining_vars_scope = []
                 independent_vars_scope = []
 
-                print('\n\nProduct:')
-                for cluster, scope, weight in data_slices_prod:
-                    print(scope)
 
                 for correlated_var_set_cluster, correlated_var_set_scope, weight in data_slices_prod:
 

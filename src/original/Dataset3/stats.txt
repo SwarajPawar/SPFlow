@@ -1,5 +1,0 @@
-
-Dataset3
-	Log Likelihood : -1.3292497032277288
-	MEU : 3.11376125
-	Nodes : 49
