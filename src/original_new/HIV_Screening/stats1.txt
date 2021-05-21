@@ -1,0 +1,4 @@
+
+HIV_Screening
+	Average rewards : 42.64759879999822
+	Deviation : 0.13053757307440556

@@ -120,7 +120,7 @@ for dataset in datasets:
 		if (z+1) % batch_size == 0:
 			batch.append(total_reward/batch_size)
 			total_reward = 0
-		printProgressBar(z+1, len(test), prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+		printProgressBar(z+1, trials, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
 	avg_rewards = np.mean(batch)
 	reward_dev = np.std(batch)
