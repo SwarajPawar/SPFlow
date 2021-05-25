@@ -26,7 +26,7 @@ import sys, os
 
 
 datasets = ['Export_Textiles', 'Test_Strep', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'LungCancer_Staging']
-datasets = ['Export_Textiles']
+#datasets = ['Export_Textiles']
 path = "test"
 path = "improve"
 
@@ -50,7 +50,7 @@ for dataset in datasets:
 
 	data = df.values
 	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
-	test_size = int(data.shape[0]*0.1)
+	test_size = int(data.shape[0]*0.2)
 	train, test = data, np.array(random.sample(list(data), test_size))
 
 

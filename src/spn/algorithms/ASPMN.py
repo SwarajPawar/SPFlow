@@ -20,6 +20,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
+import math
 
 from spn.algorithms.TransformStructure import Prune
 
@@ -458,7 +459,7 @@ class Anytime_SPMN:
 			
 			env = get_env(self.dataset)
 			total_reward = 0
-			trials = 25000
+			trials = 50000
 			batch_size = trials / 10
 			batch = list()
 
@@ -545,15 +546,40 @@ class Anytime_SPMN:
 			plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
 			plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
 			if original_reward[0] > 0:
-				plt.axis(ymin=0)
+				plt.axis(ymin=0, ymax=original_reward[0]*1.5)
 			else:
-				plt.axis(ymax=0)
+				plt.axis(ymax=0, ymin=original_reward[0]*1.5)
 			plt.title(f"{self.dataset} Average Rewards")
 			plt.legend()
 			if k is None:
-				plt.savefig(f"{self.plot_path}/rewards_scaled.png", dpi=100)
+				plt.savefig(f"{self.plot_path}/rewards_scaled1.png", dpi=100)
 			else:
-				plt.savefig(f"{self.plot_path}/rewards_scaled.png", dpi=100)
+				plt.savefig(f"{self.plot_path}/rewards_scaled1.png", dpi=100)
+			plt.close()
+
+			
+			lspmn_reward = str(abs(int(original_reward[0])))
+			order = len(lspmn_reward)
+			r_dev = np.array(reward_dev)
+			if order > 1:
+				 minl= (math.floor(min(avg_rewards-r_dev)/(10**(order-2))) - 1) * (10**(order-2))
+				 maxl= (math.ceil(max(avg_rewards+r_dev)/(10**(order-2))) + 1) * (10**(order-2))
+			else:
+				minl= math.floor(min(avg_rewards-r_dev)) - 1
+				maxl= math.ceil(max(avg_rewards+r_dev)) + 1
+			plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
+			plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
+			plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
+			if original_reward[0] > 0:
+				plt.axis(ymin=minl, ymax=maxl)
+			else:
+				plt.axis(ymax=(-1)*minl, ymin=(-1)*maxl)
+			plt.title(f"{self.dataset} Average Rewards")
+			plt.legend()
+			if k is None:
+				plt.savefig(f"{self.plot_path}/rewards_scaled2.png", dpi=100)
+			else:
+				plt.savefig(f"{self.plot_path}/rewards_scaled2.png", dpi=100)
 			plt.close()
 
 			

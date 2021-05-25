@@ -1,0 +1,8 @@
+
+Export_Textiles
+	Log Likelihood : [-17.553681209812957]
+	Log Likelihood Deviation: [1.6758001632863457]
+	MEU : [944288.1922867566]
+	Nodes : [18]
+	Average Rewards : [1745140.0]
+	Rewards Deviation : [74273.9756577]
