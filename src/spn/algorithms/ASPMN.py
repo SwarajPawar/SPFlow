@@ -1,8 +1,4 @@
-"""
-Created on March 28, 2019
-@author: Hari Teja Tatavarti
 
-"""
 from spn.structure.Base import Sum, Product, Max
 from spn.structure.Base import assign_ids, rebuild_scopes_bottom_up
 from spn.algorithms.LearningWrappers import learn_parametric_aspmn, learn_mspn_for_aspmn
@@ -562,18 +558,18 @@ class Anytime_SPMN:
 			order = len(lspmn_reward)
 			r_dev = np.array(reward_dev)
 			if order > 1:
-				 minl= (math.floor(min(avg_rewards-r_dev)/(10**(order-2))) - 1) * (10**(order-2))
-				 maxl= (math.ceil(max(avg_rewards+r_dev)/(10**(order-2))) + 1) * (10**(order-2))
+				 minl= (round(min(avg_rewards-r_dev)/(10**(order-2)) * 2)/2 - 0.5) * (10**(order-2))
+				 maxl= (round(max(avg_rewards+r_dev)/(10**(order-2)) * 2)/2 + 0.5) * (10**(order-2))
 			else:
-				minl= math.floor(min(avg_rewards-r_dev)) - 1
-				maxl= math.ceil(max(avg_rewards+r_dev)) + 1
+				minl= round(min(avg_rewards-r_dev)*2)/2 - 0.5
+				maxl= round(max(avg_rewards+r_dev)*2)/2 + 0.5
 			plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
 			plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
 			plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
 			if original_reward[0] > 0:
 				plt.axis(ymin=minl, ymax=maxl)
 			else:
-				plt.axis(ymax=(-1)*minl, ymin=(-1)*maxl)
+				plt.axis(ymax=minl, ymin=maxl)
 			plt.title(f"{self.dataset} Average Rewards")
 			plt.legend()
 			if k is None:
