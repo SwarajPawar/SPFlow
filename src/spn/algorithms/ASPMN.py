@@ -566,10 +566,7 @@ class Anytime_SPMN:
 			plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
 			plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
 			plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
-			if original_reward[0] > 0:
-				plt.axis(ymin=minl, ymax=maxl)
-			else:
-				plt.axis(ymax=minl, ymin=maxl)
+			plt.axis(ymin=minl, ymax=maxl)
 			plt.title(f"{self.dataset} Average Rewards")
 			plt.legend()
 			if k is None:
