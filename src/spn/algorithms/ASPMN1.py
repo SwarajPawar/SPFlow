@@ -364,13 +364,15 @@ class Anytime_SPMN:
 
 		nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
+		'''
 		if k is None:
 			plot_spn(spmn, f'{self.plot_path}/spmn.pdf', feature_labels=self.params.feature_labels)
 		else:
 			plot_spn(spmn, f'{self.plot_path}/{k}/spmn.pdf', feature_labels=self.params.feature_labels)
-		
+		'''
 		
 		try:
+			'''
 			total_ll = 0
 			for j, instance in enumerate(test):
 				test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
@@ -378,7 +380,7 @@ class Anytime_SPMN:
 				printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
 			ll.append(total_ll/len(test))
 			
-
+			'''
 
 			test_data = [[np.nan]*len(self.params.feature_names)]
 			m = meu(spmn, test_data)
@@ -386,7 +388,53 @@ class Anytime_SPMN:
 
 			env = get_env(self.dataset)
 			total_reward = 0
-			trials = 10000
+			trials = 500000
+			interval = 10000
+			batches = 10
+			rewards = list()
+			
+
+			for z in range(trials):
+				
+				state = env.reset()
+				while(True):
+					output = best_next_decision(spmn, state)
+					action = output[0][0]
+					state, reward, done = env.step(action)
+					if done:
+						rewards.append(reward)
+						break
+				if (z+1) % interval == 0:
+					batch = list()
+					batch_size = int(z / batches)
+					for i in range(batches):
+						j = i*batch_size
+						batch.append(sum(rewards[j:j+batch_size]) / batch_size)
+					
+					avg_rewards.append(np.mean(batch))
+					reward_dev.append(np.std(batch))
+
+					plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
+					plt.title(f"{self.dataset} Average Rewards")
+					plt.legend()
+					plt.savefig(f"{self.plot_path}/rewards_trend.png", dpi=100)
+					plt.close()
+
+					f = open(f"{self.plot_path}/stats_trend.txt", "w")
+
+					f.write(f"\n{self.dataset}")
+					f.write(f"\n\tAverage Rewards : {avg_rewards}")
+					f.write(f"\n\t\tDeviation : {reward_dev}")
+					f.close()
+
+				printProgressBar(z+1, trials, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+
+			
+
+			'''
+			env = get_env(self.dataset)
+			total_reward = 0
+			trials = 500000
 			batch_size = trials / 10
 			batch = list()
 
@@ -422,9 +470,9 @@ class Anytime_SPMN:
 			print(meus)
 			print("\n\n\n\n\n")
 
-			
+			'''
 
-			
+			'''
 			f = open(f"{self.plot_path}/stats.txt", "w") if k is None else open(f"{self.plot_path}/{k}/stats.txt", "w")
 
 			f.write(f"\n{self.dataset}")
@@ -434,6 +482,7 @@ class Anytime_SPMN:
 			f.write(f"\n\tAverage Rewards : {avg_rewards}")
 			f.write(f"\n\t\tDeviation : {reward_dev}")
 			f.close()
+			'''
 		except:
 			pass
 		

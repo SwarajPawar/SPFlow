@@ -19,14 +19,14 @@ from spn.data.metaData import *
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
 from spn.algorithms.SPMN import SPMN
-from spn.algorithms.ASPMN import Anytime_SPMN
+from spn.algorithms.ASPMN1 import Anytime_SPMN
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 
 
 datasets = ['Export_Textiles', 'Test_Strep', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'LungCancer_Staging']
-#datasets = ['Export_Textiles']
+datasets = ['Test_Strep']
 path = "test"
 path = "improve"
 
