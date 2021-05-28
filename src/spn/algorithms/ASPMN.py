@@ -381,6 +381,12 @@ class Anytime_SPMN:
 			'Powerplant_Airpollution': {"ll" : -1.0796486063753, "meu" : -2756263.244346315, 'nodes' : 46, 'reward':-2755600.0}
 		}
 		
+        trials = 150000
+        interval = 10000
+        batches = 10
+        avg_rewards = [list() for i in range(int(trials/interval))]
+        rewards_dev = [list() for i in range(int(trials/interval))]
+        '''
 		avg_ll = list()
 		ll_dev = list()
 		meus = list()
@@ -388,6 +394,7 @@ class Anytime_SPMN:
 		avg_rewards = list()
 		reward_dev = list()
 		past3 = list()
+        '''
 		
 		limit = 2 
 		n = int(self.vars**0.5)
@@ -422,6 +429,55 @@ class Anytime_SPMN:
 			#spmn = Prune(spmn)
 			self.spmn = spmn
 
+
+            env = get_env(self.dataset)
+            total_reward = 0
+            rewards = list()
+            
+            inter = 0
+            for z in range(trials):
+                
+                state = env.reset()
+                while(True):
+                    output = best_next_decision(spmn, state)
+                    action = output[0][0]
+                    state, reward, done = env.step(action)
+                    if done:
+                        rewards.append(reward)
+                        break
+                if (z+1) % interval == 0:
+                    batch = list()
+                    batch_size = int(z / batches)
+                    for i in range(batches):
+                        j = i*batch_size
+                        batch.append(sum(rewards[j:j+batch_size]) / batch_size)
+                    
+                    avg_rewards[inter].append(np.mean(batch))
+                    reward_dev[inter].append(np.std(batch))
+
+                    plt.errorbar(np.arange(len(avg_rewards[inter])), avg_rewards[inter], yerr=reward_dev[inter], marker="o", label="Anytime")
+                    plt.title(f"{self.dataset} Average Rewards {(inter+1)*interval}")
+                    plt.legend()
+                    plt.savefig(f"{self.plot_path}/rewards_trend_{(inter+1)*interval}.png", dpi=100)
+                    plt.close()
+
+                    f = open(f"{self.plot_path}/stats_trends.txt", "w")
+
+                    f.write(f"\n{self.dataset}")
+
+                    for x in range(int(trials/interval)):
+
+                        f.write(f"\n\n\tAverage Rewards {(x+1)*interval}: {avg_rewards[x]}")
+                        f.write(f"\n\tDeviation {(x+1)*interval}: {reward_dev[x]}")
+
+                    f.close()
+
+                    inter += 1
+
+                printProgressBar(z+1, trials, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+
+            '''
+
 			nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
 			
@@ -452,10 +508,13 @@ class Anytime_SPMN:
 			test_data = [[np.nan]*len(self.params.feature_names)]
 			m = meu(spmn, test_data)
 			meus.append(m[0])
+
+
+            
 			
 			env = get_env(self.dataset)
 			total_reward = 0
-			trials = 50000
+			trials = 100000
 			batch_size = trials / 10
 			batch = list()
 
@@ -491,7 +550,7 @@ class Anytime_SPMN:
 			print(nodes)
 			print(meus)
 			print("\n\n\n\n\n")
-
+            
 			
 			plt.close()
 			# plot line 
@@ -538,6 +597,9 @@ class Anytime_SPMN:
 				plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
 			plt.close()
 
+
+            
+
 			plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
 			plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
 			plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
@@ -575,6 +637,8 @@ class Anytime_SPMN:
 				plt.savefig(f"{self.plot_path}/rewards_scaled2.png", dpi=100)
 			plt.close()
 
+            
+
 			
 			f = open(f"{self.plot_path}/stats.txt", "w") if k is None else open(f"{self.plot_path}/{k}/stats.txt", "w")
 
@@ -586,14 +650,16 @@ class Anytime_SPMN:
 			f.write(f"\n\tAverage Rewards : {avg_rewards}")
 			f.write(f"\n\tRewards Deviation : {reward_dev}")
 			f.close()
+
+            '''
 			
 			#except:
 				#pass
 			
 
-			past3 = avg_ll[-min(len(meus),3):]
+			#past3 = avg_ll[-min(len(meus),3):]
 				
-			if n>=self.vars and round(np.std(past3), 3) <= 0.001:
+			if n>=self.vars #and round(np.std(past3), 3) <= 0.001:
 				break
 
 
