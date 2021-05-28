@@ -444,7 +444,7 @@ class Anytime_SPMN:
 					print ("Creation of the directory %s failed" % f"{self.plot_path}/{k}")
 					sys.exit()
 
-		i = 0
+		i = 7
 		while(True):
 
 			index = 0
