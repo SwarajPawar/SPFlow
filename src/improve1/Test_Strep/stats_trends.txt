@@ -1,0 +1,47 @@
+
+Test_Strep
+
+	Average Rewards 10000: [54.925029429428854]
+	Deviation 10000: [0.05498236492626041]
+
+	Average Rewards 20000: []
+	Deviation 20000: []
+
+	Average Rewards 30000: []
+	Deviation 30000: []
+
+	Average Rewards 40000: []
+	Deviation 40000: []
+
+	Average Rewards 50000: []
+	Deviation 50000: []
+
+	Average Rewards 60000: []
+	Deviation 60000: []
+
+	Average Rewards 70000: []
+	Deviation 70000: []
+
+	Average Rewards 80000: []
+	Deviation 80000: []
+
+	Average Rewards 90000: []
+	Deviation 90000: []
+
+	Average Rewards 100000: []
+	Deviation 100000: []
+
+	Average Rewards 110000: []
+	Deviation 110000: []
+
+	Average Rewards 120000: []
+	Deviation 120000: []
+
+	Average Rewards 130000: []
+	Deviation 130000: []
+
+	Average Rewards 140000: []
+	Deviation 140000: []
+
+	Average Rewards 150000: []
+	Deviation 150000: []
