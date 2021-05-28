@@ -455,8 +455,12 @@ class Anytime_SPMN:
 					avg_rewards[inter].append(np.mean(batch))
 					reward_dev[inter].append(np.std(batch))
 
+					original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards))
+					dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards))
+					plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
+					plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
 					plt.errorbar(np.arange(len(avg_rewards[inter])), avg_rewards[inter], yerr=reward_dev[inter], marker="o", label="Anytime")
-					plt.title(f"{self.dataset} Average Rewards {(inter+1)*interval}")
+					plt.title(f"{self.dataset} Average Rewards")
 					plt.legend()
 					plt.savefig(f"{self.plot_path}/rewards_trend_{(inter+1)*interval}.png", dpi=100)
 					plt.close()
