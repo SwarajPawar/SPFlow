@@ -659,7 +659,7 @@ class Anytime_SPMN:
 
 			#past3 = avg_ll[-min(len(meus),3):]
 				
-			if n>=self.vars #and round(np.std(past3), 3) <= 0.001:
+			if n>=self.vars: #and round(np.std(past3), 3) <= 0.001:
 				break
 
 
