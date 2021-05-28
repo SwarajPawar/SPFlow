@@ -385,7 +385,7 @@ class Anytime_SPMN:
 		interval = 10000
 		batches = 10
 		avg_rewards = [list() for i in range(int(trials/interval))]
-		rewards_dev = [list() for i in range(int(trials/interval))]
+		reward_dev = [list() for i in range(int(trials/interval))]
 		'''
 		avg_ll = list()
 		ll_dev = list()
