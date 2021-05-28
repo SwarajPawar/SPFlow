@@ -1,8 +1,8 @@
 
 Test_Strep
 
-	Average Rewards 10000: [54.925029429428854]
-	Deviation 10000: [0.05498236492626041]
+	Average Rewards 10000: [54.93104624624567]
+	Deviation 10000: [0.042100467065877986]
 
 	Average Rewards 20000: []
 	Deviation 20000: []
