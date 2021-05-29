@@ -25,8 +25,8 @@ from os import path as pth
 import sys, os
 
 
-datasets = ['Export_Textiles', 'Test_Strep', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'LungCancer_Staging']
-datasets = ['Export_Textiles']
+datasets = ['Export_Textiles', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution', 'LungCancer_Staging', 'Test_Strep']
+#datasets = ['Export_Textiles']
 path = "test"
 path = "improve1"
 
