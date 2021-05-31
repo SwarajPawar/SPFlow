@@ -676,6 +676,7 @@ class Anytime_SPMN:
 			d+=1
 			n = n+step
 
+		'''
 		stats = {"ll" : avg_ll,
 				"ll_dev": ll_dev,
 				"meu" : meus,
@@ -683,9 +684,9 @@ class Anytime_SPMN:
 				"reward" : avg_rewards,
 				"deviation" : reward_dev
 				}
-
+		'''
 		# Prune(self.spmn)
-		return self.spmn, stats
+		return self.spmn #, stats
 
 
 
