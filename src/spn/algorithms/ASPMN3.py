@@ -381,7 +381,9 @@ class Anytime_SPMN:
 			'Powerplant_Airpollution': {"ll" : -1.0796486063753, "meu" : -2756263.244346315, 'nodes' : 46, 'reward':-2755600.0}
 		}
 		
-		
+		trials = 150000
+		interval = 10000
+		batches = 10
 
 
 		avg_rewards = [list() for i in range(int(trials/interval))]
@@ -447,8 +449,8 @@ class Anytime_SPMN:
 			
 			#try:
 			total_ll = 0
-			trials = test.shape[0]
-			batch_size = trials / 10
+			trials1 = test.shape[0]
+			batch_size = trials1 / 10
 			batch = list()
 			for j, instance in enumerate(test):
 				test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
@@ -468,10 +470,8 @@ class Anytime_SPMN:
 			meus.append(m[0])
 
 
-			trials = 150000
-			interval = 10000
-			batches = 10
-				
+			
+			
 			env = get_env(self.dataset)
 			total_reward = 0
 			rewards = list()
