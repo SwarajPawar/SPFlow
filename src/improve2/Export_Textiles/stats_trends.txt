@@ -1,0 +1,62 @@
+
+Export_Textiles
+
+	Average Rewards 10000: [1724213.4134134133]
+	Deviation 10000: [17907.33996540102]
+
+	Average Rewards 20000: [1722515.907953977]
+	Deviation 20000: [6661.597070809256]
+
+	Average Rewards 30000: []
+	Deviation 30000: []
+
+	Average Rewards 40000: []
+	Deviation 40000: []
+
+	Average Rewards 50000: []
+	Deviation 50000: []
+
+	Average Rewards 60000: []
+	Deviation 60000: []
+
+	Average Rewards 70000: []
+	Deviation 70000: []
+
+	Average Rewards 80000: []
+	Deviation 80000: []
+
+	Average Rewards 90000: []
+	Deviation 90000: []
+
+	Average Rewards 100000: []
+	Deviation 100000: []
+
+	Average Rewards 110000: []
+	Deviation 110000: []
+
+	Average Rewards 120000: []
+	Deviation 120000: []
+
+	Average Rewards 130000: []
+	Deviation 130000: []
+
+	Average Rewards 140000: []
+	Deviation 140000: []
+
+	Average Rewards 150000: []
+	Deviation 150000: []
+
+	Average Rewards 160000: []
+	Deviation 160000: []
+
+	Average Rewards 170000: []
+	Deviation 170000: []
+
+	Average Rewards 180000: []
+	Deviation 180000: []
+
+	Average Rewards 190000: []
+	Deviation 190000: []
+
+	Average Rewards 200000: []
+	Deviation 200000: []
