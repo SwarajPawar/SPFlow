@@ -61,7 +61,7 @@ def get_partial_order(dataset_name):
 
     if dataset_name == 'Computer_Diagnostician':
         #partialOrder = [['System_State'], ['Rework_Decision'], ['Logic_board_fail', 'IO_board_fail', 'Rework_Outcome', 'Rework_Cost' ]]
-        partialOrder = [['Logic_board_fail', 'IO_board_fail','System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
+        partialOrder = [['IO_board_fail', 'Logic_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
         return partialOrder
     if dataset_name == 'Export_Textiles':
         partialOrder = [['Export_Decision'], ['Economical_State'], ['Profit']]
@@ -83,7 +83,7 @@ def get_partial_order(dataset_name):
                         ['Compliance_Medical_Therapy',	'Reduce_Risky_Behavior', 'QALE']]
         return partialOrder
     if dataset_name == 'Powerplant_Airpollution':
-        partialOrder = [['Installation_Type'],['Coal_Worker_Strike'],['Strike_Intervention'],['Strike_Resolution'],['Additional_Cost']]
+        partialOrder = [['Installation_Type'],['Coal_Worker_Strike'],['Strike_Intervention'],['Strike_Resolution','Additional_Cost']]
         return partialOrder
     else:
         print(dataset_name)
