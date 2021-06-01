@@ -1,0 +1,8 @@
+
+Powerplant_Airpollution
+
+	Average Rewards 10000: [-2769919.91991992]
+	Deviation 10000: [42684.829475353574]
+
+	Average Rewards 20000: []
+	Deviation 20000: []
