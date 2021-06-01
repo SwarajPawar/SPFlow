@@ -31,8 +31,8 @@ import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 
-#datasets = ['Export_Textiles', 'HIV_Screening',  'Test_Strep', 'LungCancer_Staging']
-datasets = ['Computer_Diagnostician', 'Powerplant_Airpollution']
+#datasets = ['Export_Textiles', 'HIV_Screening',  'Test_Strep', 'LungCancer_Staging', 'Powerplant_Airpollution']
+datasets = ['Computer_Diagnostician']
 
 path = "original_new1"
 
@@ -74,6 +74,7 @@ for dataset in datasets:
 	
 	nodes = get_structure_stats_dict(spmn)["nodes"]
 	
+	'''
 	plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
 
 
@@ -91,10 +92,10 @@ for dataset in datasets:
 	m = meu(spmn, test_data)
 	meus = (m[0])
 
-	
+	'''
 	env = get_env(dataset)
 	total_reward = 0
-	trials = 150000
+	trials = 50000
 	batch_size = trials / 10
 	batch = list()
 
@@ -117,13 +118,13 @@ for dataset in datasets:
 	avg_rewards = np.mean(batch)
 	reward_dev = np.std(batch)
 	
-	print(f"\n\tLog Likelihood : {ll}")
-	print(f"\n\tMEU : {meus}")
-	print(f"\n\tNodes : {nodes}")
+	#print(f"\n\tLog Likelihood : {ll}")
+	#print(f"\n\tMEU : {meus}")
+	#print(f"\n\tNodes : {nodes}")
 	print(f"\n\tAverage rewards : {avg_rewards}")
 	print(f"\n\tDeviation : {reward_dev}")
 	
-
+	'''
 	f = open(f"{path}/{dataset}/stats.txt", "w")
 	f.write(f"\n{dataset}")
 	f.write(f"\n\tLog Likelihood : {ll}")
@@ -132,57 +133,6 @@ for dataset in datasets:
 	f.write(f"\n\tAverage rewards : {avg_rewards}")
 	f.write(f"\n\tDeviation : {reward_dev}")
 	f.close()
+	'''
 
 
-
-
-'''
-Computer_Diagnostician
-
-
-
-
-
-Product:
-[0, 1, 2, 3, 4, 5]
-
-
-Product:
-[0, 1, 3, 4, 5]
-[2]
-
-
-Product:
-[0, 3, 4, 5]
-[1]
-
-
-Product:
-[0]
-[3]
-[4]
-[5]
-
-
-Product:
-[0]
-[3, 5]
-[4]
-
-
-Product:
-[0]
-[1]
-[3, 5]
-[4]
-
-
-Product:
-[0]
-[1]
-[2]
-[3]
-[4]
-[5]
-Done
-'''

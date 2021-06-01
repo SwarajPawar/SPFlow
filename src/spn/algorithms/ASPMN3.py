@@ -358,7 +358,7 @@ class Anytime_SPMN:
 			'LungCancer_Staging': {"ll" : -1.1489156814245234, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.1265179999999946, 'dev':0.024158974233189766},
 			'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.64759879999822, 'dev':0.13053757307440556},
 			'Computer_Diagnostician': {"ll" : -0.8920749045689644, "meu" : 244.85700000000003, 'nodes' : 47, 'reward':245.04599999999996, 'dev':0.40763218714915067},
-			'Powerplant_Airpollution': {"ll" : -1.0796486063753, "meu" : -2756263.244346315, 'nodes' : 46, 'reward':-2750100.0, 'dev':25448.182646310914}
+			'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2758819.9999999995, 'dev':7006.761813499235}
 		}
 
 		'''
@@ -386,14 +386,17 @@ class Anytime_SPMN:
 		batches = 10
 
 
+		avg_rewards = [list() for i in range(int(trials/interval))]
+		reward_dev = [list() for i in range(int(trials/interval))]
+
 	
 		
 		avg_ll = list()
 		ll_dev = list()
 		meus = list()
 		nodes = list()
-		avg_rewards = list()
-		reward_dev = list()
+		#avg_rewards = list()
+		#reward_dev = list()
 		past3 = list()
 		
 		
@@ -467,32 +470,57 @@ class Anytime_SPMN:
 			meus.append(m[0])
 
 
-			'''
+			
 			
 			env = get_env(self.dataset)
 			total_reward = 0
-			trials = 100000
-			batch_size = trials / 10
-			batch = list()
-
+			rewards = list()
+			
+			inter = 0
 			for z in range(trials):
 				
-				state = env.reset()  #
+				state = env.reset()
 				while(True):
 					output = best_next_decision(spmn, state)
-					#output = spmn_topdowntraversal_and_bestdecisions(spmn, test_data)
 					action = output[0][0]
 					state, reward, done = env.step(action)
 					if done:
-						total_reward += reward
+						rewards.append(reward)
 						break
-				if (z+1) % batch_size == 0:
-					batch.append(total_reward/batch_size)
-					total_reward = 0
-				printProgressBar(z+1, trials, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+				if (z+1) % interval == 0:
+					batch = list()
+					batch_size = int(z / batches)
+					for l in range(batches):
+						m = l*batch_size
+						batch.append(sum(rewards[m:m+batch_size]) / batch_size)
+					
+					avg_rewards[inter].append(np.mean(batch))
+					reward_dev[inter].append(np.std(batch))
 
-			avg_rewards.append(np.mean(batch))
-			reward_dev.append(np.std(batch))
+					original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards[inter]))
+					dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards[inter]))
+					plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
+					plt.fill_between(np.arange(len(avg_rewards[inter])), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
+					plt.errorbar(np.arange(len(avg_rewards[inter])), avg_rewards[inter], yerr=reward_dev[inter], marker="o", label="Anytime")
+					plt.title(f"{self.dataset} Average Rewards")
+					plt.legend()
+					plt.savefig(f"{self.plot_path}/rewards_trend_{(inter+1)*interval}.png", dpi=100)
+					plt.close()
+
+					f = open(f"{self.plot_path}/stats_trends.txt", "w")
+
+					f.write(f"\n{self.dataset}")
+
+					for x in range(int(trials/interval)):
+
+						f.write(f"\n\n\tAverage Rewards {(x+1)*interval}: {avg_rewards[x]}")
+						f.write(f"\n\tDeviation {(x+1)*interval}: {reward_dev[x]}")
+
+					f.close()
+
+					inter += 1
+
+				printProgressBar(z+1, trials, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 			
 			
 			
@@ -502,12 +530,12 @@ class Anytime_SPMN:
 			print("Log Likelihood: ",avg_ll[-1])
 			print("Log Likelihood Deviation: ",ll_dev[-1])
 			print("MEU: ",meus[-1])
-			print("Average rewards: ",avg_rewards[-1])
-			print("Deviation: ",reward_dev[-1])
+			print("Average rewards: ",avg_rewards[-1][-1])
+			print("Deviation: ",reward_dev[-1][-1])
 			print(nodes)
 			print(meus)
 			print("\n\n\n\n\n")
-			'''
+			
 			
 			plt.close()
 			# plot line 
@@ -557,44 +585,7 @@ class Anytime_SPMN:
 
 
 			
-
-			plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
-			plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
-			plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
-			if original_reward[0] > 0:
-				plt.axis(ymin=0, ymax=original_reward[0]*1.5)
-			else:
-				plt.axis(ymax=0, ymin=original_reward[0]*1.5)
-			plt.title(f"{self.dataset} Average Rewards")
-			plt.legend()
-			if k is None:
-				plt.savefig(f"{self.plot_path}/rewards_scaled1.png", dpi=100)
-			else:
-				plt.savefig(f"{self.plot_path}/rewards_scaled1.png", dpi=100)
-			plt.close()
-
-			
-			lspmn_reward = str(abs(int(original_reward[0])))
-			order = len(lspmn_reward)
-			r_dev = np.array(reward_dev)
-			if order > 1:
-				 minl= (round(min(avg_rewards-r_dev)/(10**(order-2)) * 2)/2 - 0.5) * (10**(order-2))
-				 maxl= (round(max(avg_rewards+r_dev)/(10**(order-2)) * 2)/2 + 0.5) * (10**(order-2))
-			else:
-				minl= round(min(avg_rewards-r_dev)*2)/2 - 0.5
-				maxl= round(max(avg_rewards+r_dev)*2)/2 + 0.5
-			plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
-			plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
-			plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
-			plt.axis(ymin=minl, ymax=maxl)
-			plt.title(f"{self.dataset} Average Rewards")
-			plt.legend()
-			if k is None:
-				plt.savefig(f"{self.plot_path}/rewards_scaled2.png", dpi=100)
-			else:
-				plt.savefig(f"{self.plot_path}/rewards_scaled2.png", dpi=100)
-			plt.close()
-
+			'''
 			
 
 			
@@ -605,19 +596,19 @@ class Anytime_SPMN:
 			f.write(f"\n\tLog Likelihood Deviation: {ll_dev}")
 			f.write(f"\n\tMEU : {meus}")
 			f.write(f"\n\tNodes : {nodes}")
-			f.write(f"\n\tAverage Rewards : {avg_rewards}")
-			f.write(f"\n\tRewards Deviation : {reward_dev}")
+			f.write(f"\n\tAverage Rewards : {avg_rewards[-1]}")
+			f.write(f"\n\tRewards Deviation : {reward_dev[-1]}")
 			f.close()
 
-			'''
+			
 			
 			#except:
 				#pass
 			
 
-			#past3 = avg_ll[-min(len(meus),3):]
+			past3 = avg_ll[-min(len(meus),3):]
 				
-			if n>=self.vars: #and round(np.std(past3), 3) <= 0.001:
+			if n>=self.vars and round(np.std(past3), 3) <= 0.001:
 				break
 
 
