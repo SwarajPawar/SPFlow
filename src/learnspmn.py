@@ -32,7 +32,7 @@ from os import path as pth
 import sys, os
 
 #datasets = ['Export_Textiles', 'HIV_Screening',  'Test_Strep', 'LungCancer_Staging', 'Powerplant_Airpollution']
-datasets = ['Computer_Diagnostician']
+datasets = ['Powerplant_Airpollution']
 
 path = "original_new1"
 
