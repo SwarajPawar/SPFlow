@@ -1,0 +1,47 @@
+
+Powerplant_Airpollution
+
+	Average Rewards 10000: [-2754304.304304304]
+	Deviation 10000: [48143.59556349904]
+
+	Average Rewards 20000: [-2771060.5302651324]
+	Deviation 20000: [30420.606617121015]
+
+	Average Rewards 30000: [-2769739.9133044346]
+	Deviation 30000: [28855.90185303408]
+
+	Average Rewards 40000: [-2772793.1982995747]
+	Deviation 40000: [22558.549649204593]
+
+	Average Rewards 50000: [-2774224.844968994]
+	Deviation 50000: [19269.006279240577]
+
+	Average Rewards 60000: [-2768253.0421736958]
+	Deviation 60000: [16152.522237505245]
+
+	Average Rewards 70000: [-2765145.0207172455]
+	Deviation 70000: [19370.85194223923]
+
+	Average Rewards 80000: [-2765608.201025128]
+	Deviation 80000: [20087.502224806332]
+
+	Average Rewards 90000: [-2764390.4878319814]
+	Deviation 90000: [18380.408676314866]
+
+	Average Rewards 100000: [-2765006.500650065]
+	Deviation 100000: [15502.795390819576]
+
+	Average Rewards 110000: [-2763469.4063096642]
+	Deviation 110000: [14192.411876279954]
+
+	Average Rewards 120000: [-2762888.5740478374]
+	Deviation 120000: [14549.346155526935]
+
+	Average Rewards 130000: []
+	Deviation 130000: []
+
+	Average Rewards 140000: []
+	Deviation 140000: []
+
+	Average Rewards 150000: []
+	Deviation 150000: []

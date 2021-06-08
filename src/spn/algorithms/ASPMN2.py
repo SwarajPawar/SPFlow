@@ -393,7 +393,7 @@ class Anytime_SPMN:
 		limit = 2 
 		n = int(self.vars**0.5)
 		#n= self.vars
-		step = (self.vars - (self.vars**0.5) + 1)/10
+		step = 1#(self.vars - (self.vars**0.5) + 1)/10
 		d = 2
 
 		if k is not None:

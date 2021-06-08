@@ -61,7 +61,28 @@ def get_partial_order(dataset_name):
 
     if dataset_name == 'Computer_Diagnostician':
         #partialOrder = [['System_State'], ['Rework_Decision'], ['Logic_board_fail', 'IO_board_fail', 'Rework_Outcome', 'Rework_Cost' ]]
-        partialOrder = [['IO_board_fail', 'Logic_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome'], ['Rework_Cost' ]]
+        #ntest1  no sum
+        #partialOrder = [['IO_board_fail', 'Logic_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
+        #ntest2  no sum
+        #partialOrder = [['Logic_board_fail', 'IO_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
+        #ntest3  no sum
+        #partialOrder = [['Logic_board_fail', 'IO_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
+        #ntest4  no sum
+        #partialOrder = [['IO_board_fail', 'Logic_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
+        #ntest5  no p
+        #partialOrder = [['IO_board_fail', 'Logic_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
+        #ntest6  no p
+        #partialOrder = [['IO_board_fail', 'Logic_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
+        #ntest7  no p
+        #partialOrder = [['Logic_board_fail', 'IO_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
+        #ntest8  no sum
+        #partialOrder = [['IO_board_fail', 'Logic_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
+        #ntest9  no sum
+        #partialOrder = [['Logic_board_fail', 'IO_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
+        #ntest10  no sum
+        #partialOrder = [['Logic_board_fail', 'IO_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
+        #ntest11  no sum
+        partialOrder = [['IO_board_fail', 'Logic_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
         return partialOrder
     if dataset_name == 'Export_Textiles':
         partialOrder = [['Export_Decision'], ['Economical_State'], ['Profit']]
@@ -91,17 +112,17 @@ def get_partial_order(dataset_name):
 
 def get_feature_labels(dataset_name):
 
-    if dataset_name == 'Computer_Diagnostician':
+    if dataset_name == 'Computer_Diagnostician':                                     # 6 variables
        return  ['LBF', 'IBF', 'SS', 'RD', 'RO', 'RC']
-    if dataset_name == 'Export_Textiles':
+    if dataset_name == 'Export_Textiles':                                            # 3 variables
         return ['ES', 'ED', 'Pr']
-    if dataset_name == 'Test_Strep':
+    if dataset_name == 'Test_Strep':                                                 # 8 variables
         return ['TD', 'SI', 'TR', 'TRD', 'RH', 'Dfa', "Dws", 'Q']
-    if dataset_name == 'LungCancer_Staging':
+    if dataset_name == 'LungCancer_Staging':                                         # 9 variables
         return ['CT', 'MM', 'CTR', 'Ms', 'MsR', 'MsD', 'Tr', 'TD', 'LE']
-    if dataset_name == 'HIV_Screening':
+    if dataset_name == 'HIV_Screening':                                              # 7 variables
         return ['Sc', 'HS', 'HTR', 'TC', 'CMT', 'RRB', 'Q']
-    if dataset_name == 'Powerplant_Airpollution':
+    if dataset_name == 'Powerplant_Airpollution':                                    # 5 variables
         return ['IT', 'CWS', 'SI', 'SR', 'AC']
 
 
