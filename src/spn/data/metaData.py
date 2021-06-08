@@ -4,6 +4,8 @@ def get_decNode(dataset_name):
 
     if dataset_name == 'Computer_Diagnostician':
         return ['Rework_Decision']
+    elif dataset_name == 'Computer_Diagnostician_v2':
+        return ['Rework_Decision']
     elif dataset_name == 'Export_Textiles':
         return ['Export_Decision']
     elif dataset_name == 'Test_Strep':
@@ -21,6 +23,8 @@ def get_decNode(dataset_name):
 def get_utilityNode(dataset_name):
 
     if dataset_name == 'Computer_Diagnostician':
+        return ['Rework_Cost']
+    if dataset_name == 'Computer_Diagnostician_v2':
         return ['Rework_Cost']
     if dataset_name == 'Export_Textiles':
         return ['Profit']
@@ -59,7 +63,7 @@ def get_feature_names(dataset_name):
 
 def get_partial_order(dataset_name):
 
-    if dataset_name == 'Computer_Diagnostician':
+    if dataset_name == 'Computer_Diagnostician' or dataset_name == 'Computer_Diagnostician_v2':
         #partialOrder = [['System_State'], ['Rework_Decision'], ['Logic_board_fail', 'IO_board_fail', 'Rework_Outcome', 'Rework_Cost' ]]
         #ntest1  no sum
         #partialOrder = [['IO_board_fail', 'Logic_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
@@ -112,7 +116,7 @@ def get_partial_order(dataset_name):
 
 def get_feature_labels(dataset_name):
 
-    if dataset_name == 'Computer_Diagnostician':                                     # 6 variables
+    if dataset_name == 'Computer_Diagnostician' or dataset_name == 'Computer_Diagnostician_v2':                                     # 6 variables
        return  ['LBF', 'IBF', 'SS', 'RD', 'RO', 'RC']
     if dataset_name == 'Export_Textiles':                                            # 3 variables
         return ['ES', 'ED', 'Pr']

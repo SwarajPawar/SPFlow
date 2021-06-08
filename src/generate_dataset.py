@@ -12,9 +12,9 @@ from spn.data.metaData import get_feature_names
 
 instances = 100000
 n_actions = 2
-ext = "_new1"
+ext = "_new"
 
-datasets = ['HIV_Screening']
+datasets = ['Computer_Diagnostician_v2']
 #datasets = ["Export_Textiles", 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
 
 for dataset in datasets:

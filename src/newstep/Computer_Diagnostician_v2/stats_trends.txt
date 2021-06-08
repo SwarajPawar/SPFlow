@@ -1,0 +1,47 @@
+
+Computer_Diagnostician_v2
+
+	Average Rewards 10000: [-208.0625]
+	Deviation 10000: [1.1734697482253216]
+
+	Average Rewards 20000: [-208.1875]
+	Deviation 20000: [1.5274979541721192]
+
+	Average Rewards 30000: [-208.06]
+	Deviation 30000: [1.2384174489152584]
+
+	Average Rewards 40000: [-207.8925]
+	Deviation 40000: [0.768606693959922]
+
+	Average Rewards 50000: [-208.0585]
+	Deviation 50000: [0.5786106203657212]
+
+	Average Rewards 60000: []
+	Deviation 60000: []
+
+	Average Rewards 70000: []
+	Deviation 70000: []
+
+	Average Rewards 80000: []
+	Deviation 80000: []
+
+	Average Rewards 90000: []
+	Deviation 90000: []
+
+	Average Rewards 100000: []
+	Deviation 100000: []
+
+	Average Rewards 110000: []
+	Deviation 110000: []
+
+	Average Rewards 120000: []
+	Deviation 120000: []
+
+	Average Rewards 130000: []
+	Deviation 130000: []
+
+	Average Rewards 140000: []
+	Deviation 140000: []
+
+	Average Rewards 150000: []
+	Deviation 150000: []

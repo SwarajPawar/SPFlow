@@ -40,7 +40,7 @@ class simThread (threading.Thread):
 dataset = 'Export_Textiles'
 env = get_env(dataset)
 
-def get_reward():
+def get_reward(id):
 	state = env.reset()
 	while(True):
 		output = random.randint(1,2)#best_next_decision(spmn, state)
@@ -56,7 +56,7 @@ total_reward = 0
 reward_all = list()
 
 trials = 10
-pool = multiprocessing.Pool(10)
+pool = multiprocessing.Pool()
 
 start = time.time()
 for z in range(trials):
@@ -72,7 +72,8 @@ for z in range(trials):
 	for t in threads:
 		t.join()
 	'''
-	rewards = zip(*pool.map(get_reward))
+	ids = [None for x in range(100000)]
+	rewards = pool.map(get_reward, ids)
 	reward_all += rewards
 end = time.time()
 
@@ -83,11 +84,11 @@ print(end - start)
 			
 
 rewards = list()
-trials = 10000
+trials = 1000000
 start = time.time()
 for z in range(trials):
 
-	rewards.append(get_reward())
+	rewards.append(get_reward(z))
 end = time.time()
 print(end - start)
 

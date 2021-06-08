@@ -27,16 +27,29 @@ from spn.data.simulator import get_env
 from spn.algorithms.MEU import best_next_decision
 from spn.io.ProgressBar import printProgressBar
 
+import multiprocessing
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 
 #datasets = ['Export_Textiles', 'HIV_Screening',  'Test_Strep', 'LungCancer_Staging', 'Powerplant_Airpollution']
-datasets = ['Powerplant_Airpollution']
+datasets = ['Computer_Diagnostician_v2']
 
-path = "original_new1"
+path = "original_new"
 
+def get_loglikelihood(instance):
+	test_data = np.array(instance).reshape(-1, len(feature_names))
+	return log_likelihood(spmn, test_data)[0][0]
 
+def get_reward(ids):
+
+	state = env.reset()
+	while(True):
+		output = best_next_decision(spmn, state)
+		action = output[0][0]
+		state, reward, done = env.step(action)
+		if done:
+			return reward
 
 for dataset in datasets:
 	
@@ -66,7 +79,7 @@ for dataset in datasets:
 	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
 	train, test = data, data #random.sample(list(data), 1000)
 
-	
+	print("Start Learning...")
 	spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, meta_types, cluster_by_curr_information_set = True, util_to_bin = False)
 	spmn = spmn.learn_spmn(train)
 	print("Done")
@@ -74,17 +87,29 @@ for dataset in datasets:
 	
 	nodes = get_structure_stats_dict(spmn)["nodes"]
 	
-	'''
+	
 	plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
 
 
+	pool = multiprocessing.Pool()
 
 	
+
+	batch_size = int(test.shape[0] / 10)
 	total_ll = 0
+	test = list(test)
+	for b in range(10):
+		test_slice = test[b*batch_size:(b+1)*batch_size]
+		lls = pool.map(get_loglikelihood, test_slice)
+		total_ll += sum(lls)
+		printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
+
+	'''
 	for j, instance in enumerate(test):
 		test_data = np.array(instance).reshape(-1, len(feature_names))
 		total_ll += log_likelihood(spmn, test_data)[0][0]
 		printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
+	'''
 	ll = (total_ll/len(test))
 	
 
@@ -92,39 +117,33 @@ for dataset in datasets:
 	m = meu(spmn, test_data)
 	meus = (m[0])
 
-	'''
+	
 	env = get_env(dataset)
 	total_reward = 0
-	trials = 50000
-	batch_size = trials / 10
+	trials = 100000
+	batch_size = int(trials / 10)
 	batch = list()
 
-	for z in range(trials):
+	pool = multiprocessing.Pool()
+
+	for z in range(10):
 		
-		state = env.reset()  #
-		while(True):
-			output = best_next_decision(spmn, state)
-			#output = spmn_topdowntraversal_and_bestdecisions(spmn, test_data)
-			action = output[0][0]
-			state, reward, done = env.step(action)
-			if done:
-				total_reward += reward
-				break
-		if (z+1) % batch_size == 0:
-			batch.append(total_reward/batch_size)
-			total_reward = 0
-		printProgressBar(z+1, trials, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+		ids = [None for x in range(batch_size)]
+		rewards = pool.map(get_reward, ids)
+
+		batch.append(sum(rewards)/batch_size)
+		printProgressBar(z+1, 10, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
 	avg_rewards = np.mean(batch)
 	reward_dev = np.std(batch)
 	
-	#print(f"\n\tLog Likelihood : {ll}")
-	#print(f"\n\tMEU : {meus}")
-	#print(f"\n\tNodes : {nodes}")
+	print(f"\n\tLog Likelihood : {ll}")
+	print(f"\n\tMEU : {meus}")
+	print(f"\n\tNodes : {nodes}")
 	print(f"\n\tAverage rewards : {avg_rewards}")
 	print(f"\n\tDeviation : {reward_dev}")
 	
-	'''
+	
 	f = open(f"{path}/{dataset}/stats.txt", "w")
 	f.write(f"\n{dataset}")
 	f.write(f"\n\tLog Likelihood : {ll}")
@@ -133,6 +152,6 @@ for dataset in datasets:
 	f.write(f"\n\tAverage rewards : {avg_rewards}")
 	f.write(f"\n\tDeviation : {reward_dev}")
 	f.close()
-	'''
+	
 
 

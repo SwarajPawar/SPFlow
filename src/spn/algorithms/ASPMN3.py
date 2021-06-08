@@ -11,6 +11,7 @@ from spn.io.Graphics import plot_spn
 from spn.io.ProgressBar import printProgressBar
 from spn.data.simulator import get_env
 from spn.algorithms.MEU import best_next_decision
+import multiprocessing
 import logging
 import numpy as np
 import matplotlib.pyplot as plt
@@ -325,6 +326,22 @@ class Anytime_SPMN:
                 logging.info(f'created sum node')
                 return sum_node
 
+
+    def get_loglikelihood(self, instance):
+        test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
+        return log_likelihood(self.spmn, test_data)[0][0]
+
+
+    def get_reward(self, id):
+
+        state = self.env.reset()
+        while(True):
+            output = best_next_decision(self.spmn, state)
+            action = output[0][0]
+            state, reward, done = self.env.step(action)
+            if done:
+                return reward
+
     def learn_aspmn(self, train, test, k=None):
         """
         :param
@@ -358,6 +375,7 @@ class Anytime_SPMN:
             'LungCancer_Staging': {"ll" : -1.1489156814245234, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.1265179999999946, 'dev':0.024158974233189766},
             'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.64759879999822, 'dev':0.13053757307440556},
             'Computer_Diagnostician': {"ll" : -0.8920749045689644, "meu" : 244.85700000000003, 'nodes' : 47, 'reward':245.04599999999996, 'dev':0.40763218714915067},
+            'Computer_Diagnostician_v2': {"ll" : -0.897989711765075, "meu" : -208.12325, 'nodes' : 56, 'reward':-208.09775, 'dev':0.40431162071140233},
             'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2765630.0, 'dev':13728.004224941074}
         }
 
@@ -380,11 +398,13 @@ class Anytime_SPMN:
             'Computer_Diagnostician': {"ll" : -0.8920749045689644, "meu" : 244.85700000000003, 'nodes' : 47, 'reward':245.27000000000004},
             'Powerplant_Airpollution': {"ll" : -1.0796486063753, "meu" : -2756263.244346315, 'nodes' : 46, 'reward':-2755600.0}
         }
+
+        
         
         trials = 150000
         interval = 10000
         batches = 10
-
+        interval_count = int(trials/interval)
 
         avg_rewards = [list() for i in range(int(trials/interval))]
         reward_dev = [list() for i in range(int(trials/interval))]
@@ -398,7 +418,8 @@ class Anytime_SPMN:
         #avg_rewards = list()
         #reward_dev = list()
         past3 = list()
-        
+
+        self.env = get_env(self.dataset)
         
         limit = 2 
         n = int(self.vars**0.5)
@@ -450,8 +471,19 @@ class Anytime_SPMN:
             #try:
             total_ll = 0
             trials1 = test.shape[0]
-            batch_size = trials1 / 10
+            batch_size = int(trials1 / 10)
             batch = list()
+            pool = multiprocessing.Pool()
+
+            
+
+            for b in range(10):
+                test_slice = test[b*batch_size:(b+1)*batch_size]
+                lls = pool.map(self.get_loglikelihood, test_slice)
+                total_ll = sum(lls)
+                batch.append(total_ll/batch_size)
+                printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
+            '''
             for j, instance in enumerate(test):
                 test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
                 total_ll += log_likelihood(spmn, test_data)[0][0]
@@ -459,7 +491,7 @@ class Anytime_SPMN:
                     batch.append(total_ll/batch_size)
                     total_ll = 0
                 printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-            
+            '''
             avg_ll.append(np.mean(batch))
             ll_dev.append(np.std(batch))
             
@@ -472,10 +504,56 @@ class Anytime_SPMN:
 
             
             
-            env = get_env(self.dataset)
+            
             total_reward = 0
             rewards = list()
+
             
+
+            pool = multiprocessing.Pool()
+            for inter in range(interval_count):
+                
+                for y in range(batches):
+                    ids = [None for x in range(int(interval/batches))]
+
+                    cur = pool.map(self.get_reward, ids)
+                    rewards += cur
+                    z = (inter*batches) + y + 1
+                    printProgressBar(z, interval_count*batches, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+
+                batch = list()
+                batch_size = int(len(rewards) / batches)
+                for l in range(batches):
+                    m = l*batch_size
+                    batch.append(sum(rewards[m:m+batch_size]) / batch_size)
+                
+                avg_rewards[inter].append(np.mean(batch))
+                reward_dev[inter].append(np.std(batch))
+
+                original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards[inter]))
+                dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards[inter]))
+                plt.close()
+                plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
+                plt.fill_between(np.arange(len(avg_rewards[inter])), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
+                plt.errorbar(np.arange(len(avg_rewards[inter])), avg_rewards[inter], yerr=reward_dev[inter], marker="o", label="Anytime")
+                plt.title(f"{self.dataset} Average Rewards")
+                plt.legend()
+                plt.savefig(f"{self.plot_path}/rewards_trend_{(inter+1)*interval}.png", dpi=100)
+                plt.close()
+
+                f = open(f"{self.plot_path}/stats_trends.txt", "w")
+
+                f.write(f"\n{self.dataset}")
+
+                for x in range(interval_count):
+
+                    f.write(f"\n\n\tAverage Rewards {(x+1)*interval}: {avg_rewards[x]}")
+                    f.write(f"\n\tDeviation {(x+1)*interval}: {reward_dev[x]}")
+
+                f.close()
+
+                
+            '''
             inter = 0
             for z in range(trials):
                 
@@ -522,7 +600,7 @@ class Anytime_SPMN:
                     inter += 1
 
                 printProgressBar(z+1, trials, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
-            
+            '''
             
             
             print("\n\n\n\n\n")
