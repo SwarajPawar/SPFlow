@@ -401,8 +401,8 @@ class Anytime_SPMN:
 
         
         
-        trials = 150000
-        interval = 10000
+        trials = 200000
+        interval = 20000
         batches = 10
         interval_count = int(trials/interval)
 
