@@ -183,6 +183,7 @@ class AnytimeSPN:
 		return self.spn, stats
 
 	#K-fold evaluation
+	'''
 	def learn_aspn_kfold(self, data, k):
 	
 		from sklearn.model_selection import KFold
@@ -199,7 +200,7 @@ class AnytimeSPN:
 			k_stats[k] = stats
 			k+=1
 			
-			
+	'''
 			
 			
 			
