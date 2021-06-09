@@ -1,0 +1,32 @@
+
+LungCancer_Staging
+
+	Average Rewards 20000: [3.1277549999999916]
+	Deviation 20000: [0.024372340367719326]
+
+	Average Rewards 40000: [3.1165850000000126]
+	Deviation 40000: [0.024513018097534842]
+
+	Average Rewards 60000: []
+	Deviation 60000: []
+
+	Average Rewards 80000: []
+	Deviation 80000: []
+
+	Average Rewards 100000: []
+	Deviation 100000: []
+
+	Average Rewards 120000: []
+	Deviation 120000: []
+
+	Average Rewards 140000: []
+	Deviation 140000: []
+
+	Average Rewards 160000: []
+	Deviation 160000: []
+
+	Average Rewards 180000: []
+	Deviation 180000: []
+
+	Average Rewards 200000: []
+	Deviation 200000: []

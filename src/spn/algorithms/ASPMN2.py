@@ -394,7 +394,7 @@ class Anytime_SPMN:
 		limit = 2 
 		n = int(self.vars**0.5)
 		#n= self.vars
-		step = 1#(self.vars - (self.vars**0.5) + 1)/10
+		step = 0#(self.vars - (self.vars**0.5) + 1)/10
 		d = 2
 
 		if k is not None:
@@ -462,7 +462,7 @@ class Anytime_SPMN:
 			
 			env = get_env(self.dataset)
 			total_reward = 0
-			trials = 1000
+			trials = 100
 			batch_size = trials / 10
 			batch = list()
 
@@ -569,7 +569,7 @@ class Anytime_SPMN:
 
 			past3 = avg_ll[-min(len(meus),3):]
 				
-			if n>=self.vars and round(np.std(past3), 3) <= 0.001:
+			if n>self.vars:# and round(np.std(past3), 3) <= 0.001:
 				break
 
 
@@ -577,6 +577,8 @@ class Anytime_SPMN:
 			limit += 1
 			d += 1
 			n = n+step
+			if step ==0:
+				step = 1
 
 		'''
 		stats = {"ll" : avg_ll,

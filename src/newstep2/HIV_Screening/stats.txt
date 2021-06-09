@@ -1,0 +1,8 @@
+
+HIV_Screening
+	Log Likelihood : [-18.46403258468184]
+	Log Likelihood Deviation: [0.4300941431263159]
+	MEU : [64.2310164693937]
+	Nodes : [62]
+	Average Rewards : [42.562524549992624]
+	Rewards Deviation : [0.06509487203249313]
