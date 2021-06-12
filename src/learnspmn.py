@@ -31,9 +31,10 @@ import multiprocessing
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
+from numba import njit, prange
 
-#datasets = ['Export_Textiles', 'HIV_Screening',  'Test_Strep', 'LungCancer_Staging', 'Powerplant_Airpollution']
-datasets = ['Computer_Diagnostician_v2']
+datasets = ['HIV_Screening',  'Test_Strep', 'LungCancer_Staging']
+#datasets = ['Export_Textiles','Computer_Diagnostician_v2', 'Powerplant_Airpollution', ]
 
 path = "original_new"
 
@@ -50,6 +51,22 @@ def get_reward(ids):
 		state, reward, done = env.step(action)
 		if done:
 			return reward
+
+'''
+@njit(parallel=True)
+def get_reward2(rewards, size):
+
+	for i in prange(size):
+		state = env.reset()
+		while(True):
+			output = best_next_decision(spmn, state)
+			action = output[0][0]
+			state, reward, done = env.step(action)
+			if done:
+				rewards[i] = reward
+				break
+	return rewards
+'''
 
 for dataset in datasets:
 	
@@ -88,13 +105,13 @@ for dataset in datasets:
 	nodes = get_structure_stats_dict(spmn)["nodes"]
 	
 	
-	plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
+	#plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
 
 
 	pool = multiprocessing.Pool()
 
 	
-
+	'''
 	batch_size = int(test.shape[0] / 10)
 	total_ll = 0
 	test = list(test)
@@ -103,52 +120,54 @@ for dataset in datasets:
 		lls = pool.map(get_loglikelihood, test_slice)
 		total_ll += sum(lls)
 		printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-
+	'''
 	'''
 	for j, instance in enumerate(test):
 		test_data = np.array(instance).reshape(-1, len(feature_names))
 		total_ll += log_likelihood(spmn, test_data)[0][0]
 		printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
 	'''
+	'''
 	ll = (total_ll/len(test))
 	
-
+	'''
 	test_data = [[np.nan]*len(feature_names)]
 	m = meu(spmn, test_data)
 	meus = (m[0])
-
+	
 	
 	env = get_env(dataset)
 	total_reward = 0
-	trials = 100000
-	batch_size = int(trials / 10)
+	#trials = 200000
+	batch_count = 25
+	batch_size = 20000 #int(trials / batch_count)
 	batch = list()
 
 	pool = multiprocessing.Pool()
 
-	for z in range(10):
+	for z in range(batch_count):
 		
 		ids = [None for x in range(batch_size)]
 		rewards = pool.map(get_reward, ids)
-
+		
 		batch.append(sum(rewards)/batch_size)
-		printProgressBar(z+1, 10, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+		printProgressBar(z+1, batch_count, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
 	avg_rewards = np.mean(batch)
 	reward_dev = np.std(batch)
 	
-	print(f"\n\tLog Likelihood : {ll}")
+	#print(f"\n\tLog Likelihood : {ll}")
 	print(f"\n\tMEU : {meus}")
-	print(f"\n\tNodes : {nodes}")
+	#print(f"\n\tNodes : {nodes}")
 	print(f"\n\tAverage rewards : {avg_rewards}")
 	print(f"\n\tDeviation : {reward_dev}")
 	
 	
-	f = open(f"{path}/{dataset}/stats.txt", "w")
+	f = open(f"{path}/{dataset}/stats1.txt", "w")
 	f.write(f"\n{dataset}")
-	f.write(f"\n\tLog Likelihood : {ll}")
+	#f.write(f"\n\tLog Likelihood : {ll}")
 	f.write(f"\n\tMEU : {meus}")
-	f.write(f"\n\tNodes : {nodes}")
+	#f.write(f"\n\tNodes : {nodes}")
 	f.write(f"\n\tAverage rewards : {avg_rewards}")
 	f.write(f"\n\tDeviation : {reward_dev}")
 	f.close()

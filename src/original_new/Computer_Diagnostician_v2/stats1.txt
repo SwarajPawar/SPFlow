@@ -1,0 +1,4 @@
+
+Computer_Diagnostician_v2
+	Average rewards : -207.99065
+	Deviation : 0.4013337326963687

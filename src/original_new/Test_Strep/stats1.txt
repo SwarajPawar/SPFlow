@@ -1,4 +1,5 @@
 
 Test_Strep
-	Average rewards : 54.93578280000071
-	Deviation : 0.018246756840598732
+	MEU : 54.9416526618876
+	Average rewards : 54.936719928008955
+	Deviation : 0.011715846521357575

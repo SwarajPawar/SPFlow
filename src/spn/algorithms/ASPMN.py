@@ -331,60 +331,28 @@ class Anytime_SPMN:
 		:return: learned spmn
 		"""
 		
-		'''
-		original_stats_old = {
-			'Export_Textiles': {"ll" : -1.0903135560503194, "meu" : 1922639.5, 'nodes' : 22},
-			'Test_Strep': {"ll" : -1.1461735112245122, "meu" : 54.92189449375, 'nodes' : 51},
-			'LungCancer_Staging': {"ll" : -1.3292497032277288, "meu" : 3.11376125, 'nodes' : 49},
-			'HIV_Screening': {"ll" : -0.5943350928785097, "meu" : 42.60624317138454, 'nodes' : 125},
-			'Computer_Diagnostician': {"ll" : -0.8912294493362266, "meu" : 242.863042737567, 'nodes' : 50},
-			'Powerplant_Airpollution': {"ll" : -1.8151637099020188, "meu" : -2803562.5, 'nodes' : 45}
-		}
-		'''
-		'''
-		original_stats_new = {
-			'Export_Textiles': {"ll" : -1.0892559429908522, "meu" : 1922275.95, 'nodes' : 22, 'reward':1721469.45},
-			'Test_Strep': {"ll" : -0.9112557170813002, "meu" : 54.93760881256758, 'nodes' : 100, 'reward':54.97011839999944},
-			'LungCancer_Staging': {"ll" : -1.1515872880624247, "meu" : 3.1526200852839716, 'nodes' : 260, 'reward':3.1738849999999976},
-			'HIV_Screening': {"ll" : -0.6189833438168413, "meu" : 42.63750815337698, 'nodes' : 112, 'reward':42.4838739999994},
-			'Computer_Diagnostician': {"ll" : -0.892138328151404, "meu" : 244.94, 'nodes' : 47, 'reward':244.955},
-			'Powerplant_Airpollution': {"ll" : -1.081424145432235, "meu" : -2726821.30929344245, 'nodes' : 46, 'reward':-2770200.0}
-		}
-		'''
 		
 		original_stats = {
-			'Export_Textiles': {"ll" : -1.0890750655173789, "meu" : 1722313.8158882717, 'nodes' : 38, 'reward':1716130.8399999999, 'dev':8877.944736840887},
+			'Export_Textiles': {"ll" : -1.0890750655173789, "meu" : 1722313.8158882717, 'nodes' : 38, 'reward':1721301.8260000004, 'dev':3861.061525772288},
 			'Test_Strep': {"ll" : -0.9130071749277912, "meu" : 54.9416526618876, 'nodes' : 130, 'reward':54.93578280000071, 'dev':0.018246756840598732},
 			'LungCancer_Staging': {"ll" : -1.1489156814245234, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.1265179999999946, 'dev':0.024158974233189766},
 			'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.64759879999822, 'dev':0.13053757307440556},
-			'Computer_Diagnostician': {"ll" : -0.8920749045689644, "meu" : 244.85700000000003, 'nodes' : 47, 'reward':245.04599999999996, 'dev':0.40763218714915067},
-			'Computer_Diagnostician_v2': {"ll" : -0.897989711765075, "meu" : -208.12325, 'nodes' : 56, 'reward':-208.09775, 'dev':0.40431162071140233},
-			'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2765630.0, 'dev':13728.004224941074}
+			'Computer_Diagnostician_v2': {"ll" : -0.897989711765075, "meu" : -208.12325, 'nodes' : 56, 'reward':-207.99065, 'dev':0.4013337326963687},
+			'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2763842.0, 'dev':6825.630813338794}
 		}
 
-		'''
-		max_stats = {
-			'Export_Textiles': {"ll" : -1.085894618117626, "meu" : 1722313.8158882714, 'nodes' : 38, 'reward':1734820.15},
-			'Test_Strep': {"ll" : -1.326788892481826, "meu" : 54.89817723280146, 'nodes' : 143, 'reward':54.8730194999996},
-			'LungCancer_Staging': {"ll" : -2.2087761740149308, "meu" : 2.672605436120087, 'nodes' : 492, 'reward':3.1100099999999955},
-			'HIV_Screening': {"ll" : -1.22956668145111, "meu" : 42.413024507034876, 'nodes' : 122, 'reward':42.28838000000008},
-			'Computer_Diagnostician': {"ll" : -1.399600088876896, "meu" : 226.26550000000006, 'nodes' : 52, 'reward':209.2775},
-			'Powerplant_Airpollution': {"ll" : -1.1907544739362805, "meu" : -3000000.0, 'nodes' : 49, 'reward':-3000000.0}
-		}
-		'''
-
-		max_stats = {
-			'Export_Textiles': {"ll" : -1.0890750655173789, "meu" : 1722313.8158882717, 'nodes' : 38, 'reward':1729827.6},
-			'Test_Strep': {"ll" : -0.9130071749277912, "meu" : 54.9416526618876, 'nodes' : 130, 'reward':54.939131999999425},
-			'LungCancer_Staging': {"ll" : -1.1489156814245234, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.153284999999997},
-			'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.5504879999994},
-			'Computer_Diagnostician': {"ll" : -0.8920749045689644, "meu" : 244.85700000000003, 'nodes' : 47, 'reward':245.27000000000004},
-			'Powerplant_Airpollution': {"ll" : -1.0796486063753, "meu" : -2756263.244346315, 'nodes' : 46, 'reward':-2755600.0}
+		optimal_meu = {
+			'Export_Textiles' : 1721300,
+			'Computer_Diagnostician_v2': -210.13,
+			'Powerplant_Airpollution': -2760000,
+			'HIV_Screening': 42.5597,
+			'Test_Strep': 54.9245,
+			'LungCancer_Staging': 3.12453
 		}
 		
-		trials = 200000
+		trials = 500000
 		interval = 10000
-		batches = 10
+		batches = 25
 
 
 		avg_rewards = [list() for i in range(int(trials/interval))]

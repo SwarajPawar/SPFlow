@@ -1,4 +1,5 @@
 
 HIV_Screening
-	Average rewards : 42.64759879999822
-	Deviation : 0.13053757307440556
+	MEU : 42.582734183407034
+	Average rewards : 42.559788119992646
+	Deviation : 0.06067708771159484

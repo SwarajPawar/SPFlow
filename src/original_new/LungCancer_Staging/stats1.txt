@@ -1,4 +1,5 @@
 
 LungCancer_Staging
-	Average rewards : 3.1265179999999946
-	Deviation : 0.024158974233189766
+	MEU : 3.138664586296027
+	Average rewards : 3.1429205999999272
+	Deviation : 0.01190315582691798
