@@ -86,7 +86,7 @@ def get_partial_order(dataset_name):
         #ntest10  no sum
         #partialOrder = [['Logic_board_fail', 'IO_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
         #ntest11  no sum
-        partialOrder = [['IO_board_fail', 'Logic_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
+        partialOrder = [['IO_board_fail', 'Logic_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
         return partialOrder
     if dataset_name == 'Export_Textiles':
         partialOrder = [['Export_Decision'], ['Economical_State'], ['Profit']]
