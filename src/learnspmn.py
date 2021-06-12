@@ -35,7 +35,7 @@ from collections import Counter
 
 datasets = ['HIV_Screening',  'Test_Strep', 'LungCancer_Staging']
 #datasets = ['Export_Textiles','Computer_Diagnostician_v2', 'Powerplant_Airpollution', ]
-
+datasets = ['Computer_Diagnostician_v2' ]
 path = "original_new"
 
 def get_loglikelihood(instance):
@@ -51,7 +51,8 @@ def get_reward(ids):
 		action = output[0][0]
 		policy += f"{action}  "
 		state, reward, done = env.step(action)
-		if done:
+		if action==1:
+			print(state)
 			#return reward
 			return policy
 
