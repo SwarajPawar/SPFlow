@@ -11,7 +11,7 @@ import csv
 import matplotlib.pyplot as plt
 
 from spn.data.simulator import get_env
-
+import multiprocessing
 
 def get_reward(ids):
 
