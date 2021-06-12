@@ -78,10 +78,11 @@ class Computer_Diagnostician_v2:
 		else:
 			self.IO_board_fail = 0
 
-		self.System_State = 0
+		
 		if self.Logic_board_fail == 0 and self.IO_board_fail == 0:
 			self.System_State = 1
-			
+		else:
+			self.System_State = 0
 		
 		return self.state()
 			
