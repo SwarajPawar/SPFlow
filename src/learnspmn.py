@@ -31,6 +31,7 @@ import multiprocessing
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
+from collections import Counter
 
 datasets = ['HIV_Screening',  'Test_Strep', 'LungCancer_Staging']
 datasets = ['Export_Textiles','Computer_Diagnostician_v2', 'Powerplant_Airpollution', ]
@@ -48,7 +49,7 @@ def get_reward(ids):
 	while(True):
 		output = best_next_decision(spmn, state)
 		action = output[0][0]
-		policy += f"{action} \t "
+		policy += f"{action}  "
 		state, reward, done = env.step(action)
 		if done:
 			#return reward
@@ -143,7 +144,7 @@ for dataset in datasets:
 		#batch.append(sum(rewards)/batch_size)
 		printProgressBar(z+1, batch_count, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
-	print(set(policy_set))
+	print(Counter(policy_set))
 	#avg_rewards = np.mean(batch)
 	#reward_dev = np.std(batch)
 	'''
