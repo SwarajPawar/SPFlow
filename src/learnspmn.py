@@ -35,7 +35,7 @@ from collections import Counter
 
 datasets = ['HIV_Screening',  'Test_Strep', 'LungCancer_Staging']
 #datasets = ['Export_Textiles','Computer_Diagnostician_v2', 'Powerplant_Airpollution', ]
-datasets = ['Computer_Diagnostician_v2' ]
+datasets = ['Powerplant_Airpollution' ]
 path = "original_new"
 
 def get_loglikelihood(instance):
@@ -44,18 +44,20 @@ def get_loglikelihood(instance):
 
 def get_reward(ids):
 
-	policy = ""
+	#policy = ""
 	state = env.reset()
 	while(True):
 		output = best_next_decision(spmn, state)
 		action = output[0][0]
-		policy += f"{action}  "
+		#policy += f"{action}  "
 		state, reward, done = env.step(action)
+		'''
 		if action==1:
 			print(state)
-			#return reward
+			#
+		'''
 		if done:
-			return policy
+			return reward
 
 
 
@@ -130,7 +132,7 @@ for dataset in datasets:
 	env = get_env(dataset)
 	total_reward = 0
 	#trials = 200000
-	batch_count = 1
+	batch_count = 50
 	batch_size = 20000 #int(trials / batch_count)
 	batch = list()
 
@@ -140,16 +142,16 @@ for dataset in datasets:
 	for z in range(batch_count):
 		
 		ids = [None for x in range(batch_size)]
-		#rewards = pool.map(get_reward, ids)
-		policies = pool.map(get_reward, ids)
-		policy_set += policies
-		#batch.append(sum(rewards)/batch_size)
+		rewards = pool.map(get_reward, ids)
+		#policies = pool.map(get_reward, ids)
+		#policy_set += policies
+		batch.append(sum(rewards)/batch_size)
 		printProgressBar(z+1, batch_count, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
 	print(Counter(policy_set))
-	#avg_rewards = np.mean(batch)
-	#reward_dev = np.std(batch)
-	'''
+	avg_rewards = np.mean(batch)
+	reward_dev = np.std(batch)
+	
 	#print(f"\n\tLog Likelihood : {ll}")
 	print(f"\n\tMEU : {meus}")
 	#print(f"\n\tNodes : {nodes}")
@@ -165,6 +167,6 @@ for dataset in datasets:
 	f.write(f"\n\tAverage rewards : {avg_rewards}")
 	f.write(f"\n\tDeviation : {reward_dev}")
 	f.close()
-	'''
+	
 
 
