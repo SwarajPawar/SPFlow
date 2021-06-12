@@ -34,7 +34,7 @@ import sys, os
 from collections import Counter
 
 datasets = ['HIV_Screening',  'Test_Strep', 'LungCancer_Staging']
-datasets = ['Export_Textiles','Computer_Diagnostician_v2', 'Powerplant_Airpollution', ]
+#datasets = ['Export_Textiles','Computer_Diagnostician_v2', 'Powerplant_Airpollution', ]
 
 path = "original_new"
 
