@@ -54,6 +54,7 @@ def get_reward(ids):
 		if action==1:
 			print(state)
 			#return reward
+		if done:
 			return policy
 
 
