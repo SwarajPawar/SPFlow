@@ -31,10 +31,9 @@ import multiprocessing
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
-from numba import njit, prange
 
 datasets = ['HIV_Screening',  'Test_Strep', 'LungCancer_Staging']
-#datasets = ['Export_Textiles','Computer_Diagnostician_v2', 'Powerplant_Airpollution', ]
+datasets = ['Export_Textiles','Computer_Diagnostician_v2', 'Powerplant_Airpollution', ]
 
 path = "original_new"
 
@@ -44,29 +43,18 @@ def get_loglikelihood(instance):
 
 def get_reward(ids):
 
+	policy = ""
 	state = env.reset()
 	while(True):
 		output = best_next_decision(spmn, state)
 		action = output[0][0]
+		policy += f"{action} \t "
 		state, reward, done = env.step(action)
 		if done:
-			return reward
+			#return reward
+			return policy
 
-'''
-@njit(parallel=True)
-def get_reward2(rewards, size):
 
-	for i in prange(size):
-		state = env.reset()
-		while(True):
-			output = best_next_decision(spmn, state)
-			action = output[0][0]
-			state, reward, done = env.step(action)
-			if done:
-				rewards[i] = reward
-				break
-	return rewards
-'''
 
 for dataset in datasets:
 	
@@ -130,32 +118,35 @@ for dataset in datasets:
 	'''
 	ll = (total_ll/len(test))
 	
-	'''
+	
 	test_data = [[np.nan]*len(feature_names)]
 	m = meu(spmn, test_data)
 	meus = (m[0])
-	
+	'''
 	
 	env = get_env(dataset)
 	total_reward = 0
 	#trials = 200000
-	batch_count = 25
+	batch_count = 1
 	batch_size = 20000 #int(trials / batch_count)
 	batch = list()
 
 	pool = multiprocessing.Pool()
+	policy_set = list()
 
 	for z in range(batch_count):
 		
 		ids = [None for x in range(batch_size)]
-		rewards = pool.map(get_reward, ids)
-		
-		batch.append(sum(rewards)/batch_size)
+		#rewards = pool.map(get_reward, ids)
+		policies = pool.map(get_reward, ids)
+		policy_set += policies
+		#batch.append(sum(rewards)/batch_size)
 		printProgressBar(z+1, batch_count, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
-	avg_rewards = np.mean(batch)
-	reward_dev = np.std(batch)
-	
+	print(set(policy_set))
+	#avg_rewards = np.mean(batch)
+	#reward_dev = np.std(batch)
+	'''
 	#print(f"\n\tLog Likelihood : {ll}")
 	print(f"\n\tMEU : {meus}")
 	#print(f"\n\tNodes : {nodes}")
@@ -171,6 +162,6 @@ for dataset in datasets:
 	f.write(f"\n\tAverage rewards : {avg_rewards}")
 	f.write(f"\n\tDeviation : {reward_dev}")
 	f.close()
-	
+	'''
 
 
