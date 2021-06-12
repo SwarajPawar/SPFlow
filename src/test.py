@@ -38,7 +38,6 @@ for z in range(batch_count):
 	rewards = pool.map(get_reward, ids)
 	
 	batch.append(sum(rewards)/batch_size)
-	printProgressBar(z+1, batch_count, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 	print(f"{np.mean(batch)} \t {np.std(batch)}")
 
 avg_rewards = np.mean(batch)
