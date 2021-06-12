@@ -86,7 +86,7 @@ def get_partial_order(dataset_name):
         #ntest10  no sum
         #partialOrder = [['Logic_board_fail', 'IO_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
         #ntest11  no sum
-        partialOrder = [['IO_board_fail', 'Logic_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
+        partialOrder = [['IO_board_fail', 'Logic_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
         return partialOrder
     if dataset_name == 'Export_Textiles':
         partialOrder = [['Export_Decision'], ['Economical_State'], ['Profit']]
@@ -99,11 +99,11 @@ def get_partial_order(dataset_name):
         #partialOrder = [['CT'],['CTResult', 'Mediastinal_Metastases'],['Mediastinoscopy'],
                                #['Mediastinoscopy_Result', 'Mediastinoscopy_death'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
         #ltest1
-        #partialOrder = [['CT'],['Mediastinal_Metastases', 'CTResult'],['Mediastinoscopy'],['Mediastinoscopy_Result', 'Mediastinoscopy_death'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
+        partialOrder = [['CT'],['Mediastinal_Metastases', 'CTResult'],['Mediastinoscopy'],['Mediastinoscopy_Result', 'Mediastinoscopy_death'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
         #ltest2
         #partialOrder = [['CT'],['Mediastinal_Metastases', 'CTResult'],['Mediastinoscopy'],['Mediastinoscopy_death', 'Mediastinoscopy_Result'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
         #ltest3
-        partialOrder = [['CT'],['Mediastinal_Metastases'], ['CTResult'],['Mediastinoscopy'],['Mediastinoscopy_Result', 'Mediastinoscopy_death'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
+        #partialOrder = [['CT'],['Mediastinal_Metastases'], ['CTResult'],['Mediastinoscopy'],['Mediastinoscopy_Result', 'Mediastinoscopy_death'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
         return partialOrder
     if dataset_name == 'HIV_Screening':
         #partialOrder = [['Screen'], ['HIV_Test_Result', 'HIV_Status'],['Treat_Counsel'],
@@ -121,9 +121,9 @@ def get_partial_order(dataset_name):
 def get_feature_labels(dataset_name):
 
     if dataset_name == 'Computer_Diagnostician' or dataset_name == 'Computer_Diagnostician_v2':                                     # 6 variables
-       return  ['LBF', 'IBF', 'SS', 'RD', 'RO', 'RC']
+       return  ['IBF', 'LBF', 'SS', 'RD', 'RO', 'RC']
     if dataset_name == 'Export_Textiles':                                            # 3 variables
-        return ['ES', 'ED', 'Pr']
+        return ['ED', 'ES', 'Pr']
     if dataset_name == 'Test_Strep':                                                 # 8 variables
         return ['TD', 'SI', 'TR', 'TRD', 'RH', 'Dfa', "Dws", 'Q']
     if dataset_name == 'LungCancer_Staging':                                         # 9 variables
