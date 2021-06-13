@@ -354,7 +354,7 @@ class Anytime_SPMN:
             'LungCancer_Staging': {"ll" : -1.1489156814245234, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.1429205999999272, 'dev':0.01190315582691798},
             'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.559788119992646, 'dev':0.06067708771159484},
             'Computer_Diagnostician_v2': {"ll" : -0.897989711765075, "meu" : -208.12325, 'nodes' : 56, 'reward':-207.99065, 'dev':0.4013337326963687},
-            'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2763842.0, 'dev':6825.630813338794}
+            'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2759870.4, 'dev':6825.630813338794}
         }
 
         optimal_meu = {
@@ -426,14 +426,14 @@ class Anytime_SPMN:
 
             
 
-            #nodes.append(get_structure_stats_dict(spmn)["nodes"])
+            nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
-            '''
+            
             if k is None:
                 plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
             else:
                 plot_spn(spmn, f'{self.plot_path}/{k}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
-            '''
+            
             
             #try:
             '''
@@ -539,7 +539,7 @@ class Anytime_SPMN:
             
             print("\n\n\n\n\n")
             print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
-            #print("#Nodes: ",nodes[-1])
+            print("#Nodes: ",nodes[-1])
             #print("Log Likelihood: ",avg_ll[-1])
             #print("Log Likelihood Deviation: ",ll_dev[-1])
             print("MEU: ",meus[-1])
@@ -560,6 +560,7 @@ class Anytime_SPMN:
                 plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
             else:
                 plt.savefig(f"{self.plot_path}/{k}/ll.png", dpi=100)
+            '''
             plt.close()
             
             plt.plot(meus, marker="o", label="Anytime")
@@ -571,7 +572,7 @@ class Anytime_SPMN:
                 plt.savefig(f"{self.plot_path}/meu.png", dpi=100)
             else:
                 plt.savefig(f"{self.plot_path}/{k}/meu.png", dpi=100)
-            '''
+            
             plt.close()
 
             plt.plot(nodes, marker="o", label="Anytime")
@@ -603,22 +604,14 @@ class Anytime_SPMN:
             '''
             
 
-            '''
+            
             f = open(f"{self.plot_path}/stats.txt", "w") if k is None else open(f"{self.plot_path}/{k}/stats.txt", "w")
 
             f.write(f"\n{self.dataset}")
-            f.write(f"\n\tLog Likelihood : {avg_ll}")
-            f.write(f"\n\tLog Likelihood Deviation: {ll_dev}")
+            #f.write(f"\n\tLog Likelihood : {avg_ll}")
+            #f.write(f"\n\tLog Likelihood Deviation: {ll_dev}")
             f.write(f"\n\tMEU : {meus}")
             f.write(f"\n\tNodes : {nodes}")
-            f.write(f"\n\tAverage Rewards : {avg_rewards[-1]}")
-            f.write(f"\n\tRewards Deviation : {reward_dev[-1]}")
-            f.close()
-            '''
-            f = open(f"{self.plot_path}/stats1.txt", "w") if k is None else open(f"{self.plot_path}/{k}/stats1.txt", "w")
-
-            f.write(f"\n{self.dataset}")
-            f.write(f"\n\tMEU : {meus}")
             f.write(f"\n\tAverage Rewards : {avg_rewards[-1]}")
             f.write(f"\n\tRewards Deviation : {reward_dev[-1]}")
             f.close()
