@@ -57,7 +57,8 @@ def get_reward(ids):
 			#
 		'''
 		if done:
-			return reward
+			#return reward
+			return policy
 
 
 
