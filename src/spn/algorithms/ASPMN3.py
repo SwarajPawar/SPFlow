@@ -474,8 +474,8 @@ class Anytime_SPMN:
             plt.close()
             
             plt.plot(meus, marker="o", label="Anytime")
-            plt.plot([optimal_meu[self.dataset]]*len(meus), linestyle="dashed", linewidth=2, color ="green", label="Optimal MEU")
-            plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dotted", color ="red", label="LearnSPMN")
+            plt.plot([optimal_meu[self.dataset]]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
+            plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dashed", color ="red", label="LearnSPMN")
             plt.title(f"{self.dataset} MEU")
             plt.legend()
             if k is None:
@@ -514,9 +514,9 @@ class Anytime_SPMN:
                 original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards[inter]))
                 dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards[inter]))
                 plt.close()
-                plt.plot([optimal_meu[self.dataset]]*len(avg_rewards[inter]), linestyle="dashed", linewidth=2, color ="green", label="Optimal MEU")
-                plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
                 plt.fill_between(np.arange(len(avg_rewards[inter])), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
+                plt.plot([optimal_meu[self.dataset]]*len(avg_rewards[inter]), linewidth=3, color ="lime", label="Optimal MEU")
+                plt.plot(original_reward, linestyle="dashed", color ="red", label="LearnSPMN")
                 plt.errorbar(np.arange(len(avg_rewards[inter])), avg_rewards[inter], yerr=reward_dev[inter], marker="o", label="Anytime")
                 plt.title(f"{self.dataset} Average Rewards")
                 plt.legend()
@@ -552,7 +552,7 @@ class Anytime_SPMN:
             '''
             plt.close()
             # plot line 
-            plt.plot([original_stats[self.dataset]["ll"]]*len(avg_ll), linestyle="dotted", color ="red", label="LearnSPMN")
+            plt.plot([original_stats[self.dataset]["ll"]]*len(avg_ll), linestyle="dashed", color ="red", label="LearnSPMN")
             plt.errorbar(np.arange(len(avg_ll)), avg_ll, yerr=ll_dev, marker="o", label="Anytime")
             plt.title(f"{self.dataset} Log Likelihood")
             plt.legend()
@@ -564,8 +564,8 @@ class Anytime_SPMN:
             plt.close()
             
             plt.plot(meus, marker="o", label="Anytime")
-            plt.plot([optimal_meu[self.dataset]]*len(meus), linestyle="dashed", linewidth=2, color ="green", label="Optimal MEU")
-            plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dotted", color ="red", label="LearnSPMN")
+            plt.plot([optimal_meu[self.dataset]]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
+            plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dashed", color ="red", label="LearnSPMN")
             plt.title(f"{self.dataset} MEU")
             plt.legend()
             if k is None:
@@ -576,7 +576,7 @@ class Anytime_SPMN:
             plt.close()
 
             plt.plot(nodes, marker="o", label="Anytime")
-            plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dotted", color ="red", label="LearnSPMN")
+            plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dashed", color ="red", label="LearnSPMN")
             plt.title(f"{self.dataset} Nodes")
             plt.legend()
             if k is None:
@@ -588,8 +588,8 @@ class Anytime_SPMN:
             '''
             original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards))
             dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards))
-            plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
             plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
+            plt.plot(original_reward, linestyle="dashed", color ="red", label="LearnSPMN")
             plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
             plt.title(f"{self.dataset} Average Rewards")
             plt.legend()
