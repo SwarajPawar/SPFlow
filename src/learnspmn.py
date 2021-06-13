@@ -122,12 +122,12 @@ for dataset in datasets:
 	'''
 	'''
 	ll = (total_ll/len(test))
-	
+	'''
 	
 	test_data = [[np.nan]*len(feature_names)]
 	m = meu(spmn, test_data)
 	meus = (m[0])
-	'''
+	
 	
 	env = get_env(dataset)
 	total_reward = 0
