@@ -2,5 +2,5 @@
 Export_Textiles
 	MEU : [944288.1922867566]
 	Nodes : [18]
-	Average Rewards : [1723040.476]
-	Rewards Deviation : [3640.1859166907852]
+	Average Rewards : [1720335.251]
+	Rewards Deviation : [3618.798937986745]
