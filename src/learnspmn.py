@@ -132,8 +132,8 @@ for dataset in datasets:
 	env = get_env(dataset)
 	total_reward = 0
 	#trials = 200000
-	batch_count = 50
-	batch_size = 50000 #int(trials / batch_count)
+	batch_count = 10
+	batch_size = 10000 #int(trials / batch_count)
 	batch = list()
 
 	pool = multiprocessing.Pool()
@@ -145,10 +145,11 @@ for dataset in datasets:
 		#rewards = pool.map(get_reward, ids)
 		policies = pool.map(get_reward, ids)
 		policy_set += policies
+		print(Counter(policy_set))
 		#batch.append(sum(rewards)/batch_size)
 		printProgressBar(z+1, batch_count, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
-	print(Counter(policy_set))
+	
 	#avg_rewards = np.mean(batch)
 	#reward_dev = np.std(batch)
 	'''
