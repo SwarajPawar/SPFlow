@@ -1,32 +1,32 @@
 
 Export_Textiles
 
-	Average Rewards 50000: [1721465.99]
-	Deviation 50000: [14575.794003669234]
+	Average Rewards 50000: [1721465.99, 1719519.84]
+	Deviation 50000: [14575.794003669234, 13046.689413387598]
 
-	Average Rewards 100000: [1723149.205]
-	Deviation 100000: [8582.983508218456]
+	Average Rewards 100000: [1723149.205, 1719519.69]
+	Deviation 100000: [8582.983508218456, 8573.142025835685]
 
-	Average Rewards 150000: []
-	Deviation 150000: []
+	Average Rewards 150000: [1722482.3000000003, 1721185.2]
+	Deviation 150000: [7899.977854575146, 7324.455809971296]
 
-	Average Rewards 200000: []
-	Deviation 200000: []
+	Average Rewards 200000: [1723109.3475, 1722214.4575]
+	Deviation 200000: [6254.76373347447, 7392.850335136307]
 
-	Average Rewards 250000: []
-	Deviation 250000: []
+	Average Rewards 250000: [1723655.0359999998, 1722186.8839999998]
+	Deviation 250000: [5715.978546522369, 7099.4069722860595]
 
-	Average Rewards 300000: []
-	Deviation 300000: []
+	Average Rewards 300000: [1723645.7866666666]
+	Deviation 300000: [4995.849133048687]
 
-	Average Rewards 350000: []
-	Deviation 350000: []
+	Average Rewards 350000: [1723754.762857143]
+	Deviation 350000: [5152.817518500665]
 
-	Average Rewards 400000: []
-	Deviation 400000: []
+	Average Rewards 400000: [1723578.04125]
+	Deviation 400000: [3850.368809990398]
 
-	Average Rewards 450000: []
-	Deviation 450000: []
+	Average Rewards 450000: [1723320.183333333]
+	Deviation 450000: [3717.590918695249]
 
-	Average Rewards 500000: []
-	Deviation 500000: []
+	Average Rewards 500000: [1723040.476]
+	Deviation 500000: [3640.1859166907852]
