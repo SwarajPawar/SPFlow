@@ -1,4 +1,5 @@
 
 Powerplant_Airpollution
-	Average rewards : -2763842.0
-	Deviation : 6825.630813338794
+	MEU : -2756263.244346315
+	Average rewards : -2759870.4
+	Deviation : 7198.011103075626
