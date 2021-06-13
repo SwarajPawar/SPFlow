@@ -133,7 +133,7 @@ for dataset in datasets:
 	total_reward = 0
 	#trials = 200000
 	batch_count = 50
-	batch_size = 20000 #int(trials / batch_count)
+	batch_size = 50000 #int(trials / batch_count)
 	batch = list()
 
 	pool = multiprocessing.Pool()
