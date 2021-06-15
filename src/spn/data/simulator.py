@@ -8,7 +8,6 @@ import random
 
 from spn.data.Export_Textiles.simulator import Export_Textiles
 from spn.data.Computer_Diagnostician.simulator import Computer_Diagnostician
-from spn.data.Computer_Diagnostician_v2.simulator import Computer_Diagnostician_v2
 from spn.data.Powerplant_Airpollution.simulator import Powerplant_Airpollution
 from spn.data.HIV_Screening.simulator import HIV_Screening
 from spn.data.Test_Strep.simulator import Test_Strep
@@ -21,8 +20,6 @@ def get_env(dataset):
 		return Export_Textiles()
 	elif dataset == "Computer_Diagnostician":
 		return Computer_Diagnostician()
-	elif dataset == "Computer_Diagnostician_v2":
-		return Computer_Diagnostician_v2()
 	elif dataset == "Powerplant_Airpollution":
 		return Powerplant_Airpollution()
 	elif dataset == "HIV_Screening":

@@ -398,7 +398,7 @@ class Anytime_SPMN:
 
 			print("\nStart Learning...")
 			spmn = self.__learn_spmn_structure(train, remaining_vars_scope, curr_information_set_scope, index)
-			print("done")
+			print("SPMN Learned")
 			#spmn = Prune(spmn)
 			self.spmn = spmn
 

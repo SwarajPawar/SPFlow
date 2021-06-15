@@ -1,4 +1,7 @@
 
 Computer_Diagnostician
-	Average rewards : 245.04599999999996
-	Deviation : 0.40763218714915067
+	Log Likelihood : -0.8984451754929356
+	MEU : -208.137
+	Nodes : 56
+	Average rewards : -208.07350000000002
+	Deviation : 0.4155875359054929

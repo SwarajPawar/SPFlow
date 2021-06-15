@@ -353,13 +353,13 @@ class Anytime_SPMN:
             'Test_Strep': {"ll" : -0.9130071749277912, "meu" : 54.9416526618876, 'nodes' : 130, 'reward':54.936719928008955, 'dev':0.011715846521357575},
             'LungCancer_Staging': {"ll" : -1.1489156814245234, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.1429205999999272, 'dev':0.01190315582691798},
             'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.559788119992646, 'dev':0.06067708771159484},
-            'Computer_Diagnostician_v2': {"ll" : -0.897989711765075, "meu" : -208.12325, 'nodes' : 56, 'reward':-207.99065, 'dev':0.4013337326963687},
+            'Computer_Diagnostician': {"ll" : -0.8984451754929356, "meu" : -208.137, 'nodes' : 56, 'reward':-208.07350000000002, 'dev':0.4155875359054929},
             'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2759870.4, 'dev':6825.630813338794}
         }
 
         optimal_meu = {
             'Export_Textiles' : 1721300,
-            'Computer_Diagnostician_v2': -210.13,
+            'Computer_Diagnostician': -210.13,
             'Powerplant_Airpollution': -2760000,
             'HIV_Screening': 42.5597,
             'Test_Strep': 54.9245,
@@ -417,7 +417,7 @@ class Anytime_SPMN:
 
             print("\nStart Learning...")
             spmn = self.__learn_spmn_structure(train, remaining_vars_scope, curr_information_set_scope, index)
-            print("done")
+            print("SPMN Learned")
             #spmn = Prune(spmn)
             self.spmn = spmn
 
@@ -436,7 +436,7 @@ class Anytime_SPMN:
             
             
             #try:
-            '''
+            
             total_ll = 0
             trials1 = test.shape[0]
             batch_size = int(trials1 / 10)
@@ -451,7 +451,7 @@ class Anytime_SPMN:
                 total_ll = sum(lls)
                 batch.append(total_ll/batch_size)
                 printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-            '''
+            
             '''
             for j, instance in enumerate(test):
                 test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
@@ -462,8 +462,8 @@ class Anytime_SPMN:
                 printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
             '''
 
-            #avg_ll.append(np.mean(batch))
-            #ll_dev.append(np.std(batch))
+            avg_ll.append(np.mean(batch))
+            ll_dev.append(np.std(batch))
             
 
 
@@ -540,8 +540,8 @@ class Anytime_SPMN:
             print("\n\n\n\n\n")
             print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
             print("#Nodes: ",nodes[-1])
-            #print("Log Likelihood: ",avg_ll[-1])
-            #print("Log Likelihood Deviation: ",ll_dev[-1])
+            print("Log Likelihood: ",avg_ll[-1])
+            print("Log Likelihood Deviation: ",ll_dev[-1])
             print("MEU: ",meus[-1])
             print("Average rewards: ",avg_rewards[-1][-1])
             print("Deviation: ",reward_dev[-1][-1])
@@ -549,7 +549,7 @@ class Anytime_SPMN:
             print(meus)
             print("\n\n\n\n\n")
             
-            '''
+            
             plt.close()
             # plot line 
             plt.plot([original_stats[self.dataset]["ll"]]*len(avg_ll), linestyle="dashed", color ="red", label="LearnSPMN")
@@ -560,18 +560,18 @@ class Anytime_SPMN:
                 plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
             else:
                 plt.savefig(f"{self.plot_path}/{k}/ll.png", dpi=100)
-            '''
+            
             plt.close()
             
             plt.plot(meus, marker="o", label="Anytime")
-            plt.plot([optimal_meu[self.dataset]]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
+            #plt.plot([optimal_meu[self.dataset]]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
             plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dashed", color ="red", label="LearnSPMN")
             plt.title(f"{self.dataset} MEU")
             plt.legend()
             if k is None:
-                plt.savefig(f"{self.plot_path}/meu.png", dpi=100)
+                plt.savefig(f"{self.plot_path}/meu1.png", dpi=100)
             else:
-                plt.savefig(f"{self.plot_path}/{k}/meu.png", dpi=100)
+                plt.savefig(f"{self.plot_path}/{k}/meu1.png", dpi=100)
             
             plt.close()
 
@@ -608,8 +608,8 @@ class Anytime_SPMN:
             f = open(f"{self.plot_path}/stats.txt", "w") if k is None else open(f"{self.plot_path}/{k}/stats.txt", "w")
 
             f.write(f"\n{self.dataset}")
-            #f.write(f"\n\tLog Likelihood : {avg_ll}")
-            #f.write(f"\n\tLog Likelihood Deviation: {ll_dev}")
+            f.write(f"\n\tLog Likelihood : {avg_ll}")
+            f.write(f"\n\tLog Likelihood Deviation: {ll_dev}")
             f.write(f"\n\tMEU : {meus}")
             f.write(f"\n\tNodes : {nodes}")
             f.write(f"\n\tAverage Rewards : {avg_rewards[-1]}")

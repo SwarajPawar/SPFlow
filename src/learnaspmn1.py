@@ -19,15 +19,15 @@ from spn.data.metaData import *
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
 from spn.algorithms.SPMN import SPMN
-from spn.algorithms.ASPMN2 import Anytime_SPMN
+from spn.algorithms.ASPMN3 import Anytime_SPMN
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 
 
-datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'Computer_Diagnostician_v2', 'HIV_Screening', 'Test_Strep', 'LungCancer_Staging']
-datasets = ['LungCancer_Staging']
-path = "ltest1"
+datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'Computer_Diagnostician', 'HIV_Screening', 'Test_Strep', 'LungCancer_Staging']
+datasets = ['Computer_Diagnostician']
+path = "latest_rewards"
 #path = "newstep3"
 
 
@@ -50,8 +50,8 @@ for dataset in datasets:
 
 	data = df.values
 	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
-	test_size = 500 #int(data.shape[0]*0.2)
-	train, test = data[:50000], np.array(random.sample(list(data), test_size))
+	test_size = int(data.shape[0]*0.2)
+	train, test = data, np.array(random.sample(list(data), test_size))
 
 
 	

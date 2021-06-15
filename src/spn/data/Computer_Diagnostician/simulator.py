@@ -16,11 +16,11 @@ class Computer_Diagnostician:
 
 	State:
 
-	Logic_board_fail:
+	IO_board_fail
 	0: No
 	1: Yes
 
-	IO_board_fail
+	Logic_board_fail:
 	0: No
 	1: Yes
 
@@ -48,9 +48,9 @@ class Computer_Diagnostician:
 	def __init__(self):
 
 		#reward[Rework_Outcome][Rework_Decision]
-		self.reward = {1: {0: 175, 1: 225}, 
-						0: {1: 300, 0: 300},  
-						2: {1: 125, 0: 200}}
+		self.reward = {1: {0: -175, 1: -225}, 
+						0: {1: -300, 0: -300},  
+						2: {1: -125, 0: -200}}
 
 		#Number of total decisions
 		self.tot_dec = 1
@@ -58,8 +58,8 @@ class Computer_Diagnostician:
 	def reset(self):
 		
 		#Initialize all variables to np.nan
-		self.Logic_board_fail = np.nan
 		self.IO_board_fail = np.nan
+		self.Logic_board_fail = np.nan
 		self.System_State = np.nan
 		self.Rework_Decision = np.nan
 		self.Rework_Outcome = np.nan
@@ -78,10 +78,11 @@ class Computer_Diagnostician:
 		else:
 			self.IO_board_fail = 0
 
-		self.System_State = 0
+		
 		if self.Logic_board_fail == 0 and self.IO_board_fail == 0:
 			self.System_State = 1
-			
+		else:
+			self.System_State = 0
 		
 		return self.state()
 			
@@ -103,5 +104,5 @@ class Computer_Diagnostician:
 
 	#Return the state as given by the partial order
 	def state(self):
-		return [[self.Logic_board_fail, self.IO_board_fail, self.System_State, self.Rework_Decision, self.Rework_Outcome, self.Rework_Cost]]
+		return [[self.IO_board_fail, self.Logic_board_fail, self.System_State, self.Rework_Decision, self.Rework_Outcome, self.Rework_Cost]]
 
