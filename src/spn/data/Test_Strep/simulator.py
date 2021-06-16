@@ -160,8 +160,10 @@ class Test_Strep:
 
 	#Return the state as given by the partial order
 	def state(self):
+		'''
 		return [[self.Test_Decision, np.nan, np.nan, self.Treatment_Decision, 
 			self.Rheumatic_Heart_Disease, self.Die_from_Anaphylaxis, self.Days_with_sore_throat, self.QALE]]
+		'''
 		return [[self.Test_Decision, self.Streptococcal_Infection, self.Test_Result, self.Treatment_Decision, 
 			self.Rheumatic_Heart_Disease, self.Die_from_Anaphylaxis, self.Days_with_sore_throat, self.QALE]]
 
