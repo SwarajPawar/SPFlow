@@ -47,6 +47,7 @@ def get_reward(ids):
 	#policy = ""
 	state = env.reset()
 	while(True):
+        state[0][0], state[0][1] = np.nan, np.nan
 		output = best_next_decision(spmn, state)
 		action = output[0][0]
 		#policy += f"{action}  "
@@ -99,13 +100,13 @@ for dataset in datasets:
 	nodes = get_structure_stats_dict(spmn)["nodes"]
 	
 	
-	plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
+	#plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
 
 
 	pool = multiprocessing.Pool()
 
 	
-	
+	'''
 	batch_size = int(test.shape[0] / 10)
 	total_ll = 0
 	test = list(test)
@@ -114,7 +115,7 @@ for dataset in datasets:
 		lls = pool.map(get_loglikelihood, test_slice)
 		total_ll += sum(lls)
 		printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-	
+	'''
 	'''
 	for j, instance in enumerate(test):
 		test_data = np.array(instance).reshape(-1, len(feature_names))
@@ -122,7 +123,7 @@ for dataset in datasets:
 		printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
 	
 	'''
-	ll = (total_ll/len(test))
+	#ll = (total_ll/len(test))
 	
 	
 	test_data = [[np.nan]*len(feature_names)]
@@ -148,23 +149,23 @@ for dataset in datasets:
 		#policy_set += policies
 		#print(Counter(policy_set))
 		batch.append(sum(rewards)/batch_size)
-		#print(batch[-1])
+		print(batch[-1])
 		printProgressBar(z+1, batch_count, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
 	
 	avg_rewards = np.mean(batch)
 	reward_dev = np.std(batch)
 	
-	print(f"\n\tLog Likelihood : {ll}")
+	#print(f"\n\tLog Likelihood : {ll}")
 	print(f"\n\tMEU : {meus}")
 	print(f"\n\tNodes : {nodes}")
 	print(f"\n\tAverage rewards : {avg_rewards}")
 	print(f"\n\tDeviation : {reward_dev}")
 	
 	
-	f = open(f"{path}/{dataset}/stats1.txt", "w")
+	f = open(f"{path}/{dataset}/stats2.txt", "w")
 	f.write(f"\n{dataset}")
-	f.write(f"\n\tLog Likelihood : {ll}")
+	#f.write(f"\n\tLog Likelihood : {ll}")
 	f.write(f"\n\tMEU : {meus}")
 	f.write(f"\n\tNodes : {nodes}")
 	f.write(f"\n\tAverage rewards : {avg_rewards}")
