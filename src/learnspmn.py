@@ -47,7 +47,7 @@ def get_reward(ids):
 	#policy = ""
 	state = env.reset()
 	while(True):
-        state[0][0], state[0][1] = np.nan, np.nan
+		state[0][0], state[0][1] = np.nan, np.nan
 		output = best_next_decision(spmn, state)
 		action = output[0][0]
 		#policy += f"{action}  "
