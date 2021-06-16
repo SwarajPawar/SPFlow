@@ -346,13 +346,13 @@ class Anytime_SPMN:
     def get_reward1(self, ids):
 
         policy = ""
-        state = env.reset()
+        state = self.env.reset()
         while(True):
             state[0][0], state[0][1] = np.nan, np.nan
-            output = best_next_decision(spmn, state)
+            output = best_next_decision(self.spmn, state)
             action = output[0][0]
             policy += f"{action}  "
-            state, reward, done = env.step(action)
+            state, reward, done = self.env.step(action)
             '''
             if action==1:
                 print(state)
