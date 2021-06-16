@@ -353,13 +353,13 @@ class Anytime_SPMN:
             'Test_Strep': {"ll" : -0.9130071749277912, "meu" : 54.9416526618876, 'nodes' : 130, 'reward':54.936719928008955, 'dev':0.011715846521357575},
             'LungCancer_Staging': {"ll" : -1.1489156814245234, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.1429205999999272, 'dev':0.01190315582691798},
             'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.559788119992646, 'dev':0.06067708771159484},
-            'Computer_Diagnostician_v2': {"ll" : -0.897989711765075, "meu" : -208.12325, 'nodes' : 56, 'reward':-207.99065, 'dev':0.4013337326963687},
+            'Computer_Diagnostician': {"ll" : -0.8984451754929356, "meu" : -208.137, 'nodes' : 56, 'reward':-208.07350000000002, 'dev':0.4155875359054929},
             'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2759870.4, 'dev':6825.630813338794}
         }
 
         optimal_meu = {
             'Export_Textiles' : 1721300,
-            'Computer_Diagnostician_v2': -210.13,
+            'Computer_Diagnostician': -210.13,
             'Powerplant_Airpollution': -2760000,
             'HIV_Screening': 42.5597,
             'Test_Strep': 54.9245,
