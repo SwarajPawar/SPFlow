@@ -34,8 +34,8 @@ import sys, os
 from collections import Counter
 
 datasets = ['HIV_Screening',  'Test_Strep', 'LungCancer_Staging']
-#datasets = ['Export_Textiles','Computer_Diagnostician_v2', 'Powerplant_Airpollution', ]
-datasets = ['Test_Strep' ]
+#datasets = ['Export_Textiles','Computer_Diagnostician', 'Powerplant_Airpollution', ]
+datasets = ['Computer_Diagnostician' ]
 path = "original_new"
 
 def get_loglikelihood(instance):
@@ -87,7 +87,7 @@ for dataset in datasets:
 	df, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
 	
 	data = df.values
-	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
+	train, test = train_test_split(data, test_size=0.9, shuffle=True)
 	train, test = data, data #random.sample(list(data), 1000)
 
 	print("Start Learning...")
@@ -99,13 +99,13 @@ for dataset in datasets:
 	nodes = get_structure_stats_dict(spmn)["nodes"]
 	
 	
-	#plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
+	plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
 
 
 	pool = multiprocessing.Pool()
 
 	
-	'''
+	
 	batch_size = int(test.shape[0] / 10)
 	total_ll = 0
 	test = list(test)
@@ -114,15 +114,15 @@ for dataset in datasets:
 		lls = pool.map(get_loglikelihood, test_slice)
 		total_ll += sum(lls)
 		printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-	'''
+	
 	'''
 	for j, instance in enumerate(test):
 		test_data = np.array(instance).reshape(-1, len(feature_names))
 		total_ll += log_likelihood(spmn, test_data)[0][0]
 		printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-	'''
 	
-	#ll = (total_ll/len(test))
+	'''
+	ll = (total_ll/len(test))
 	
 	
 	test_data = [[np.nan]*len(feature_names)]
@@ -133,8 +133,8 @@ for dataset in datasets:
 	env = get_env(dataset)
 	total_reward = 0
 	#trials = 200000
-	batch_count = 10 #25
-	batch_size = 100 #int(trials / batch_count)
+	batch_count = 25
+	batch_size = 20000 #int(trials / batch_count)
 	batch = list()
 
 	pool = multiprocessing.Pool()
@@ -155,13 +155,13 @@ for dataset in datasets:
 	avg_rewards = np.mean(batch)
 	reward_dev = np.std(batch)
 	
-	#print(f"\n\tLog Likelihood : {ll}")
+	print(f"\n\tLog Likelihood : {ll}")
 	print(f"\n\tMEU : {meus}")
 	print(f"\n\tNodes : {nodes}")
 	print(f"\n\tAverage rewards : {avg_rewards}")
 	print(f"\n\tDeviation : {reward_dev}")
 	
-	'''
+	
 	f = open(f"{path}/{dataset}/stats1.txt", "w")
 	f.write(f"\n{dataset}")
 	f.write(f"\n\tLog Likelihood : {ll}")
@@ -170,6 +170,6 @@ for dataset in datasets:
 	f.write(f"\n\tAverage rewards : {avg_rewards}")
 	f.write(f"\n\tDeviation : {reward_dev}")
 	f.close()
-	'''
+	
 	
 
