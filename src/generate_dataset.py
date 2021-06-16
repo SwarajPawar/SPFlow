@@ -14,7 +14,7 @@ instances = 100000
 n_actions = 2
 ext = "_new"
 
-datasets = ['Computer_Diagnostician_v2']
+datasets = ['Computer_Diagnostician']
 #datasets = ["Export_Textiles", 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']
 
 for dataset in datasets:

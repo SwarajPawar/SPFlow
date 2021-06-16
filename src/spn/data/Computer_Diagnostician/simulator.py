@@ -104,6 +104,6 @@ class Computer_Diagnostician:
 
 	#Return the state as given by the partial order
 	def state(self):
-		return [[np.nan, np.nan, np.nan, self.Rework_Decision, self.Rework_Outcome, self.Rework_Cost]]
+		#return [[np.nan, np.nan, np.nan, self.Rework_Decision, self.Rework_Outcome, self.Rework_Cost]]
 		return [[self.IO_board_fail, self.Logic_board_fail, self.System_State, self.Rework_Decision, self.Rework_Outcome, self.Rework_Cost]]
 

@@ -26,8 +26,8 @@ import sys, os
 
 
 #datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'HIV_Screening', ]
-#datasets = ['Computer_Diagnostician_v2', 'Test_Strep', 'LungCancer_Staging']
-datasets = ['Computer_Diagnostician_v2']
+#datasets = ['Computer_Diagnostician', 'Test_Strep', 'LungCancer_Staging']
+datasets = ['Computer_Diagnostician']
 path = "test"
 #path = "improve2"
 

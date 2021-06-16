@@ -549,7 +549,7 @@ class Anytime_SPMN:
             print(meus)
             print("\n\n\n\n\n")
             
-            '''
+            
             plt.close()
             # plot line 
             plt.plot([original_stats[self.dataset]["ll"]]*len(avg_ll), linestyle="dashed", color ="red", label="LearnSPMN")
@@ -560,7 +560,7 @@ class Anytime_SPMN:
                 plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
             else:
                 plt.savefig(f"{self.plot_path}/{k}/ll.png", dpi=100)
-            '''
+            
             plt.close()
             
             plt.plot(meus, marker="o", label="Anytime")
