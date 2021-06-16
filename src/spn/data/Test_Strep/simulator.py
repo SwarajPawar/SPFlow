@@ -60,6 +60,7 @@ class Test_Strep:
 	'''
 
 	def __init__(self):
+		#self.reward[(Rheumatic_Heart_Disease, Die_from_Anaphylaxis, Days_with_sore_throat)]
 		self.reward = {(0.0, 0.0, 4.0): 54.99, 
 						(0.0, 0.0, 3.0): 54.996, 
 						(1.0, 0.0, 3.0): 24.996, 
@@ -159,6 +160,8 @@ class Test_Strep:
 
 	#Return the state as given by the partial order
 	def state(self):
+		return [[self.Test_Decision, np.nan, np.nan, self.Treatment_Decision, 
+			self.Rheumatic_Heart_Disease, self.Die_from_Anaphylaxis, self.Days_with_sore_throat, self.QALE]]
 		return [[self.Test_Decision, self.Streptococcal_Infection, self.Test_Result, self.Treatment_Decision, 
 			self.Rheumatic_Heart_Disease, self.Die_from_Anaphylaxis, self.Days_with_sore_throat, self.QALE]]
 
