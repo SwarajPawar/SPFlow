@@ -517,7 +517,7 @@ class Anytime_SPMN:
                 for y in range(batches):
                     ids = [None for x in range(int(interval/batches))]
 
-                    cur = pool.map(self.get_reward, ids)
+                    cur = pool.map(self.get_reward1, ids)
                     rewards += cur
                     print(Counter(rewards))
                     z = (inter*batches) + y + 1
@@ -558,7 +558,7 @@ class Anytime_SPMN:
                 f.close()
 
                 '''
-            
+            '''
             
             print("\n\n\n\n\n")
             print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
@@ -607,7 +607,7 @@ class Anytime_SPMN:
             else:
                 plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
             plt.close()
-
+            '''
             '''
             original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards))
             dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards))
@@ -627,7 +627,7 @@ class Anytime_SPMN:
             '''
             
 
-            
+            '''
             f = open(f"{self.plot_path}/stats.txt", "w") if k is None else open(f"{self.plot_path}/{k}/stats.txt", "w")
 
             f.write(f"\n{self.dataset}")
@@ -638,7 +638,7 @@ class Anytime_SPMN:
             f.write(f"\n\tAverage Rewards : {avg_rewards[-1]}")
             f.write(f"\n\tRewards Deviation : {reward_dev[-1]}")
             f.close()
-            
+            '''
             #except:
                 #pass
             
