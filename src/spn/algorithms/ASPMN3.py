@@ -343,7 +343,7 @@ class Anytime_SPMN:
             if done:
                 return reward
 
-    def get_reward1(ids):
+    def get_reward1(self, ids):
 
         policy = ""
         state = env.reset()
