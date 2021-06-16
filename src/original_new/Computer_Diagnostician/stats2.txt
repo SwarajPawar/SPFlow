@@ -1,0 +1,6 @@
+
+Computer_Diagnostician
+	MEU : -208.351
+	Nodes : 56
+	Average rewards : -210.26075
+	Deviation : 0.4104779226706357
