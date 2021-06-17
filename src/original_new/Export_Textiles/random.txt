@@ -1,0 +1,4 @@
+
+Export_Textiles
+	Average rewards : 1300734.02
+	Deviation : 7087.350616838437

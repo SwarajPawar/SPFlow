@@ -1,0 +1,4 @@
+
+LungCancer_Staging
+	Average rewards : 2.672070640000026
+	Deviation : 0.007416967451081523
