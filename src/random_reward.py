@@ -47,7 +47,7 @@ def get_reward(ids):
 	state = env.reset()
 	while(True):
 		
-		action = random.randint(1, datasets[dataset])
+		action = random.randint(0, datasets[dataset]-1)
 		policy += f"{action}  "
 		state, reward, done = env.step(action)
 		'''
