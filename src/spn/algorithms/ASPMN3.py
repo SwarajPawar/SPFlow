@@ -388,9 +388,9 @@ class Anytime_SPMN:
 
         
         
-        trials = 500
-        interval = 50
-        batches = 10
+        trials = 500000
+        interval = 50000
+        batches = 25
         interval_count = int(trials/interval)
 
         avg_rewards = [list() for i in range(int(trials/interval))]
@@ -464,14 +464,14 @@ class Anytime_SPMN:
             pool = multiprocessing.Pool()
 
             
-            '''
+            
             for b in range(10):
                 test_slice = test[b*batch_size:(b+1)*batch_size]
                 lls = pool.map(self.get_loglikelihood, test_slice)
                 total_ll = sum(lls)
                 batch.append(total_ll/batch_size)
                 printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-            '''
+            
             '''
             for j, instance in enumerate(test):
                 test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
@@ -482,8 +482,8 @@ class Anytime_SPMN:
                 printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
             '''
 
-            #avg_ll.append(np.mean(batch))
-            #ll_dev.append(np.std(batch))
+            avg_ll.append(np.mean(batch))
+            ll_dev.append(np.std(batch))
             
 
 
@@ -517,13 +517,12 @@ class Anytime_SPMN:
                 for y in range(batches):
                     ids = [None for x in range(int(interval/batches))]
 
-                    cur = pool.map(self.get_reward1, ids)
+                    cur = pool.map(self.get_reward, ids)
                     rewards += cur
-                    print(Counter(rewards))
                     z = (inter*batches) + y + 1
                     printProgressBar(z, interval_count*batches, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
-                '''
+                
                 batch = list()
                 batch_size = int(len(rewards) / batches)
                 for l in range(batches):
@@ -557,8 +556,8 @@ class Anytime_SPMN:
 
                 f.close()
 
-                '''
-            '''
+                
+            
             
             print("\n\n\n\n\n")
             print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
@@ -607,7 +606,7 @@ class Anytime_SPMN:
             else:
                 plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
             plt.close()
-            '''
+            
             '''
             original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards))
             dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards))
@@ -627,7 +626,7 @@ class Anytime_SPMN:
             '''
             
 
-            '''
+            
             f = open(f"{self.plot_path}/stats.txt", "w") if k is None else open(f"{self.plot_path}/{k}/stats.txt", "w")
 
             f.write(f"\n{self.dataset}")
@@ -638,7 +637,7 @@ class Anytime_SPMN:
             f.write(f"\n\tAverage Rewards : {avg_rewards[-1]}")
             f.write(f"\n\tRewards Deviation : {reward_dev[-1]}")
             f.close()
-            '''
+            
             #except:
                 #pass
             
