@@ -89,6 +89,7 @@ class LungCancer_Staging:
 		self.Life_expectancy = np.nan
 			
 		self.cur_dec = 0
+		self.done = False
 		
 			
 		return self.state()

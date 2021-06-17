@@ -83,6 +83,7 @@ class HIV_Screening:
 		self.QALE = np.nan
 			
 		self.cur_dec = 0
+		self.done = False
 		
 
 		

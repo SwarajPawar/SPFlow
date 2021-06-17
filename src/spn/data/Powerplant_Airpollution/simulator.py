@@ -81,6 +81,7 @@ class Powerplant_Airpollution:
 		self.Additional_Cost = np.nan
 			
 		self.cur_dec = 0
+		self.done = False
 		
 			
 		return self.state()

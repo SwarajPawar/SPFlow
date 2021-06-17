@@ -88,6 +88,7 @@ class Test_Strep:
 		self.QALE = np.nan
 			
 		self.cur_dec = 0
+		self.done = False
 		
 			
 		return self.state()

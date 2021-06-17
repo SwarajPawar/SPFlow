@@ -67,6 +67,7 @@ class Computer_Diagnostician:
 		self.Rework_Decision = np.nan
 		self.Rework_Outcome = np.nan
 		self.Rework_Cost = np.nan
+		self.done = False
 			
 		#Assign values according to the CPTs
 		p = random.random()

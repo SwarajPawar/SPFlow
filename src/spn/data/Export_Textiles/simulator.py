@@ -60,6 +60,7 @@ class Export_Textiles:
 		self.Economical_State = np.nan
 		self.Export_Decision = np.nan
 		self.Profit = np.nan
+		self.done = False
 
 
 		return self.state()
