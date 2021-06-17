@@ -70,6 +70,11 @@ class LungCancer_Staging:
 						}
 		self.tot_dec = 3
 
+		#Done Indicator
+		self.done = False
+
+
+
 	#Initialize the variables to np.nan							
 	def reset(self):
 		
@@ -159,16 +164,23 @@ class LungCancer_Staging:
 
 		#Return the reward if all actions are done
 		if self.cur_dec == self.tot_dec:
+			self.done = True
+			
+		if self.done:
 			if self.Treatment_Death == 1 or self.Mediastinoscopy_death ==1:
 				self.Life_expectancy =  0
 			else:
 				self.Life_expectancy =  self.reward[self.Mediastinal_Metastases][self.Treatment]
-			return self.state(), self.Life_expectancy, True
+			return self.state(), self.Life_expectancy, self.done
 		else:
-			return self.state(), None, False
+			return self.state(), None, self.done
 
 
 	#Return the state as given by the partial order
 	def state(self):
-		return [[self.CT, self.Mediastinal_Metastases, self.CTResult, self.Mediastinoscopy, 
-		self.Mediastinoscopy_Result, self.Mediastinoscopy_death, self.Treatment, self.Treatment_Death, self.Life_expectancy]]
+
+		if not self.done:
+			return [[self.CT, np.nan, np.nan, self.Mediastinoscopy, np.nan, np.nan, self.Treatment, np.nan, np.nan]]
+		else:
+			return [[self.CT, self.Mediastinal_Metastases, self.CTResult, self.Mediastinoscopy, 
+				self.Mediastinoscopy_Result, self.Mediastinoscopy_death, self.Treatment, self.Treatment_Death, self.Life_expectancy]]

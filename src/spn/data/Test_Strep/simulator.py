@@ -70,6 +70,9 @@ class Test_Strep:
 						(1.0, 1.0, 4.0): 0.0,
 						(1.0, 1.0, 3.0): 0.0}
 		self.tot_dec = 2
+
+		#Done Indicator
+		self.done = False
 			
 
 	#Initialize the variables to np.nan				
@@ -152,20 +155,24 @@ class Test_Strep:
 
 		#Return the reward if all actions are done
 		if self.cur_dec == self.tot_dec:
+			self.done = True
+			
+		if self.done:
 			self.QALE =  self.reward[(self.Rheumatic_Heart_Disease, self.Die_from_Anaphylaxis, self.Days_with_sore_throat)]
-			return self.state(), self.QALE, True
+			return self.state(), self.QALE, self.done
 		else:
-			return self.state(), None, False
+			return self.state(), None, self.done
 
 
 	#Return the state as given by the partial order
 	def state(self):
-		'''
-		return [[self.Test_Decision, np.nan, np.nan, self.Treatment_Decision, 
-			self.Rheumatic_Heart_Disease, self.Die_from_Anaphylaxis, self.Days_with_sore_throat, self.QALE]]
-		'''
-		return [[self.Test_Decision, self.Streptococcal_Infection, self.Test_Result, self.Treatment_Decision, 
-			self.Rheumatic_Heart_Disease, self.Die_from_Anaphylaxis, self.Days_with_sore_throat, self.QALE]]
+		
+		if not self.done:
+			return [[self.Test_Decision, np.nan, np.nan, self.Treatment_Decision, 
+				np.nan, np.nan, np.nan, np.nan]]
+		else:
+			return [[self.Test_Decision, self.Streptococcal_Infection, self.Test_Result, self.Treatment_Decision, 
+				self.Rheumatic_Heart_Disease, self.Die_from_Anaphylaxis, self.Days_with_sore_throat, self.QALE]]
 
 
 

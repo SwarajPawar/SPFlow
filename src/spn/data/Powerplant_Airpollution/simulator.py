@@ -68,6 +68,9 @@ class Powerplant_Airpollution:
 							(1, 1): -1500000.0}}
 		self.tot_dec = 2
 
+		#Done Indicator
+		self.done = False
+
 	#Initialize the variables to np.nan							
 	def reset(self):
 		
@@ -114,12 +117,18 @@ class Powerplant_Airpollution:
 		
 		#Return the reward if all actions are done
 		if self.cur_dec == self.tot_dec:
+			self.done = True
+			
+		if self.done:
 			self.Additional_Cost =  self.reward[(self.Coal_Worker_Strike, self.Strike_Resolution)][(self.Installation_Type, self.Strike_Intervention)]
-			return self.state(), self.Additional_Cost, True
+			return self.state(), self.Additional_Cost, self.done
 		else:
-			return self.state(), None, False
+			return self.state(), None, self.done
 			
 	#Return the state as given by the partial order
 	def state(self):
-		return [[self.Installation_Type, self.Coal_Worker_Strike, self.Strike_Intervention, self.Strike_Resolution, self.Additional_Cost]]
+		if not self.done:
+			return [[self.Installation_Type, np.nan, self.Strike_Intervention, np.nan, np.nan]]
+		else:
+			return [[self.Installation_Type, self.Coal_Worker_Strike, self.Strike_Intervention, self.Strike_Resolution, self.Additional_Cost]]
 

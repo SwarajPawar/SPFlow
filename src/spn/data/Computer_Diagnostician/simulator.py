@@ -54,6 +54,9 @@ class Computer_Diagnostician:
 
 		#Number of total decisions
 		self.tot_dec = 1
+
+		#Done Indicator
+		self.done = False
 						
 	def reset(self):
 		
@@ -97,13 +100,17 @@ class Computer_Diagnostician:
 			self.Rework_Outcome = 1
 		elif self.Logic_board_fail == 0 and self.IO_board_fail == 1:
 			self.Rework_Outcome = 2
+
+		self.done = True
 			
 		#Get the reward for the actions and the observation
 		self.Rework_Cost  = self.reward[self.Rework_Outcome][self.Rework_Decision]
-		return self.state(), self.Rework_Cost, True
+		return self.state(), self.Rework_Cost, self.done
 
 	#Return the state as given by the partial order
 	def state(self):
-		#return [[np.nan, np.nan, np.nan, self.Rework_Decision, self.Rework_Outcome, self.Rework_Cost]]
-		return [[self.IO_board_fail, self.Logic_board_fail, self.System_State, self.Rework_Decision, self.Rework_Outcome, self.Rework_Cost]]
+		if not self.done:
+			return [[np.nan, np.nan, np.nan, self.Rework_Decision, np.nan, np.nan]]
+		else:
+			return [[self.IO_board_fail, self.Logic_board_fail, self.System_State, self.Rework_Decision, self.Rework_Outcome, self.Rework_Cost]]
 

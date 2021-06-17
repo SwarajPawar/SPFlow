@@ -50,6 +50,10 @@ class Export_Textiles:
 							2: 1425000.0}
 						}
 					
+		#Done Indicator
+		self.done = False
+
+
 	#Initialize the variables to np.nan	
 	def reset(self):
 
@@ -77,9 +81,11 @@ class Export_Textiles:
 		#Return the reward if all actions are done
 		self.Profit = self.rewards[self.Economical_State][self.Export_Decision]
 
-		return self.state(), self.Profit, True
+		return self.state(), self.Profit, self.done
 
 	#Return the state as given by the partial order
 	def state(self):
-		return [[self.Economical_State, self.Export_Decision, self.Profit]]
-
+		if not self.done:
+			return [[np.nan, self.Export_Decision, np.nan]]
+		else:
+			return [[self.Economical_State, self.Export_Decision, self.Profit]]

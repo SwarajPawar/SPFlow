@@ -1,4 +1,0 @@
-
-Computer_Diagnostician
-	Average rewards : 245.04599999999996
-	Deviation : 0.40763218714915067

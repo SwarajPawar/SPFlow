@@ -67,6 +67,10 @@ class HIV_Screening:
 						}
 		self.tot_dec = 2
 					
+		#Done Indicator
+		self.done = False
+
+
 	#Initialize the variables to np.nan		
 	def reset(self):
 		
@@ -130,14 +134,19 @@ class HIV_Screening:
 
 		#Return the reward if all actions are done
 		if self.cur_dec == self.tot_dec:
+			self.done = True
+			
+		if self.done:
 			self.QALE =  self.reward[(self.HIV_Status, self.Compliance_Medical_Therapy, self.Reduce_Risky_Behavior)]
-			return self.state(), self.QALE, True
+			return self.state(), self.QALE, self.done
 		else:
-			return self.state(), None, False
+			return self.state(), None, self.done
 
 
 	#Return the state as given by the partial order
 	def state(self):
-		return [[self.Screen, self.HIV_Status, self.HIV_Test_Result, self.Treat_Counsel,
-		 self.Compliance_Medical_Therapy, self.Reduce_Risky_Behavior, self.QALE]]
-
+		if not self.done:
+			return [[self.Screen, np.nan, np.nan, self.Treat_Counsel, np.nan, np.nan, np.nan]]
+		else:
+			return [[self.Screen, self.HIV_Status, self.HIV_Test_Result, self.Treat_Counsel,
+				 self.Compliance_Medical_Therapy, self.Reduce_Risky_Behavior, self.QALE]]

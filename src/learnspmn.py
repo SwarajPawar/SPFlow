@@ -33,10 +33,10 @@ from os import path as pth
 import sys, os
 from collections import Counter
 
-datasets = ['HIV_Screening',  'Test_Strep', 'LungCancer_Staging']
-#datasets = ['Export_Textiles','Computer_Diagnostician', 'Powerplant_Airpollution', ]
+datasets = ['Computer_Diagnostician',  'Test_Strep', 'LungCancer_Staging']
+#datasets = ['Export_Textiles','HIV_Screening, 'Powerplant_Airpollution', ]
 datasets = ['Test_Strep' ]
-path = "original_new1"
+path = "original_new"
 
 def get_loglikelihood(instance):
 	test_data = np.array(instance).reshape(-1, len(feature_names))
@@ -44,13 +44,12 @@ def get_loglikelihood(instance):
 
 def get_reward(ids):
 
-	policy = ""
+	#policy = ""
 	state = env.reset()
 	while(True):
-		state[0][0], state[0][1] = np.nan, np.nan
 		output = best_next_decision(spmn, state)
 		action = output[0][0]
-		policy += f"{action}  "
+		#policy += f"{action}  "
 		state, reward, done = env.step(action)
 		'''
 		if action==1:
@@ -58,8 +57,8 @@ def get_reward(ids):
 			#
 		'''
 		if done:
-			#return reward
-			return policy
+			return reward
+			#return policy
 
 
 
@@ -145,12 +144,14 @@ for dataset in datasets:
 		
 		ids = [None for x in range(batch_size)]
 		rewards = pool.map(get_reward, ids)
+		'''
 		policies = pool.map(get_reward, ids)
 		policy_set += policies
 		print(Counter(policy_set))
-		#batch.append(sum(rewards)/batch_size)
+		'''
+		batch.append(sum(rewards)/batch_size)
 		#print(batch[-1])
-		#printProgressBar(z+1, batch_count, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+		printProgressBar(z+1, batch_count, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
 	
 	avg_rewards = np.mean(batch)
@@ -163,7 +164,7 @@ for dataset in datasets:
 	print(f"\n\tDeviation : {reward_dev}")
 	
 	
-	f = open(f"{path}/{dataset}/stats2.txt", "w")
+	f = open(f"{path}/{dataset}/stats1.txt", "w")
 	f.write(f"\n{dataset}")
 	#f.write(f"\n\tLog Likelihood : {ll}")
 	f.write(f"\n\tMEU : {meus}")
