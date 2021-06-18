@@ -1,0 +1,32 @@
+
+Computer_Diagnostician
+
+	Average Rewards 50000: [-210.13049999999998]
+	Deviation 50000: [1.328768602880121]
+
+	Average Rewards 100000: []
+	Deviation 100000: []
+
+	Average Rewards 150000: []
+	Deviation 150000: []
+
+	Average Rewards 200000: []
+	Deviation 200000: []
+
+	Average Rewards 250000: []
+	Deviation 250000: []
+
+	Average Rewards 300000: []
+	Deviation 300000: []
+
+	Average Rewards 350000: []
+	Deviation 350000: []
+
+	Average Rewards 400000: []
+	Deviation 400000: []
+
+	Average Rewards 450000: []
+	Deviation 450000: []
+
+	Average Rewards 500000: []
+	Deviation 500000: []

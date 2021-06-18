@@ -35,7 +35,7 @@ from collections import Counter
 
 datasets = ['Computer_Diagnostician',  'Test_Strep', 'LungCancer_Staging']
 #datasets = ['Export_Textiles','HIV_Screening, 'Powerplant_Airpollution', ]
-#datasets = ['Test_Strep' ]
+datasets = ['LungCancer_Staging' ]
 path = "original_new"
 
 def get_loglikelihood(instance):
