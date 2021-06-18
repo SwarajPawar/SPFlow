@@ -48,9 +48,11 @@ import spn.algorithms.ASPN
 aspn = ASPN('nltcs', 'output_path', ds_context)
 spn_structure, stats = aspn.learn_aspn(train_data, test_data)    
 ```
+![nltcs LogLikelihood](https://github.com/SwarajPawar/SPFlow/tree/anytime_spn/plots/nltcs_ll.png)
+
 Note that the aspn.learn_aspn() function is a generator function and generates 
 the SPN networks in a sequence and returns them at each iteration
 
-![nltcs_ll.png](https://github.com/SwarajPawar/SPFlow/tree/anytime_spn/plots/nltcs_ll.png)
+
 
  
