@@ -16,7 +16,7 @@ learned by the LearnSPN algorithm using lower number nodes and in lesser learnin
 
 ## Getting Started
 
-Use the anytime_spn branch of SPFlow [https://github.com/SwarajPawar/SPFlow] for installation.
+Use the ![anytime_spn](https://github.com/SwarajPawar/SPFlow/tree/anytime_spn) branch of SPFlow for installation.
 
 ## Using Anytime SPN Module
 
