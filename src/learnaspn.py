@@ -56,7 +56,7 @@ for dataset in datasets:
 
 	#Initialize ASPN
 	aspn = AnytimeSPN(dataset, path, ds_context)
-
+	spn_structure, stats = aspn.learn_aspn(train, test)
 	#Start anytime learning
 	for i, output in enumerate(aspn.learn_aspn(train, test)):
 
