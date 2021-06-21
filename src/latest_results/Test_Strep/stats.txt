@@ -1,0 +1,8 @@
+
+Test_Strep
+	Log Likelihood : [-1.2529429345086651]
+	Log Likelihood Deviation: [0.003439263558805171]
+	MEU : [54.9194989384119]
+	Nodes : [88]
+	Average Rewards : [54.875119149992116]
+	Rewards Deviation : [0.0110697399881371]

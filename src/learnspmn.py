@@ -35,7 +35,7 @@ from collections import Counter
 
 datasets = ['Computer_Diagnostician',  'Test_Strep', 'LungCancer_Staging']
 #datasets = ['Export_Textiles','HIV_Screening, 'Powerplant_Airpollution', ]
-datasets = ['LungCancer_Staging' ]
+datasets = ['FrozenLake' ]
 path = "original_new"
 
 def get_loglikelihood(instance):
@@ -99,13 +99,13 @@ for dataset in datasets:
 	nodes = get_structure_stats_dict(spmn)["nodes"]
 	
 	
-	#plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
+	plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
 
 
 	pool = multiprocessing.Pool()
 
 	
-	'''
+	
 	batch_size = int(test.shape[0] / 10)
 	total_ll = 0
 	test = list(test)
@@ -114,7 +114,7 @@ for dataset in datasets:
 		lls = pool.map(get_loglikelihood, test_slice)
 		total_ll += sum(lls)
 		printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-	'''
+	
 	'''
 	for j, instance in enumerate(test):
 		test_data = np.array(instance).reshape(-1, len(feature_names))
@@ -122,7 +122,7 @@ for dataset in datasets:
 		printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
 	
 	'''
-	#ll = (total_ll/len(test))
+	ll = (total_ll/len(test))
 	
 	
 	test_data = [[np.nan]*len(feature_names)]
@@ -157,7 +157,7 @@ for dataset in datasets:
 	avg_rewards = np.mean(batch)
 	reward_dev = np.std(batch)
 	
-	#print(f"\n\tLog Likelihood : {ll}")
+	print(f"\n\tLog Likelihood : {ll}")
 	print(f"\n\tMEU : {meus}")
 	print(f"\n\tNodes : {nodes}")
 	print(f"\n\tAverage rewards : {avg_rewards}")
@@ -166,7 +166,7 @@ for dataset in datasets:
 	
 	f = open(f"{path}/{dataset}/stats1.txt", "w")
 	f.write(f"\n{dataset}")
-	#f.write(f"\n\tLog Likelihood : {ll}")
+	f.write(f"\n\tLog Likelihood : {ll}")
 	f.write(f"\n\tMEU : {meus}")
 	f.write(f"\n\tNodes : {nodes}")
 	f.write(f"\n\tAverage rewards : {avg_rewards}")

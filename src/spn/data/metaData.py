@@ -14,6 +14,8 @@ def get_decNode(dataset_name):
         return ['Screen', 'Treat_Counsel']
     elif dataset_name == 'Powerplant_Airpollution':
         return ['Installation_Type', 'Strike_Intervention']
+    elif dataset_name == 'FrozenLake':
+        return [f'Action_{i}' for i in range(10)]
     else:
         print(dataset_name)
 
@@ -22,17 +24,18 @@ def get_utilityNode(dataset_name):
 
     if dataset_name == 'Computer_Diagnostician':
         return ['Rework_Cost']
-    if dataset_name == 'Export_Textiles':
+    elif dataset_name == 'Export_Textiles':
         return ['Profit']
-    if dataset_name == 'Test_Strep':
+    elif dataset_name == 'Test_Strep':
         return ['QALE']
-    if dataset_name == 'LungCancer_Staging':
+    elif dataset_name == 'LungCancer_Staging':
         return ['Life_expectancy']
-    if dataset_name == 'HIV_Screening':
+    elif dataset_name == 'HIV_Screening':
         return ['QALE']
-    if dataset_name == 'Powerplant_Airpollution':
+    elif dataset_name == 'Powerplant_Airpollution':
         return ['Additional_Cost']
-
+    elif dataset_name == 'FrozenLake':
+        return ['Reward']
     else:
         print(dataset_name)
 
@@ -110,6 +113,12 @@ def get_partial_order(dataset_name):
     if dataset_name == 'Powerplant_Airpollution':
         partialOrder = [['Installation_Type'],['Coal_Worker_Strike'],['Strike_Intervention'],['Strike_Resolution','Additional_Cost']]
         return partialOrder
+    if dataset_name == 'FrozenLake':
+        partialOrder = list()
+        for i in range(10):
+            partialOrder += [[f'State_{i}'], [f'Action_{i}']]
+        partialOrder += [['State_10'], ['Reward']]
+        return partialOrder
     else:
         print(dataset_name)
 
@@ -128,6 +137,12 @@ def get_feature_labels(dataset_name):
         return ['Sc', 'HS', 'HTR', 'TC', 'CMT', 'RRB', 'Q']
     if dataset_name == 'Powerplant_Airpollution':                                    # 5 variables
         return ['IT', 'CWS', 'SI', 'SR', 'AC']
+    if dataset_name == 'FrozenLake':                                                 # 22 variables
+        features = list()
+        for i in range(10):
+            features += [f'S{i}', f'A{i}']
+        features += ['S10', 'RW']
+        return features
 
 
 
