@@ -465,7 +465,7 @@ class Anytime_SPMN:
             
             
             #try:
-            
+            '''
             total_ll = 0
             trials1 = test.shape[0]
             batch_size = int(trials1 / 10)
@@ -480,7 +480,7 @@ class Anytime_SPMN:
                 total_ll = sum(lls)
                 batch.append(total_ll/batch_size)
                 printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-            
+            '''
             '''
             for j, instance in enumerate(test):
                 test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
@@ -491,8 +491,8 @@ class Anytime_SPMN:
                 printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
             '''
 
-            avg_ll.append(np.mean(batch))
-            ll_dev.append(np.std(batch))
+            #avg_ll.append(np.mean(batch))
+            #ll_dev.append(np.std(batch))
             
 
 
@@ -577,8 +577,8 @@ class Anytime_SPMN:
             print("\n\n\n\n\n")
             print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
             print("#Nodes: ",nodes[-1])
-            print("Log Likelihood: ",avg_ll[-1])
-            print("Log Likelihood Deviation: ",ll_dev[-1])
+            #print("Log Likelihood: ",avg_ll[-1])
+            #print("Log Likelihood Deviation: ",ll_dev[-1])
             print("MEU: ",meus[-1])
             print("Average rewards: ",avg_rewards[-1][-1])
             print("Deviation: ",reward_dev[-1][-1])
@@ -586,7 +586,7 @@ class Anytime_SPMN:
             print(meus)
             print("\n\n\n\n\n")
             
-            
+            '''
             plt.close()
             # plot line 
             plt.plot([original_stats[self.dataset]["ll"]]*len(avg_ll), linestyle="dashed", color ="red", label="LearnSPMN")
@@ -597,7 +597,7 @@ class Anytime_SPMN:
                 plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
             else:
                 plt.savefig(f"{self.plot_path}/{k}/ll.png", dpi=100)
-            
+            '''
             plt.close()
             
             plt.plot(meus, marker="o", label="Anytime")
