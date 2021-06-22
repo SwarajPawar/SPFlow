@@ -459,12 +459,12 @@ class Anytime_SPMN:
 
 			nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
-			'''
+			
 			if k is None:
 				plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
 			else:
 				plot_spn(spmn, f'{self.plot_path}/{k}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
-			'''
+			
 			
 			#try:
 			'''
