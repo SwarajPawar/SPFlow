@@ -87,7 +87,7 @@ for dataset in datasets:
 	df, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
 	
 	data = df.values
-	train, test = train_test_split(data, test_size=0.9, shuffle=True)
+	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
 	train, test = data, data #random.sample(list(data), 1000)
 
 	print("Start Learning...")

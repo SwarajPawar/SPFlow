@@ -63,28 +63,6 @@ def get_feature_names(dataset_name):
 def get_partial_order(dataset_name):
 
     if dataset_name == 'Computer_Diagnostician':
-        #partialOrder = [['System_State'], ['Rework_Decision'], ['Logic_board_fail', 'IO_board_fail', 'Rework_Outcome', 'Rework_Cost' ]]
-        #ntest1  no sum
-        #partialOrder = [['IO_board_fail', 'Logic_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
-        #ntest2  no sum
-        #partialOrder = [['Logic_board_fail', 'IO_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
-        #ntest3  no sum
-        #partialOrder = [['Logic_board_fail', 'IO_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
-        #ntest4  no sum
-        #partialOrder = [['IO_board_fail', 'Logic_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
-        #ntest5  no p
-        #partialOrder = [['IO_board_fail', 'Logic_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
-        #ntest6  no p
-        #partialOrder = [['IO_board_fail', 'Logic_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
-        #ntest7  no p
-        #partialOrder = [['Logic_board_fail', 'IO_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
-        #ntest8  no sum
-        #partialOrder = [['IO_board_fail', 'Logic_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
-        #ntest9  no sum
-        #partialOrder = [['Logic_board_fail', 'IO_board_fail', 'System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
-        #ntest10  no sum
-        #partialOrder = [['Logic_board_fail', 'IO_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
-        #ntest11  no sum
         partialOrder = [['IO_board_fail', 'Logic_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
         return partialOrder
     if dataset_name == 'Export_Textiles':
@@ -117,7 +95,7 @@ def get_partial_order(dataset_name):
         partialOrder = list()
         for i in range(10):
             partialOrder += [[f'State_{i}'], [f'Action_{i}']]
-        partialOrder += [['State_10'], ['Reward']]
+        partialOrder += [['State_10', 'Reward']]
         return partialOrder
     else:
         print(dataset_name)

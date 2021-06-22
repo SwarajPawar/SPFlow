@@ -348,6 +348,10 @@ def getIndependentRDCGroups_py(
 
 def get_split_cols_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None):
 	def split_cols_RDC_py(local_data, ds_context, scope):
+
+		if local_data.shape[0] == 1:
+			local_data = np.concatenate((local_data, local_data))
+		
 		meta_types = ds_context.get_meta_types_by_scope(scope)
 		domains = ds_context.get_domains_by_scope(scope)
 

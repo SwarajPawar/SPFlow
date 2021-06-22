@@ -16,7 +16,7 @@ from spn.data.FrozenLake.simulator import FrozenLake
 
 
 #Return the simulator for the given dataset name
-def get_env(dataset):
+def get_env(dataset, return_state=False):
 	if dataset == "Export_Textiles":
 		return Export_Textiles()
 	elif dataset == "Computer_Diagnostician":
@@ -30,6 +30,6 @@ def get_env(dataset):
 	elif dataset == "LungCancer_Staging":
 		return LungCancer_Staging()
 	elif dataset == "FrozenLake":
-		return FrozenLake()
+		return FrozenLake(return_state)
 
 
