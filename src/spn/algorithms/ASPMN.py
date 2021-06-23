@@ -325,6 +325,35 @@ class Anytime_SPMN:
 				logging.info(f'created sum node')
 				return sum_node
 
+	def get_loglikelihood(self, instance):
+        test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
+        return log_likelihood(self.spmn, test_data)[0][0]
+
+
+    def get_reward(self, id):
+
+        state = self.env.reset()
+        while(True):
+            state[0][0], state[0][1] = np.nan, np.nan
+            output = best_next_decision(self.spmn, state)
+            action = output[0][0]
+            state, reward, done = self.env.step(action)
+            if done:
+                return reward
+
+    def get_policy(self, ids):
+
+        policy = ""
+        state = self.env.reset()
+        while(True):
+            state[0][0], state[0][1] = np.nan, np.nan
+            output = best_next_decision(self.spmn, state)
+            action = output[0][0]
+            policy += f"{action}  "
+            state, reward, done = self.env.step(action)
+            if done:
+                return policy
+
 	def learn_aspmn(self, train, test, k=None):
 		"""
 		:param
@@ -333,25 +362,34 @@ class Anytime_SPMN:
 		
 		
 		original_stats = {
-            'Export_Textiles': {"ll" : -1.0890750655173789, "meu" : 1722313.8158882717, 'nodes' : 38, 'reward':1721301.8260000004, 'dev':3861.061525772288},
-            'Test_Strep': {"ll" : -0.9130071749277912, "meu" : 54.9416526618876, 'nodes' : 130, 'reward':54.936719928008955, 'dev':0.011715846521357575},
-            'LungCancer_Staging': {"ll" : -1.1489156814245234, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.1429205999999272, 'dev':0.01190315582691798},
-            'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.559788119992646, 'dev':0.06067708771159484},
-            'Computer_Diagnostician': {"ll" : -0.9011245432112749, "meu" : -208.351, 'nodes' : 56, 'reward':-208.07350000000002, 'dev':0.4155875359054929},
-            'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2759870.4, 'dev':6825.630813338794}
-        }
+			'Export_Textiles': {"ll" : -1.0890750655173789, "meu" : 1722313.8158882717, 'nodes' : 38, 'reward':1721301.8260000004, 'dev':3861.061525772288},
+			'Test_Strep': {"ll" : -0.9130071749277912, "meu" : 54.9416526618876, 'nodes' : 130, 'reward':54.91352060400901, 'dev':0.013189836549851251},
+			'LungCancer_Staging': {"ll" : -1.1489156814245234, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.108005299999918, 'dev':0.011869627022775012},
+			'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.559788119992646, 'dev':0.06067708771159484},
+			'Computer_Diagnostician': {"ll" : -0.9011245432112749, "meu" : -208.351, 'nodes' : 56, 'reward':-210.15520000000004, 'dev':0.3810022440878799},
+			'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2759870.4, 'dev':6825.630813338794}
+		}
 
-        optimal_meu = {
-            'Export_Textiles' : 1721300,
-            'Computer_Diagnostician': -210.13,
-            'Powerplant_Airpollution': -2760000,
-            'HIV_Screening': 42.5597,
-            'Test_Strep': 54.9245,
-            'LungCancer_Staging': 3.12453
-        }
+		optimal_meu = {
+			'Export_Textiles' : 1721300,
+			'Computer_Diagnostician': -210.13,
+			'Powerplant_Airpollution': -2760000,
+			'HIV_Screening': 42.5597,
+			'Test_Strep': 54.9245,
+			'LungCancer_Staging': 3.12453
+		}
+
+		random_reward = {
+			'Export_Textiles' : {'reward': 1300734.02, 'dev':7087.350616838437},
+			'Computer_Diagnostician': {'reward': -226.666, 'dev':0.37205611135956335},
+			'Powerplant_Airpollution': {'reward': -3032439.0, 'dev':7870.276615214995},
+			'HIV_Screening': {'reward': 42.3740002199867, 'dev':0.07524234474837802},
+			'Test_Strep': {'reward': 54.89614493400057, 'dev':0.012847272731391593},
+			'LungCancer_Staging': {'reward': 2.672070640000026, 'dev':0.007416967451081523},
+		}
 		
 		trials = 500000
-		interval = 10000
+		interval = 50000
 		batches = 25
 
 
@@ -359,7 +397,7 @@ class Anytime_SPMN:
 		reward_dev = [list() for i in range(int(trials/interval))]
 
 	
-		'''
+		
 		avg_ll = list()
 		ll_dev = list()
 		meus = list()
@@ -367,13 +405,14 @@ class Anytime_SPMN:
 		avg_rewards = list()
 		reward_dev = list()
 		past3 = list()
-		'''
-		
-		limit = 2 
-		n = int(self.vars**0.5)
-		#n= self.vars
-		step = (self.vars - (self.vars**0.5) + 1)/10
-		d = 2
+
+		self.env = get_env(self.dataset)
+        
+        limit = 2 
+        n = int(self.vars**0.5)
+        #n= self.vars
+        step = 0 #(self.vars - (self.vars**0.5) + 1)/10
+        d = 2
 
 		if k is not None:
 			if not pth.exists(f"{self.plot_path}/{k}"):
@@ -403,57 +442,7 @@ class Anytime_SPMN:
 			self.spmn = spmn
 
 
-			env = get_env(self.dataset)
-			total_reward = 0
-			rewards = list()
 			
-			inter = 0
-			for z in range(trials):
-				
-				state = env.reset()
-				while(True):
-					output = best_next_decision(spmn, state)
-					action = output[0][0]
-					state, reward, done = env.step(action)
-					if done:
-						rewards.append(reward)
-						break
-				if (z+1) % interval == 0:
-					batch = list()
-					batch_size = int(z / batches)
-					for l in range(batches):
-						m = l*batch_size
-						batch.append(sum(rewards[m:m+batch_size]) / batch_size)
-					
-					avg_rewards[inter].append(np.mean(batch))
-					reward_dev[inter].append(np.std(batch))
-
-					original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards[inter]))
-					dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards[inter]))
-					plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
-					plt.fill_between(np.arange(len(avg_rewards[inter])), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
-					plt.errorbar(np.arange(len(avg_rewards[inter])), avg_rewards[inter], yerr=reward_dev[inter], marker="o", label="Anytime")
-					plt.title(f"{self.dataset} Average Rewards")
-					plt.legend()
-					plt.savefig(f"{self.plot_path}/rewards_trend_{(inter+1)*interval}.png", dpi=100)
-					plt.close()
-
-					f = open(f"{self.plot_path}/stats_trends.txt", "w")
-
-					f.write(f"\n{self.dataset}")
-
-					for x in range(int(trials/interval)):
-
-						f.write(f"\n\n\tAverage Rewards {(x+1)*interval}: {avg_rewards[x]}")
-						f.write(f"\n\tDeviation {(x+1)*interval}: {reward_dev[x]}")
-
-					f.close()
-
-					inter += 1
-
-				printProgressBar(z+1, trials, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
-
-			'''
 
 			nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
@@ -464,21 +453,25 @@ class Anytime_SPMN:
 				plot_spn(spmn, f'{self.plot_path}/{k}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
 			
 			
-			#try:
 			total_ll = 0
-			trials = test.shape[0]
-			batch_size = trials / 10
-			batch = list()
-			for j, instance in enumerate(test):
-				test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
-				total_ll += log_likelihood(spmn, test_data)[0][0]
-				if (j+1) % batch_size == 0:
-					batch.append(total_ll/batch_size)
-					total_ll = 0
-				printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-			
-			avg_ll.append(np.mean(batch))
-			ll_dev.append(np.std(batch))
+            trials1 = test.shape[0]
+            batch_size = int(trials1 / 10)
+            batch = list()
+            pool = multiprocessing.Pool()
+
+            
+            
+            for b in range(10):
+                test_slice = test[b*batch_size:(b+1)*batch_size]
+                lls = pool.map(self.get_loglikelihood, test_slice)
+                total_ll = sum(lls)
+                batch.append(total_ll/batch_size)
+                printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
+            
+            
+
+            avg_ll.append(np.mean(batch))
+            ll_dev.append(np.std(batch))
 			
 
 
@@ -489,30 +482,61 @@ class Anytime_SPMN:
 
 			
 			
-			env = get_env(self.dataset)
 			total_reward = 0
-			trials = 100000
-			batch_size = trials / 10
-			batch = list()
+            rewards = list()
 
-			for z in range(trials):
-				
-				state = env.reset()  #
-				while(True):
-					output = best_next_decision(spmn, state)
-					#output = spmn_topdowntraversal_and_bestdecisions(spmn, test_data)
-					action = output[0][0]
-					state, reward, done = env.step(action)
-					if done:
-						total_reward += reward
-						break
-				if (z+1) % batch_size == 0:
-					batch.append(total_reward/batch_size)
-					total_reward = 0
-				printProgressBar(z+1, trials, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+            
+            from collections import Counter
+            pool = multiprocessing.Pool()
+            for inter in range(interval_count):
+                
+                for y in range(batches):
+                    ids = [None for x in range(int(interval/batches))]
 
-			avg_rewards.append(np.mean(batch))
-			reward_dev.append(np.std(batch))
+                    cur = pool.map(self.get_reward, ids)
+                    rewards += cur
+                    z = (inter*batches) + y + 1
+                    printProgressBar(z, interval_count*batches, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+
+                
+                batch = list()
+                batch_size = int(len(rewards) / batches)
+                for l in range(batches):
+                    m = l*batch_size
+                    batch.append(sum(rewards[m:m+batch_size]) / batch_size)
+                
+
+                avg_rewards[inter].append(np.mean(batch))
+                reward_dev[inter].append(np.std(batch))
+
+                plt.close()
+                rand_reward = np.array([random_reward[self.dataset]["reward"]]*len(avg_rewards[inter]))
+                dev = np.array([random_reward[self.dataset]["dev"]]*len(avg_rewards[inter]))
+                plt.fill_between(np.arange(len(avg_rewards[inter])), rand_reward-dev, rand_reward+dev, alpha=0.1, color="lightgrey")
+                plt.plot(rand_reward, linestyle="dashed", color ="grey", label="Random Policy")
+
+                original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards[inter]))
+                dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards[inter]))
+                plt.fill_between(np.arange(len(avg_rewards[inter])), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
+                plt.plot([optimal_meu[self.dataset]]*len(avg_rewards[inter]), linewidth=3, color ="lime", label="Optimal MEU")
+                plt.plot(original_reward, linestyle="dashed", color ="red", label="LearnSPMN")
+
+                plt.errorbar(np.arange(len(avg_rewards[inter])), avg_rewards[inter], yerr=reward_dev[inter], marker="o", label="Anytime")
+                plt.title(f"{self.dataset} Average Rewards")
+                plt.legend()
+                plt.savefig(f"{self.plot_path}/rewards_trend_{(inter+1)*interval}.png", dpi=100)
+                plt.close()
+
+                f = open(f"{self.plot_path}/stats_trends.txt", "w")
+
+                f.write(f"\n{self.dataset}")
+
+                for x in range(interval_count):
+
+                    f.write(f"\n\n\tAverage Rewards {(x+1)*interval}: {avg_rewards[x]}")
+                    f.write(f"\n\tDeviation {(x+1)*interval}: {reward_dev[x]}")
+
+                f.close()
 			
 			
 			
@@ -577,42 +601,7 @@ class Anytime_SPMN:
 
 			
 
-			plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
-			plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
-			plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
-			if original_reward[0] > 0:
-				plt.axis(ymin=0, ymax=original_reward[0]*1.5)
-			else:
-				plt.axis(ymax=0, ymin=original_reward[0]*1.5)
-			plt.title(f"{self.dataset} Average Rewards")
-			plt.legend()
-			if k is None:
-				plt.savefig(f"{self.plot_path}/rewards_scaled1.png", dpi=100)
-			else:
-				plt.savefig(f"{self.plot_path}/rewards_scaled1.png", dpi=100)
-			plt.close()
-
 			
-			lspmn_reward = str(abs(int(original_reward[0])))
-			order = len(lspmn_reward)
-			r_dev = np.array(reward_dev)
-			if order > 1:
-				 minl= (round(min(avg_rewards-r_dev)/(10**(order-2)) * 2)/2 - 0.5) * (10**(order-2))
-				 maxl= (round(max(avg_rewards+r_dev)/(10**(order-2)) * 2)/2 + 0.5) * (10**(order-2))
-			else:
-				minl= round(min(avg_rewards-r_dev)*2)/2 - 0.5
-				maxl= round(max(avg_rewards+r_dev)*2)/2 + 0.5
-			plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
-			plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
-			plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
-			plt.axis(ymin=minl, ymax=maxl)
-			plt.title(f"{self.dataset} Average Rewards")
-			plt.legend()
-			if k is None:
-				plt.savefig(f"{self.plot_path}/rewards_scaled2.png", dpi=100)
-			else:
-				plt.savefig(f"{self.plot_path}/rewards_scaled2.png", dpi=100)
-			plt.close()
 
 			
 
@@ -628,34 +617,34 @@ class Anytime_SPMN:
 			f.write(f"\n\tRewards Deviation : {reward_dev}")
 			f.close()
 
-			'''
+			
 			
 			#except:
 				#pass
 			
 
-			#past3 = avg_ll[-min(len(meus),3):]
-				
-			if n>=self.vars: #and round(np.std(past3), 3) <= 0.001:
-				break
+			if n>self.vars:  #and round(np.std(past3), 3) <= 0.001:
+                break
 
 
-			i += 1
-			limit += 1
-			d += 1
-			n = n+step
+            i += 1
+            limit += 1
+            d += 1
+            n = n+step
+            if step == 0:
+                step = 1
 
-		'''
-		stats = {"ll" : avg_ll,
-				"ll_dev": ll_dev,
-				"meu" : meus,
-				"nodes" : nodes,
-				"reward" : avg_rewards,
-				"deviation" : reward_dev
-				}
-		'''
-		# Prune(self.spmn)
-		return self.spmn #, stats
+        '''
+        stats = {"ll" : avg_ll,
+                "ll_dev": ll_dev,
+                "meu" : meus,
+                "nodes" : nodes,
+                "reward" : avg_rewards,
+                "deviation" : reward_dev
+                }
+        '''
+        # Prune(self.spmn)
+        return self.spmn #, stats
 
 
 
