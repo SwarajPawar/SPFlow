@@ -50,7 +50,7 @@ for dataset in datasets:
 
 	data = df.values
 	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
-	test_size = int(data.shape[0]*0.3)
+	test_size = int(data.shape[0]*0.2)
 	train, test = data, np.array(random.sample(list(data), test_size))
 
 

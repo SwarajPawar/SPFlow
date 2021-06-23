@@ -15,7 +15,7 @@ import sys, os
 import random
 
 from sklearn.model_selection import train_test_split
-from spn.data.metaData import *
+from spn.data.metaData import get_partial_order, get_utilityNode, get_decNode, get_feature_names, get_feature_labels
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
 from spn.algorithms.SPMN import SPMN

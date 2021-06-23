@@ -82,6 +82,8 @@ class Export_Textiles:
 		#Return the reward if all actions are done
 		self.Profit = self.rewards[self.Economical_State][self.Export_Decision]
 
+		self.done = True
+
 		return self.state(), self.Profit, self.done
 
 	#Return the state as given by the partial order

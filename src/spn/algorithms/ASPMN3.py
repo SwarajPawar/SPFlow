@@ -645,8 +645,8 @@ class Anytime_SPMN:
             f = open(f"{self.plot_path}/stats.txt", "w") if k is None else open(f"{self.plot_path}/{k}/stats.txt", "w")
 
             f.write(f"\n{self.dataset}")
-            f.write(f"\n\tLog Likelihood : {avg_ll}")
-            f.write(f"\n\tLog Likelihood Deviation: {ll_dev}")
+            #f.write(f"\n\tLog Likelihood : {avg_ll}")
+            #f.write(f"\n\tLog Likelihood Deviation: {ll_dev}")
             f.write(f"\n\tMEU : {meus}")
             f.write(f"\n\tNodes : {nodes}")
             f.write(f"\n\tAverage Rewards : {avg_rewards[-1]}")
