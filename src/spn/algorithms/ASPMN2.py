@@ -334,7 +334,7 @@ class Anytime_SPMN:
 
 	def get_reward(self, ids):
 
-		print(ids)
+		
 		state = self.env.reset()
 		while(True):
 			state[0][0], state[0][1] = np.nan, np.nan
@@ -342,7 +342,7 @@ class Anytime_SPMN:
 			action = output[0][0]
 			state, reward, done = self.env.step(action)
 			if done:
-				print(reward)
+				
 				return reward
 
 	def get_reward1(self, ids):
