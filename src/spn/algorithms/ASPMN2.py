@@ -399,9 +399,9 @@ class Anytime_SPMN:
 
 		
 		
-		trials = 500
-		interval = 250
-		batches = 2
+		trials = 500000
+		interval = 50000
+		batches = 25
 		interval_count = int(trials/interval)
 
 		avg_rewards = [list() for i in range(int(trials/interval))]
