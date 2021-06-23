@@ -337,7 +337,6 @@ class Anytime_SPMN:
 		
 		state = self.env.reset()
 		while(True):
-			state[0][0], state[0][1] = np.nan, np.nan
 			output = best_next_decision(self.spmn, state)
 			action = output[0][0]
 			state, reward, done = self.env.step(action)
@@ -350,7 +349,6 @@ class Anytime_SPMN:
 		policy = ""
 		state = self.env.reset()
 		while(True):
-			state[0][0], state[0][1] = np.nan, np.nan
 			output = best_next_decision(self.spmn, state)
 			action = output[0][0]
 			policy += f"{action}  "

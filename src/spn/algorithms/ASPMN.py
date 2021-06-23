@@ -325,22 +325,24 @@ class Anytime_SPMN:
 				logging.info(f'created sum node')
 				return sum_node
 
+	#Return log-likelihood for the given test instance
 	def get_loglikelihood(self, instance):
         test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
         return log_likelihood(self.spmn, test_data)[0][0]
 
 
+    # Get reward by simulating policy in the environment
     def get_reward(self, id):
 
         state = self.env.reset()
         while(True):
-            state[0][0], state[0][1] = np.nan, np.nan
             output = best_next_decision(self.spmn, state)
             action = output[0][0]
             state, reward, done = self.env.step(action)
             if done:
                 return reward
 
+    #Get policy by running spmn in environment
     def get_policy(self, ids):
 
         policy = ""
