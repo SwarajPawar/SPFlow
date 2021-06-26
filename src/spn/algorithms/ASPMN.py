@@ -21,11 +21,13 @@ import math
 from spn.algorithms.TransformStructure import Prune
 
 
+# Anytime SPMN class
 class Anytime_SPMN:
 
 	def __init__(self, dataset, output_path, partial_order, decision_nodes, utility_node, feature_names, feature_labels,
 			meta_types, cluster_by_curr_information_set=False, util_to_bin=False):
 
+		#Save the parameters
 		self.dataset = dataset
 		self.params = SPMNParams(
 				partial_order,
@@ -42,9 +44,8 @@ class Anytime_SPMN:
 
 		self.vars = len(feature_labels)
 
+		#Create output directory if it doesn't exist
 		self.plot_path = f"{output_path}/{dataset}"
-
-
 		if not pth.exists(self.plot_path):
 			try:
 				os.makedirs(self.plot_path)
@@ -53,12 +54,14 @@ class Anytime_SPMN:
 				sys.exit()
 
 
+	#Get and set operations
 	def set_next_operation(self, next_op):
 		self.op = next_op
 
 	def get_curr_operation(self):
 		return self.op
 
+	#Function to learn the SPMN
 	def __learn_spmn_structure(self, remaining_vars_data, remaining_vars_scope,
 							   curr_information_set_scope, index):
 
@@ -348,7 +351,6 @@ class Anytime_SPMN:
         policy = ""
         state = self.env.reset()
         while(True):
-            state[0][0], state[0][1] = np.nan, np.nan
             output = best_next_decision(self.spmn, state)
             action = output[0][0]
             policy += f"{action}  "
@@ -356,13 +358,14 @@ class Anytime_SPMN:
             if done:
                 return policy
 
-	def learn_aspmn(self, train, test, k=None):
+	def learn_aspmn(self, train, test):
 		"""
 		:param
 		:return: learned spmn
 		"""
 		
 		
+		#Statistics for the LearnSPMN algorithm
 		original_stats = {
 			'Export_Textiles': {"ll" : -1.0890750655173789, "meu" : 1722313.8158882717, 'nodes' : 38, 'reward':1721301.8260000004, 'dev':3861.061525772288},
 			'Test_Strep': {"ll" : -0.9130071749277912, "meu" : 54.9416526618876, 'nodes' : 130, 'reward':54.91352060400901, 'dev':0.013189836549851251},
@@ -372,6 +375,7 @@ class Anytime_SPMN:
 			'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2759870.4, 'dev':6825.630813338794}
 		}
 
+		#Optimal MEU values from the IDs
 		optimal_meu = {
 			'Export_Textiles' : 1721300,
 			'Computer_Diagnostician': -210.13,
@@ -381,6 +385,7 @@ class Anytime_SPMN:
 			'LungCancer_Staging': 3.12453
 		}
 
+		#Rewards by simulating random policy
 		random_reward = {
 			'Export_Textiles' : {'reward': 1300734.02, 'dev':7087.350616838437},
 			'Computer_Diagnostician': {'reward': -226.666, 'dev':0.37205611135956335},
@@ -390,16 +395,9 @@ class Anytime_SPMN:
 			'LungCancer_Staging': {'reward': 2.672070640000026, 'dev':0.007416967451081523},
 		}
 		
-		trials = 500000
-		interval = 50000
-		batches = 25
 
-
-		avg_rewards = [list() for i in range(int(trials/interval))]
-		reward_dev = [list() for i in range(int(trials/interval))]
-
-	
 		
+		#Initialize lists for storing statistics over iterations
 		avg_ll = list()
 		ll_dev = list()
 		meus = list()
@@ -408,28 +406,25 @@ class Anytime_SPMN:
 		reward_dev = list()
 		past3 = list()
 
+		#Initialize domain environment
 		self.env = get_env(self.dataset)
         
+        #Initial parameters
         limit = 2 
         n = int(self.vars**0.5)
         #n= self.vars
         step = 0 #(self.vars - (self.vars**0.5) + 1)/10
         d = 2
 
-		if k is not None:
-			if not pth.exists(f"{self.plot_path}/{k}"):
-				try:
-					os.makedirs(f"{self.plot_path}/{k}")
-				except OSError:
-					print ("Creation of the directory %s failed" % f"{self.plot_path}/{k}")
-					sys.exit()
 
+        #Start Anytime iterations
 		i = 0
 		while(True):
 
 			index = 0
 			print(f"\nIteration: {i}\n")
 			
+			#Get Current and remaining scopes and initialize next operation
 			curr_information_set_scope = np.array(range(len(self.params.partial_order[0]))).tolist()
 			remaining_vars_scope = np.array(range(len(self.params.feature_names))).tolist()
 			self.set_next_operation('Any')
@@ -437,6 +432,7 @@ class Anytime_SPMN:
 			self.n = n  
 			self.d = d
 
+			#Start Learning the network
 			print("\nStart Learning...")
 			spmn = self.__learn_spmn_structure(train, remaining_vars_scope, curr_information_set_scope, index)
 			print("SPMN Learned")
@@ -444,17 +440,13 @@ class Anytime_SPMN:
 			self.spmn = spmn
 
 
-			
-
+			#Get nodes in the network
 			nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
+			#Plot the SPMN
+			plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
 			
-			if k is None:
-				plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
-			else:
-				plot_spn(spmn, f'{self.plot_path}/{k}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
-			
-			
+			#Initilize parameters for Log-likelihood evaluation
 			total_ll = 0
             trials1 = test.shape[0]
             batch_size = int(trials1 / 10)
@@ -462,7 +454,7 @@ class Anytime_SPMN:
             pool = multiprocessing.Pool()
 
             
-            
+            #Get average log-likelihood for 10 batches
             for b in range(10):
                 test_slice = test[b*batch_size:(b+1)*batch_size]
                 lls = pool.map(self.get_loglikelihood, test_slice)
@@ -470,78 +462,38 @@ class Anytime_SPMN:
                 batch.append(total_ll/batch_size)
                 printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
             
-            
-
+	        #Save average ll and deviation
             avg_ll.append(np.mean(batch))
             ll_dev.append(np.std(batch))
 			
 
-
+            #Computethe MEU of the Network
 			test_data = [[np.nan]*len(self.params.feature_names)]
 			m = meu(spmn, test_data)
 			meus.append(m[0])
 
 
-			
-			
+			#Initialize parameters for computing rewards
+			trials = 500000
+			batches = 25
 			total_reward = 0
-            rewards = list()
+            reward_batch = list()
+            batch_size = int(trials / batches)
+            
+            pool = multiprocessing.Pool()
+            #Get the rewards parallely for each batch
+            for y in range(batches):
+                ids = [None for x in range(batch_size)]
+                rewards = pool.map(self.get_reward, ids)
+                reward_batch.append(sum(rewards) / batch_size)
+                printProgressBar(y+1, batches, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+
+            #Store the rewards    
+            avg_rewards.append(np.mean(reward_batch))
+            reward_dev.append(np.std(reward_batch))
 
             
-            from collections import Counter
-            pool = multiprocessing.Pool()
-            for inter in range(interval_count):
-                
-                for y in range(batches):
-                    ids = [None for x in range(int(interval/batches))]
-
-                    cur = pool.map(self.get_reward, ids)
-                    rewards += cur
-                    z = (inter*batches) + y + 1
-                    printProgressBar(z, interval_count*batches, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
-
-                
-                batch = list()
-                batch_size = int(len(rewards) / batches)
-                for l in range(batches):
-                    m = l*batch_size
-                    batch.append(sum(rewards[m:m+batch_size]) / batch_size)
-                
-
-                avg_rewards[inter].append(np.mean(batch))
-                reward_dev[inter].append(np.std(batch))
-
-                plt.close()
-                rand_reward = np.array([random_reward[self.dataset]["reward"]]*len(avg_rewards[inter]))
-                dev = np.array([random_reward[self.dataset]["dev"]]*len(avg_rewards[inter]))
-                plt.fill_between(np.arange(len(avg_rewards[inter])), rand_reward-dev, rand_reward+dev, alpha=0.1, color="lightgrey")
-                plt.plot(rand_reward, linestyle="dashed", color ="grey", label="Random Policy")
-
-                original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards[inter]))
-                dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards[inter]))
-                plt.fill_between(np.arange(len(avg_rewards[inter])), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
-                plt.plot([optimal_meu[self.dataset]]*len(avg_rewards[inter]), linewidth=3, color ="lime", label="Optimal MEU")
-                plt.plot(original_reward, linestyle="dashed", color ="red", label="LearnSPMN")
-
-                plt.errorbar(np.arange(len(avg_rewards[inter])), avg_rewards[inter], yerr=reward_dev[inter], marker="o", label="Anytime")
-                plt.title(f"{self.dataset} Average Rewards")
-                plt.legend()
-                plt.savefig(f"{self.plot_path}/rewards_trend_{(inter+1)*interval}.png", dpi=100)
-                plt.close()
-
-                f = open(f"{self.plot_path}/stats_trends.txt", "w")
-
-                f.write(f"\n{self.dataset}")
-
-                for x in range(interval_count):
-
-                    f.write(f"\n\n\tAverage Rewards {(x+1)*interval}: {avg_rewards[x]}")
-                    f.write(f"\n\tDeviation {(x+1)*interval}: {reward_dev[x]}")
-
-                f.close()
-			
-			
-			
+            #Print the stats
 			print("\n\n\n\n\n")
 			print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
 			print("#Nodes: ",nodes[-1])
@@ -554,9 +506,9 @@ class Anytime_SPMN:
 			print(meus)
 			print("\n\n\n\n\n")
 			
-			
+			# plot the statistics
 			plt.close()
-			# plot line 
+			
 			plt.plot([original_stats[self.dataset]["ll"]]*len(avg_ll), linestyle="dotted", color ="red", label="LearnSPMN")
 			plt.errorbar(np.arange(len(avg_ll)), avg_ll, yerr=ll_dev, marker="o", label="Anytime")
 			plt.title(f"{self.dataset} Log Likelihood")
@@ -587,27 +539,28 @@ class Anytime_SPMN:
 				plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
 			plt.close()
 
-			original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards))
-			dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards))
-			plt.plot(original_reward, linestyle="dotted", color ="red", label="LearnSPMN")
-			plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
-			plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
-			plt.title(f"{self.dataset} Average Rewards")
-			plt.legend()
-			if k is None:
-				plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
-			else:
-				plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
-			plt.close()
+			
+            rand_reward = np.array([random_reward[self.dataset]["reward"]]*len(avg_rewards))
+            dev = np.array([random_reward[self.dataset]["dev"]]*len(avg_rewards))
+            plt.fill_between(np.arange(len(avg_rewards)), rand_reward-dev, rand_reward+dev, alpha=0.1, color="lightgrey")
+            plt.plot(rand_reward, linestyle="dashed", color ="grey", label="Random Policy")
+
+            original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards))
+            dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards))
+            plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
+            plt.plot([optimal_meu[self.dataset]]*len(avg_rewards), linewidth=3, color ="lime", label="Optimal MEU")
+            plt.plot(original_reward, linestyle="dashed", color ="red", label="LearnSPMN")
+
+            plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
+            plt.title(f"{self.dataset} Average Rewards")
+            plt.legend()
+            plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
+            plt.close()
 
 
 			
 
-			
-
-			
-
-			
+			#Save the stats in a file
 			f = open(f"{self.plot_path}/stats.txt", "w") if k is None else open(f"{self.plot_path}/{k}/stats.txt", "w")
 
 			f.write(f"\n{self.dataset}")
@@ -620,15 +573,24 @@ class Anytime_SPMN:
 			f.close()
 
 			
+			#Store the stats in a dictionary
+	        stats = {"ll" : avg_ll,
+	                "ll_dev": ll_dev,
+	                "meu" : meus,
+	                "nodes" : nodes,
+	                "reward" : avg_rewards,
+	                "reward_dev" : reward_dev
+	                }
+	        
+	        #Return the network and stats for the current iteration
+	        yield self.spmn, stats
 			
-			#except:
-				#pass
 			
-
+			#Termination criterion
 			if n>self.vars:  #and round(np.std(past3), 3) <= 0.001:
                 break
 
-
+            #Update the parameter values
             i += 1
             limit += 1
             d += 1
@@ -636,96 +598,11 @@ class Anytime_SPMN:
             if step == 0:
                 step = 1
 
-        '''
-        stats = {"ll" : avg_ll,
-                "ll_dev": ll_dev,
-                "meu" : meus,
-                "nodes" : nodes,
-                "reward" : avg_rewards,
-                "deviation" : reward_dev
-                }
-        '''
-        # Prune(self.spmn)
-        return self.spmn #, stats
+        
 
 
 
-	def learn_aspmn_kfold(self, data, k):
-
-		from sklearn.model_selection import KFold
-
-		kfold = KFold(n_Splits=k, shuffle=True)
-		cmap = plt.get_cmap('gnuplot')
-
-		k_ = 1
-		k_stats = dict()
-		for trainidx, testidx in kfold.split(data):
-
-			train, test = data[trainidx], data[testidx]
-			_, stats = self.learn_aspmn(train, test, k=k_)
-			k_stats[k] = stats
-			k_+=1
-
-		plt.close()
-		maxlen = max([len(k_stats[i+1]["ll"]) for i in range(k)])
-		total_ll = np.zeros(min([len(k_stats[i+1]["ll"]) for i in range(k)]))
-		originalll = [original_stats[dataset]["ll"]] * maxlen
-		plt.plot(originalll, linestyle="dotted", color ="blue", label="LearnSPN")
-		for i in range(k):
-			plt.plot(k_stats[i+1]["ll"], marker="o", color =cmap(i+1), label=(i+1))
-			total_ll += np.array(k_stats[i+1]["ll"][:len(total_ll)])
-		avg_ll = total_ll/k
-		plt.plot(avg_ll, marker="o", color ="black", label="Mean")
-		plt.title(f"{dataset} Log Likelihood")
-		plt.legend()
-		plt.savefig(f"{path}/{dataset}/ll.png", dpi=150)
-		plt.close()
-
-		maxlen = max([len(k_stats[i+1]["nodes"]) for i in range(k)])
-		total_n = np.zeros(min([len(k_stats[i+1]["nodes"]) for i in range(k)]))
-		originaln = [original_stats[dataset]["nodes"]] * maxlen
-		plt.plot(originaln, linestyle="dotted", color ="blue", label="LearnSPN")
-		for i in range(k):
-			plt.plot(k_stats[i+1]["nodes"], marker="o", color =cmap(i+1), label=(i+1))
-			total_n += np.array(k_stats[i+1]["nodes"][:len(total_n)])
-		avg_n = total_n/k
-		plt.plot(avg_n, marker="o", color ="black", label="Mean")
-		plt.title(f"{dataset} Nodes")
-		plt.legend()
-		plt.savefig(f"{path}/{dataset}/nodes.png", dpi=150)
-		plt.close()
-
-		maxlen = max([len(k_stats[i+1]["meu"]) for i in range(k)])
-		total_meu = np.zeros(min([len(k_stats[i+1]["meu"]) for i in range(k)]))
-		originalmeu = [original_stats[dataset]["meu"]] * maxlen
-		plt.plot(originalmeu, linestyle="dotted", color ="blue", label="LearnSPN")
-		for i in range(k):
-			plt.plot(k_stats[i+1]["meu"], marker="o", color =cmap(i+1), label=(i+1))
-			total_meu += np.array(k_stats[i+1]["meu"][:len(total_meu)])
-		avg_meu = total_meu/k
-		plt.plot(avg_meu, marker="o", color ="black", label="Mean")
-		plt.title(f"{dataset} MEU")
-		plt.legend()
-		plt.savefig(f"{path}/{dataset}/meu.png", dpi=150)
-		plt.close()
-
-		maxlen = max([len(k_stats[i+1]["reward"]) for i in range(k)])
-		total_r = np.zeros(min([len(k_stats[i+1]["reward"]) for i in range(k)]))
-		originalr = [original_stats[dataset]["reward"]] * maxlen
-		plt.plot(originalr, linestyle="dotted", color ="blue", label="LearnSPN")
-		for i in range(k):
-			plt.errorbar(np.arange(len(k_stats[i+1]["reward"])), k_stats[i+1]["reward"], yerr=k_stats[i+1]["deviation"], marker="o", color =cmap(i+1), label=(i+1))
-			total_r += np.array(k_stats[i+1]["reward"][:len(total_r)])
-		avg_r = total_r/k
-		plt.plot(avg_r, marker="o", color ="black", label="Mean")
-		plt.title(f"{dataset} Average Rewards")
-		plt.legend()
-		plt.savefig(f"{path}/{dataset}/reward.png", dpi=150)
-		plt.close()
-
-
-
-
+#Object to store SPMN parameters
 class SPMNParams:
 
 	def __init__(self, partial_order, decision_nodes, utility_nodes, feature_names, feature_labels, meta_types, util_to_bin):
