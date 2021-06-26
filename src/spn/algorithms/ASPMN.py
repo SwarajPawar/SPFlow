@@ -520,6 +520,7 @@ class Anytime_SPMN:
 			plt.close()
 			
 			plt.plot(meus, marker="o", label="Anytime")
+			plt.plot([optimal_meu[self.dataset]]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
 			plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dotted", color ="red", label="LearnSPMN")
 			plt.title(f"{self.dataset} MEU")
 			plt.legend()

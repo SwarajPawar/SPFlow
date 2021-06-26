@@ -120,8 +120,8 @@ class Anytime_SPMN:
 			logging.info(f'Encountered Decision Node: {decision_node}')
 
 			# cluster the data from remaining variables w.r.t values of decision node
-			#clusters_on_next_remaining_vars, dec_vals = anytime_split_on_decision_node(remaining_vars_data, self.d)
-			clusters_on_next_remaining_vars, dec_vals = split_on_decision_node(remaining_vars_data)
+			clusters_on_next_remaining_vars, dec_vals = anytime_split_on_decision_node(remaining_vars_data, self.d)
+			#clusters_on_next_remaining_vars, dec_vals = split_on_decision_node(remaining_vars_data)
 
 			decision_node_children_spns = []
 			index += 1
@@ -420,7 +420,8 @@ class Anytime_SPMN:
 		limit = 2 
 		n = int(self.vars**0.5)
 		#n= self.vars
-		step = 0 #(self.vars - (self.vars**0.5) + 1)/10
+		step = 0 
+		step = (self.vars - (self.vars**0.5) + 1)/10
 		d = 2
 
 		if k is not None:
@@ -465,7 +466,7 @@ class Anytime_SPMN:
 			
 			
 			#try:
-			'''
+			
 			total_ll = 0
 			trials1 = test.shape[0]
 			batch_size = int(trials1 / 10)
@@ -480,7 +481,7 @@ class Anytime_SPMN:
 				total_ll = sum(lls)
 				batch.append(total_ll/batch_size)
 				printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-			'''
+			
 			'''
 			for j, instance in enumerate(test):
 				test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
@@ -491,8 +492,8 @@ class Anytime_SPMN:
 				printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
 			'''
 
-			#avg_ll.append(np.mean(batch))
-			#ll_dev.append(np.std(batch))
+			avg_ll.append(np.mean(batch))
+			ll_dev.append(np.std(batch))
 			
 
 
@@ -503,8 +504,8 @@ class Anytime_SPMN:
 			plt.close()
 			
 			plt.plot(meus, marker="o", label="Anytime")
-			plt.plot([optimal_meu[self.dataset]]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
-			plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dashed", color ="red", label="LearnSPMN")
+			#plt.plot([optimal_meu[self.dataset]]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
+			#plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dashed", color ="red", label="LearnSPMN")
 			plt.title(f"{self.dataset} MEU")
 			plt.legend()
 			if k is None:
@@ -542,6 +543,7 @@ class Anytime_SPMN:
 				reward_dev[inter].append(np.std(batch))
 
 				plt.close()
+				'''
 				rand_reward = np.array([random_reward[self.dataset]["reward"]]*len(avg_rewards[inter]))
 				dev = np.array([random_reward[self.dataset]["dev"]]*len(avg_rewards[inter]))
 				plt.fill_between(np.arange(len(avg_rewards[inter])), rand_reward-dev, rand_reward+dev, alpha=0.1, color="lightgrey")
@@ -552,7 +554,7 @@ class Anytime_SPMN:
 				plt.fill_between(np.arange(len(avg_rewards[inter])), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
 				plt.plot([optimal_meu[self.dataset]]*len(avg_rewards[inter]), linewidth=3, color ="lime", label="Optimal MEU")
 				plt.plot(original_reward, linestyle="dashed", color ="red", label="LearnSPMN")
-
+				'''
 				plt.errorbar(np.arange(len(avg_rewards[inter])), avg_rewards[inter], yerr=reward_dev[inter], marker="o", label="Anytime")
 				plt.title(f"{self.dataset} Average Rewards")
 				plt.legend()
@@ -576,8 +578,8 @@ class Anytime_SPMN:
 			print("\n\n\n\n\n")
 			print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
 			print("#Nodes: ",nodes[-1])
-			#print("Log Likelihood: ",avg_ll[-1])
-			#print("Log Likelihood Deviation: ",ll_dev[-1])
+			print("Log Likelihood: ",avg_ll[-1])
+			print("Log Likelihood Deviation: ",ll_dev[-1])
 			print("MEU: ",meus[-1])
 			print("Average rewards: ",avg_rewards[-1][-1])
 			print("Deviation: ",reward_dev[-1][-1])
@@ -585,10 +587,10 @@ class Anytime_SPMN:
 			print(meus)
 			print("\n\n\n\n\n")
 			
-			'''
+			
 			plt.close()
 			# plot line 
-			plt.plot([original_stats[self.dataset]["ll"]]*len(avg_ll), linestyle="dashed", color ="red", label="LearnSPMN")
+			#plt.plot([original_stats[self.dataset]["ll"]]*len(avg_ll), linestyle="dashed", color ="red", label="LearnSPMN")
 			plt.errorbar(np.arange(len(avg_ll)), avg_ll, yerr=ll_dev, marker="o", label="Anytime")
 			plt.title(f"{self.dataset} Log Likelihood")
 			plt.legend()
@@ -608,11 +610,11 @@ class Anytime_SPMN:
 				plt.savefig(f"{self.plot_path}/meu1.png", dpi=100)
 			else:
 				plt.savefig(f"{self.plot_path}/{k}/meu1.png", dpi=100)
-			
+			'''
 			plt.close()
 
 			plt.plot(nodes, marker="o", label="Anytime")
-			plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dashed", color ="red", label="LearnSPMN")
+			#plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dashed", color ="red", label="LearnSPMN")
 			plt.title(f"{self.dataset} Nodes")
 			plt.legend()
 			if k is None:
@@ -664,8 +666,8 @@ class Anytime_SPMN:
 			limit += 1
 			d += 1
 			n = n+step
-			if step == 0:
-				step = 1
+			#if step == 0:
+			#	step = 1
 
 		'''
 		stats = {"ll" : avg_ll,
