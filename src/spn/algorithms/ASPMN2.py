@@ -120,7 +120,7 @@ class Anytime_SPMN:
 			logging.info(f'Encountered Decision Node: {decision_node}')
 
 			# cluster the data from remaining variables w.r.t values of decision node
-			clusters_on_next_remaining_vars, dec_vals = anytime_split_on_decision_node(remaining_vars_data, self.d)
+			clusters_on_next_remaining_vars, dec_vals = anytime_split_on_decision_node(remaining_vars_data, int(self.d))
 			#clusters_on_next_remaining_vars, dec_vals = split_on_decision_node(remaining_vars_data)
 
 			decision_node_children_spns = []
@@ -423,6 +423,8 @@ class Anytime_SPMN:
 		step = 0 
 		step = (self.vars - (self.vars**0.5) + 1)/10
 		d = 2
+		d_max = 4
+		d_step = (d_max - d + 1)/10
 
 		if k is not None:
 			if not pth.exists(f"{self.plot_path}/{k}"):
@@ -658,13 +660,13 @@ class Anytime_SPMN:
 				#pass
 			
 				
-			if n>self.vars:  #and round(np.std(past3), 3) <= 0.001:
+			if n>=self.vars and round(np.std(past3), 3) <= 0.001:
 				break
 
 
 			i += 1
 			limit += 1
-			d += 1
+			d += d_step
 			n = n+step
 			#if step == 0:
 			#	step = 1
