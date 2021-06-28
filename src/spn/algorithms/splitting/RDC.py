@@ -375,6 +375,9 @@ def get_split_cols_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=
 def get_split_cols_single_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None, n=0):
 	def split_cols_single_RDC_py(local_data, ds_context, scope, n=n):
 
+		if local_data.shape[0] == 1:
+			local_data = np.concatenate((local_data, local_data))
+		
 		#Value of n should not exceed totatl variables in the data
 		n = min(n, local_data.shape[1])
 		#Get first n variables
@@ -481,6 +484,9 @@ def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, no
 def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None, n=0):
 	def split_cols_distributed_RDC_py(local_data, ds_context, scope, n=n):
 		
+		if local_data.shape[0] == 1:
+			local_data = np.concatenate((local_data, local_data))
+		
 		#Value of n should not exceed totatl variables in the data
 		n = min(n, local_data.shape[1])
 		#Get first n variables
@@ -532,6 +538,9 @@ def get_split_cols_distributed_RDC_py(threshold=0.3, ohe=True, k=10, s=1 / 6, no
 
 def get_split_cols_distributed_RDC_py1(threshold=0.3, ohe=True, k=10, s=1 / 6, non_linearity=np.sin, n_jobs=-2, rand_gen=None, n=0):
 	def split_cols_distributed_RDC_py(local_data, ds_context, scope, rest_scope, n=n):
+		
+		if local_data.shape[0] == 1:
+			local_data = np.concatenate((local_data, local_data))
 		
 		#Value of n should not exceed totatl variables in the data
 		n = min(n, local_data.shape[1])
