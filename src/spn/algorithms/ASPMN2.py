@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 import math
+import pickle
 
 from spn.algorithms.TransformStructure import Prune
 
@@ -398,7 +399,7 @@ class Anytime_SPMN:
 		
 		
 		trials = 500000
-		interval = 50000
+		interval = 10000
 		batches = 25
 		interval_count = int(trials/interval)
 
@@ -426,13 +427,12 @@ class Anytime_SPMN:
 		d_max = 4
 		d_step = (d_max - d + 1)/10
 
-		if k is not None:
-			if not pth.exists(f"{self.plot_path}/{k}"):
-				try:
-					os.makedirs(f"{self.plot_path}/{k}")
-				except OSError:
-					print ("Creation of the directory %s failed" % f"{self.plot_path}/{k}")
-					sys.exit()
+		if not pth.exists(f"{self.plot_path}/models"):
+			try:
+				os.makedirs(f"{self.plot_path}/models")
+			except OSError:
+				print ("Creation of the directory failed")
+				sys.exit()
 
 		i = 0
 		while(True):
@@ -453,18 +453,14 @@ class Anytime_SPMN:
 			#spmn = Prune(spmn)
 			self.spmn = spmn
 
-
-			
-
-			
+			file = open(f"{self.plot_path}/models/spn_{i}.pkle",'wb')
+			pickle.dump(self.spmn, file)
+			file.close()
 
 			nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
 			
-			if k is None:
-				plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
-			else:
-				plot_spn(spmn, f'{self.plot_path}/{k}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
+			plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
 			
 			
 			#try:
