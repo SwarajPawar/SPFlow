@@ -31,5 +31,7 @@ def get_env(dataset, return_state=False):
 		return LungCancer_Staging()
 	elif dataset == "FrozenLake":
 		return FrozenLake(return_state)
+	else:
+		return None
 
 

@@ -358,63 +358,36 @@ class Anytime_SPMN:
             if done:
                 return policy
 
-	def learn_aspmn(self, train, test):
+	def learn_aspmn(self, train, test=None, get_stats = False, save_models=True):
 		"""
-		:param
-		:return: learned spmn
+		:param: train dataset
+		:return: learned ASPMNs
 		"""
 		
 		
-		#Statistics for the LearnSPMN algorithm
-		original_stats = {
-			'Export_Textiles': {"ll" : -1.0890750655173789, "meu" : 1722313.8158882717, 'nodes' : 38, 'reward':1721301.8260000004, 'dev':3861.061525772288},
-			'Test_Strep': {"ll" : -0.9130071749277912, "meu" : 54.9416526618876, 'nodes' : 130, 'reward':54.91352060400901, 'dev':0.013189836549851251},
-			'LungCancer_Staging': {"ll" : -1.1489156814245234, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.108005299999918, 'dev':0.011869627022775012},
-			'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.559788119992646, 'dev':0.06067708771159484},
-			'Computer_Diagnostician': {"ll" : -0.9011245432112749, "meu" : -208.351, 'nodes' : 56, 'reward':-210.15520000000004, 'dev':0.3810022440878799},
-			'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2759870.4, 'dev':6825.630813338794}
-		}
+		if save_models:
+			#Create output directory if it doesn't exist
+			if not pth.exists(f'{self.plot_path}/models'):
+				try:
+					os.makedirs(f'{self.plot_path}/models')
+				except OSError:
+					print ("Creation of the directory %s failed" % f'{self.plot_path}/models')
+					sys.exit()
 
-		#Optimal MEU values from the IDs
-		optimal_meu = {
-			'Export_Textiles' : 1721300,
-			'Computer_Diagnostician': -210.13,
-			'Powerplant_Airpollution': -2760000,
-			'HIV_Screening': 42.5597,
-			'Test_Strep': 54.9245,
-			'LungCancer_Staging': 3.12453
-		}
-
-		#Rewards by simulating random policy
-		random_reward = {
-			'Export_Textiles' : {'reward': 1300734.02, 'dev':7087.350616838437},
-			'Computer_Diagnostician': {'reward': -226.666, 'dev':0.37205611135956335},
-			'Powerplant_Airpollution': {'reward': -3032439.0, 'dev':7870.276615214995},
-			'HIV_Screening': {'reward': 42.3740002199867, 'dev':0.07524234474837802},
-			'Test_Strep': {'reward': 54.89614493400057, 'dev':0.012847272731391593},
-			'LungCancer_Staging': {'reward': 2.672070640000026, 'dev':0.007416967451081523},
-		}
-		
-
-		
-		#Initialize lists for storing statistics over iterations
-		avg_ll = list()
-		ll_dev = list()
-		meus = list()
-		nodes = list()
-		avg_rewards = list()
-		reward_dev = list()
-		past3 = list()
-
-		#Initialize domain environment
-		self.env = get_env(self.dataset)
         
         #Initial parameters
         limit = 2 
         n = int(self.vars**0.5)
-        #n= self.vars
-        step = 0 #(self.vars - (self.vars**0.5) + 1)/10
+        step = 0 if self.vars < 10 else (self.vars - (self.vars**0.5) + 1)/10
         d = 2
+
+        #Initialize lists for storing statistics over iterations
+		all_avg_ll = list()
+		all_ll_dev = list()
+		all_meus = list()
+		all_nodes = list()
+		all_avg_rewards = list()
+		all_reward_dev = list()
 
 
         #Start Anytime iterations
@@ -439,149 +412,55 @@ class Anytime_SPMN:
 			#spmn = Prune(spmn)
 			self.spmn = spmn
 
+			stats = None
 
-			#Get nodes in the network
-			nodes.append(get_structure_stats_dict(spmn)["nodes"])
 
-			#Plot the SPMN
-			plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
-			
-			#Initilize parameters for Log-likelihood evaluation
-			total_ll = 0
-            trials1 = test.shape[0]
-            batch_size = int(trials1 / 10)
-            batch = list()
-            pool = multiprocessing.Pool()
+			if get_stats:
+				#Store the stats in a dictionary
+				avg_ll, ll_dev = self.evaluate_loglikelihood(test)
+				meu_ = self.evaluate_meu()
+				nodes = self.evaluate_nodes()
+				avg_rewards, reward_dev = self.evaluate_rewards()
 
+				all_avg_ll.append(avg_ll)
+				all_ll_dev.append(ll_dev)
+				all_meus.append(meu_)
+				all_nodes.append(nodes)
+				all_avg_rewards.append(avg_rewards)
+				all_reward_dev.append(reward_dev)
+
+		        stats = {"ll" : all_avg_ll,
+		                "ll_dev": all_ll_dev,
+		                "meu" : all_meus,
+		                "nodes" : all_nodes,
+		                "reward" : all_avg_rewards,
+		                "reward_dev" : all_reward_dev
+		                }
             
-            #Get average log-likelihood for 10 batches
-            for b in range(10):
-                test_slice = test[b*batch_size:(b+1)*batch_size]
-                lls = pool.map(self.get_loglikelihood, test_slice)
-                total_ll = sum(lls)
-                batch.append(total_ll/batch_size)
-                printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-            
-	        #Save average ll and deviation
-            avg_ll.append(np.mean(batch))
-            ll_dev.append(np.std(batch))
+	            #Print the stats
+				print("\n\n\n\n\n")
+				print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
+				print("#Nodes: ",nodes)
+				print("Log Likelihood: ",avg_ll)
+				print("Log Likelihood Deviation: ",ll_dev)
+				print("MEU: ",meu_)
+				print("Average rewards: ",avg_rewards)
+				print("Deviation: ",reward_dev)
+				print("\n\n\n\n\n")
+
+				#Save the stats in a file
+				f = open(f"{self.plot_path}/stats.txt", "w")
+
+				f.write(f"\n{self.dataset}")
+				f.write(f"\n\tLog Likelihood : {avg_ll}")
+				f.write(f"\n\tLog Likelihood Deviation: {ll_dev}")
+				f.write(f"\n\tMEU : {meus}")
+				f.write(f"\n\tNodes : {nodes}")
+				f.write(f"\n\tAverage Rewards : {avg_rewards}")
+				f.write(f"\n\tRewards Deviation : {reward_dev}")
+				f.close()
 			
-
-            #Computethe MEU of the Network
-			test_data = [[np.nan]*len(self.params.feature_names)]
-			m = meu(spmn, test_data)
-			meus.append(m[0])
-
-
-			#Initialize parameters for computing rewards
-			trials = 500000
-			batches = 25
-			total_reward = 0
-            reward_batch = list()
-            batch_size = int(trials / batches)
-            
-            pool = multiprocessing.Pool()
-            #Get the rewards parallely for each batch
-            for y in range(batches):
-                ids = [None for x in range(batch_size)]
-                rewards = pool.map(self.get_reward, ids)
-                reward_batch.append(sum(rewards) / batch_size)
-                printProgressBar(y+1, batches, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
-
-            #Store the rewards    
-            avg_rewards.append(np.mean(reward_batch))
-            reward_dev.append(np.std(reward_batch))
-
-            
-            #Print the stats
-			print("\n\n\n\n\n")
-			print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
-			print("#Nodes: ",nodes[-1])
-			print("Log Likelihood: ",avg_ll[-1])
-			print("Log Likelihood Deviation: ",ll_dev[-1])
-			print("MEU: ",meus[-1])
-			print("Average rewards: ",avg_rewards[-1])
-			print("Deviation: ",reward_dev[-1])
-			print(nodes)
-			print(meus)
-			print("\n\n\n\n\n")
 			
-			# plot the statistics
-			plt.close()
-			
-			plt.plot([original_stats[self.dataset]["ll"]]*len(avg_ll), linestyle="dotted", color ="red", label="LearnSPMN")
-			plt.errorbar(np.arange(len(avg_ll)), avg_ll, yerr=ll_dev, marker="o", label="Anytime")
-			plt.title(f"{self.dataset} Log Likelihood")
-			plt.legend()
-			if k is None:
-				plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
-			else:
-				plt.savefig(f"{self.plot_path}/{k}/ll.png", dpi=100)
-			plt.close()
-			
-			plt.plot(meus, marker="o", label="Anytime")
-			plt.plot([optimal_meu[self.dataset]]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
-			plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dotted", color ="red", label="LearnSPMN")
-			plt.title(f"{self.dataset} MEU")
-			plt.legend()
-			if k is None:
-				plt.savefig(f"{self.plot_path}/meu.png", dpi=100)
-			else:
-				plt.savefig(f"{self.plot_path}/{k}/meu.png", dpi=100)
-			plt.close()
-
-			plt.plot(nodes, marker="o", label="Anytime")
-			plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dotted", color ="red", label="LearnSPMN")
-			plt.title(f"{self.dataset} Nodes")
-			plt.legend()
-			if k is None:
-				plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
-			else:
-				plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
-			plt.close()
-
-			
-            rand_reward = np.array([random_reward[self.dataset]["reward"]]*len(avg_rewards))
-            dev = np.array([random_reward[self.dataset]["dev"]]*len(avg_rewards))
-            plt.fill_between(np.arange(len(avg_rewards)), rand_reward-dev, rand_reward+dev, alpha=0.1, color="lightgrey")
-            plt.plot(rand_reward, linestyle="dashed", color ="grey", label="Random Policy")
-
-            original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards))
-            dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards))
-            plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
-            plt.plot([optimal_meu[self.dataset]]*len(avg_rewards), linewidth=3, color ="lime", label="Optimal MEU")
-            plt.plot(original_reward, linestyle="dashed", color ="red", label="LearnSPMN")
-
-            plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
-            plt.title(f"{self.dataset} Average Rewards")
-            plt.legend()
-            plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
-            plt.close()
-
-
-			
-
-			#Save the stats in a file
-			f = open(f"{self.plot_path}/stats.txt", "w") if k is None else open(f"{self.plot_path}/{k}/stats.txt", "w")
-
-			f.write(f"\n{self.dataset}")
-			f.write(f"\n\tLog Likelihood : {avg_ll}")
-			f.write(f"\n\tLog Likelihood Deviation: {ll_dev}")
-			f.write(f"\n\tMEU : {meus}")
-			f.write(f"\n\tNodes : {nodes}")
-			f.write(f"\n\tAverage Rewards : {avg_rewards}")
-			f.write(f"\n\tRewards Deviation : {reward_dev}")
-			f.close()
-
-			
-			#Store the stats in a dictionary
-	        stats = {"ll" : avg_ll,
-	                "ll_dev": ll_dev,
-	                "meu" : meus,
-	                "nodes" : nodes,
-	                "reward" : avg_rewards,
-	                "reward_dev" : reward_dev
-	                }
 	        
 	        #Return the network and stats for the current iteration
 	        yield self.spmn, stats
@@ -596,12 +475,75 @@ class Anytime_SPMN:
             limit += 1
             d += 1
             n = n+step
-            if step == 0:
+            if self.vars < 10:
                 step = 1
 
         
 
+    def evaluate_nodes(self, spmn=self.spmn):
+    	#Get nodes in the network
+		return get_structure_stats_dict(spmn)["nodes"]
+		
+	def evaluate_loglikelihood(self, test, spmn=self.spmn, batches=10):
 
+		if not test:
+			return None, None
+
+		#Initilize parameters for Log-likelihood evaluation
+		total_ll = 0
+        trials1 = test.shape[0]
+        batch_size = int(trials1 / batches)
+        batch = list()
+        pool = multiprocessing.Pool()
+
+        
+        #Get average log-likelihood for the batches
+        for b in range(batches):
+            test_slice = test[b*batch_size:(b+1)*batch_size]
+            lls = pool.map(self.get_loglikelihood, test_slice)
+            total_ll = sum(lls)
+            batch.append(total_ll/batch_size)
+            printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
+        
+        #Get average ll and deviation
+        avg_ll = np.mean(batch)
+        ll_dev = np.std(batch)
+
+        return avg_ll, ll_dev
+		
+
+    def evaluate_meu(self, spmn=self.spmn):
+        #Compute the MEU of the Network
+		test_data = [[np.nan]*len(self.params.feature_names)]
+		m = meu(spmn, test_data) 
+		return m[0]
+
+
+	def evaluate_rewards(self, spmn=self.spmn, batch_size = 20000, batches = 25):
+
+		#Initialize domain environment
+		self.env = get_env(self.dataset)
+
+		if not self.env:
+			return None, None
+
+		#Initialize parameters for computing rewards
+		total_reward = 0
+        reward_batch = list()
+        
+        pool = multiprocessing.Pool()
+        #Get the rewards parallely for each batch
+        for y in range(batches):
+            ids = [None for x in range(batch_size)]
+            rewards = pool.map(self.get_reward, ids)
+            reward_batch.append(sum(rewards) / batch_size)
+            printProgressBar(y+1, batches, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+
+        #get the mean and std dev of the rewards    
+        avg_rewards = np.mean(reward_batch)
+        reward_dev = np.std(reward_batch)
+
+        return avg_rewards, reward_dev
 
 #Object to store SPMN parameters
 class SPMNParams:

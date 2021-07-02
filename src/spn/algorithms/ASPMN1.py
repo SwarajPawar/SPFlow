@@ -20,6 +20,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
+import pickle
 
 from spn.algorithms.TransformStructure import Prune
 
