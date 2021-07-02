@@ -92,7 +92,7 @@ data = []
 for i in range(int(instances/batch)):
 	
 	ids = [(i*batch)+j+1 for j in range(batch)]
-	if i < 40:
+	if i < 6:
 		datablock = datablock = pool.map(get_instance1, ids)
 		data += datablock
 	else:
