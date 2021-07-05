@@ -50,11 +50,6 @@ for dataset in datasets:
 	feature_labels = get_feature_labels(dataset)
 	meta_types = [MetaType.DISCRETE]*(len(feature_names)-1)+[MetaType.UTILITY]
 
-	#Get Baseline stats
-	original_stats = get_original_stats(dataset)
-	optimal_meu = get_optimal_meu(dataset)
-	random_policy_reward = get_random_policy_reward(dataset)
-
 	#Get test and train data
 	df = pd.read_csv(f"spn/data/{dataset}/{dataset}_new.tsv", sep='\t')
 	df, column_titles = align_data(df, partial_order)
