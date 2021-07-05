@@ -122,8 +122,8 @@ class Anytime_SPMN:
 			logging.info(f'Encountered Decision Node: {decision_node}')
 
 			# cluster the data from remaining variables w.r.t values of decision node
-			#clusters_on_next_remaining_vars, dec_vals = anytime_split_on_decision_node(remaining_vars_data, self.d)
-			clusters_on_next_remaining_vars, dec_vals = split_on_decision_node(remaining_vars_data)
+			clusters_on_next_remaining_vars, dec_vals = anytime_split_on_decision_node(remaining_vars_data, self.d)
+			#clusters_on_next_remaining_vars, dec_vals = split_on_decision_node(remaining_vars_data)
 
 			decision_node_children_spns = []
 			index += 1
@@ -330,35 +330,35 @@ class Anytime_SPMN:
 
 	#Return log-likelihood for the given test instance
 	def get_loglikelihood(self, instance):
-        test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
-        return log_likelihood(self.spmn, test_data)[0][0]
+		test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
+		return log_likelihood(self.spmn, test_data)[0][0]
 
 
-    # Get reward by simulating policy in the environment
-    def get_reward(self, id):
+	# Get reward by simulating policy in the environment
+	def get_reward(self, id):
 
-        state = self.env.reset()
-        while(True):
-            output = best_next_decision(self.spmn, state)
-            action = output[0][0]
-            state, reward, done = self.env.step(action)
-            if done:
-                return reward
+		state = self.env.reset()
+		while(True):
+			output = best_next_decision(self.spmn, state)
+			action = output[0][0]
+			state, reward, done = self.env.step(action)
+			if done:
+				return reward
 
-    #Get policy by running spmn in environment
-    def get_policy(self, ids):
+	#Get policy by running spmn in environment
+	def get_policy(self, ids):
 
-        policy = ""
-        state = self.env.reset()
-        while(True):
-            output = best_next_decision(self.spmn, state)
-            action = output[0][0]
-            policy += f"{action}  "
-            state, reward, done = self.env.step(action)
-            if done:
-                return policy
+		policy = ""
+		state = self.env.reset()
+		while(True):
+			output = best_next_decision(self.spmn, state)
+			action = output[0][0]
+			policy += f"{action}  "
+			state, reward, done = self.env.step(action)
+			if done:
+				return policy
 
-	def learn_aspmn(self, train, test=None, get_stats = False, save_models=True):
+	def learn_aspmn(self, train, test=None, get_stats = False, save_models=True, evaluate_parallel=False):
 		"""
 		:param: train dataset
 		:return: learned ASPMNs
@@ -374,14 +374,16 @@ class Anytime_SPMN:
 					print ("Creation of the directory %s failed" % f'{self.plot_path}/models')
 					sys.exit()
 
-        
-        #Initial parameters
-        limit = 2 
-        n = int(self.vars**0.5)
-        step = 0 if self.vars < 10 else (self.vars - (self.vars**0.5) + 1)/10
-        d = 2
+		
+		#Initial parameters
+		limit = 2 
+		n = int(self.vars**0.5)
+		step = 0 if self.vars < 10 else (self.vars - (self.vars**0.5) + 1)/10
+		d = 2
+		d_max = 4
+		d_step = (d_max - d + 1)/10
 
-        #Initialize lists for storing statistics over iterations
+		#Initialize lists for storing statistics over iterations
 		all_avg_ll = list()
 		all_ll_dev = list()
 		all_meus = list()
@@ -390,7 +392,7 @@ class Anytime_SPMN:
 		all_reward_dev = list()
 
 
-        #Start Anytime iterations
+		#Start Anytime iterations
 		i = 0
 		while(True):
 
@@ -417,10 +419,15 @@ class Anytime_SPMN:
 
 			if get_stats:
 				#Store the stats in a dictionary
-				avg_ll, ll_dev = self.evaluate_loglikelihood(test)
+				
 				meu_ = self.evaluate_meu()
 				nodes = self.evaluate_nodes()
-				avg_rewards, reward_dev = self.evaluate_rewards()
+				if evaluate_parallel:
+					avg_ll, ll_dev = self.evaluate_loglikelihood_parallel(test)
+					avg_rewards, reward_dev = self.evaluate_rewards_parallel()
+				else:
+					avg_ll, ll_dev = self.evaluate_loglikelihood_sequential(test)
+					avg_rewards, reward_dev = self.evaluate_rewards_sequential()
 
 				all_avg_ll.append(avg_ll)
 				all_ll_dev.append(ll_dev)
@@ -429,15 +436,15 @@ class Anytime_SPMN:
 				all_avg_rewards.append(avg_rewards)
 				all_reward_dev.append(reward_dev)
 
-		        stats = {"ll" : all_avg_ll,
-		                "ll_dev": all_ll_dev,
-		                "meu" : all_meus,
-		                "nodes" : all_nodes,
-		                "reward" : all_avg_rewards,
-		                "reward_dev" : all_reward_dev
-		                }
-            
-	            #Print the stats
+				stats = {"ll" : all_avg_ll,
+						"ll_dev": all_ll_dev,
+						"meu" : all_meus,
+						"nodes" : all_nodes,
+						"reward" : all_avg_rewards,
+						"reward_dev" : all_reward_dev
+						}
+			
+				#Print the stats
 				print("\n\n\n\n\n")
 				print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
 				print("#Nodes: ",nodes)
@@ -461,65 +468,93 @@ class Anytime_SPMN:
 				f.close()
 			
 			
-	        
-	        #Return the network and stats for the current iteration
-	        yield self.spmn, stats
+			
+			#Return the network and stats for the current iteration
+			yield self.spmn, stats
 			
 			
 			#Termination criterion
 			if n>self.vars:  #and round(np.std(past3), 3) <= 0.001:
-                break
+				break
 
-            #Update the parameter values
-            i += 1
-            limit += 1
-            d += 1
-            n = n+step
-            if self.vars < 10:
-                step = 1
+			#Update the parameter values
+			i += 1
+			limit += 1
+			d += d_step
+			n = n+step
+			if self.vars < 10:
+				step = 1
 
-        
+		
 
-    def evaluate_nodes(self, spmn=self.spmn):
-    	#Get nodes in the network
+	def evaluate_nodes(self, spmn=self.spmn):
+		#Get nodes in the network
 		return get_structure_stats_dict(spmn)["nodes"]
 		
-	def evaluate_loglikelihood(self, test, spmn=self.spmn, batches=10):
+	def evaluate_loglikelihood_parallel(self, test, spmn=self.spmn, batches=10):
 
 		if not test:
 			return None, None
 
 		#Initilize parameters for Log-likelihood evaluation
 		total_ll = 0
-        trials1 = test.shape[0]
-        batch_size = int(trials1 / batches)
-        batch = list()
-        pool = multiprocessing.Pool()
+		trials1 = test.shape[0]
+		batch_size = int(trials1 / batches)
+		batch = list()
+		pool = multiprocessing.Pool()
 
-        
-        #Get average log-likelihood for the batches
-        for b in range(batches):
-            test_slice = test[b*batch_size:(b+1)*batch_size]
-            lls = pool.map(self.get_loglikelihood, test_slice)
-            total_ll = sum(lls)
-            batch.append(total_ll/batch_size)
-            printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-        
-        #Get average ll and deviation
-        avg_ll = np.mean(batch)
-        ll_dev = np.std(batch)
+		
+		#Get average log-likelihood for the batches
+		for b in range(batches):
+			test_slice = test[b*batch_size:(b+1)*batch_size]
+			lls = pool.map(self.get_loglikelihood, test_slice)
+			total_ll = sum(lls)
+			batch.append(total_ll/batch_size)
+			printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
+		
+		#Get average ll and deviation
+		avg_ll = np.mean(batch)
+		ll_dev = np.std(batch)
 
-        return avg_ll, ll_dev
+		return avg_ll, ll_dev
+
+	def evaluate_loglikelihood_sequential(self, test, spmn=self.spmn, batches=10):
+
+		if not test:
+			return None, None
+
+		#Initilize parameters for Log-likelihood evaluation
+		total_ll = 0
+		trials1 = test.shape[0]
+		batch_size = int(trials1 / batches)
+		batch = list()
+
+		
+		#Get average log-likelihood for the batches
+		for b in range(batches):
+			test_slice = test[b*batch_size:(b+1)*batch_size]
+			lls = list()
+			for z, instance in enumerate(test_slice):
+				lls.append(self.get_loglikelihood(instance))
+				printProgressBar(b*batch_size + z+1, batches*batch_size, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
+			total_ll = sum(lls)
+			batch.append(total_ll/batch_size)
+			
+		#Get average ll and deviation
+		avg_ll = np.mean(batch)
+		ll_dev = np.std(batch)
+
+		return avg_ll, ll_dev
 		
 
-    def evaluate_meu(self, spmn=self.spmn):
-        #Compute the MEU of the Network
+	def evaluate_meu(self, spmn=self.spmn):
+		#Compute the MEU of the Network
 		test_data = [[np.nan]*len(self.params.feature_names)]
 		m = meu(spmn, test_data) 
 		return m[0]
 
 
-	def evaluate_rewards(self, spmn=self.spmn, batch_size = 20000, batches = 25):
+	def evaluate_rewards_parallel(self, spmn=self.spmn, batch_size = 20000, batches = 25):
 
 		#Initialize domain environment
 		self.env = get_env(self.dataset)
@@ -529,21 +564,48 @@ class Anytime_SPMN:
 
 		#Initialize parameters for computing rewards
 		total_reward = 0
-        reward_batch = list()
-        
-        pool = multiprocessing.Pool()
-        #Get the rewards parallely for each batch
-        for y in range(batches):
-            ids = [None for x in range(batch_size)]
-            rewards = pool.map(self.get_reward, ids)
-            reward_batch.append(sum(rewards) / batch_size)
-            printProgressBar(y+1, batches, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+		reward_batch = list()
+		
+		pool = multiprocessing.Pool()
+		#Get the rewards parallely for each batch
+		for y in range(batches):
+			ids = [None for x in range(batch_size)]
+			rewards = pool.map(self.get_reward, ids)
+			reward_batch.append(sum(rewards) / batch_size)
+			printProgressBar(y+1, batches, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
 
-        #get the mean and std dev of the rewards    
-        avg_rewards = np.mean(reward_batch)
-        reward_dev = np.std(reward_batch)
+		#get the mean and std dev of the rewards    
+		avg_rewards = np.mean(reward_batch)
+		reward_dev = np.std(reward_batch)
 
-        return avg_rewards, reward_dev
+		return avg_rewards, reward_dev
+
+	def evaluate_rewards_sequential(self, spmn=self.spmn, batch_size = 20000, batches = 25):
+
+		#Initialize domain environment
+		self.env = get_env(self.dataset)
+
+		if not self.env:
+			return None, None
+
+		#Initialize parameters for computing rewards
+		total_reward = 0
+		reward_batch = list()
+
+		#Get the rewards parallely for each batch
+		for y in range(batches):
+			rewards = list()
+			for z in range(batch_size):
+				rewards.append(self.get_reward(z))
+				printProgressBar(y*batch_size + z+1, batches*batch_size, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+			reward_batch.append(sum(rewards) / batch_size)
+			
+
+		#get the mean and std dev of the rewards    
+		avg_rewards = np.mean(reward_batch)
+		reward_dev = np.std(reward_batch)
+
+		return avg_rewards, reward_dev
 
 #Object to store SPMN parameters
 class SPMNParams:

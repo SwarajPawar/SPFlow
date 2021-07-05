@@ -11,7 +11,6 @@ from spn.io.Graphics import plot_spn
 from spn.io.ProgressBar import printProgressBar
 from spn.data.simulator import get_env
 from spn.algorithms.MEU import best_next_decision
-import multiprocessing
 import logging
 import numpy as np
 import matplotlib.pyplot as plt
@@ -22,316 +21,320 @@ import math
 from spn.algorithms.TransformStructure import Prune
 
 
+# Anytime SPMN class
 class Anytime_SPMN:
 
-    def __init__(self, dataset, output_path, partial_order, decision_nodes, utility_node, feature_names, feature_labels,
-            meta_types, cluster_by_curr_information_set=False, util_to_bin=False):
+	def __init__(self, dataset, output_path, partial_order, decision_nodes, utility_node, feature_names, feature_labels,
+			meta_types, cluster_by_curr_information_set=False, util_to_bin=False):
+
+		#Save the parameters
+		self.dataset = dataset
+		self.params = SPMNParams(
+				partial_order,
+				decision_nodes,
+				utility_node,
+				feature_names,
+				feature_labels,
+				meta_types,
+				util_to_bin
+			)
+		self.op = 'Any'
+		self.cluster_by_curr_information_set = cluster_by_curr_information_set
+		self.spmn = None
+
+		self.vars = len(feature_labels)
+
+		#Create output directory if it doesn't exist
+		self.plot_path = f"{output_path}/{dataset}"
+		if not pth.exists(self.plot_path):
+			try:
+				os.makedirs(self.plot_path)
+			except OSError:
+				print ("Creation of the directory %s failed" % self.plot_path)
+				sys.exit()
+
+
+	#Get and set operations
+	def set_next_operation(self, next_op):
+		self.op = next_op
+
+	def get_curr_operation(self):
+		return self.op
 
-        self.dataset = dataset
-        self.params = SPMNParams(
-                partial_order,
-                decision_nodes,
-                utility_node,
-                feature_names,
-                feature_labels,
-                meta_types,
-                util_to_bin
-            )
-        self.op = 'Any'
-        self.cluster_by_curr_information_set = cluster_by_curr_information_set
-        self.spmn = None
+	#Function to learn the SPMN
+	def __learn_spmn_structure(self, remaining_vars_data, remaining_vars_scope,
+							   curr_information_set_scope, index):
 
-        self.vars = len(feature_labels)
+		logging.info(f'start of new recursion in __learn_spmn_structure method of SPMN')
+		logging.debug(f'remaining_vars_scope: {remaining_vars_scope}')
+		logging.debug(f'curr_information_set_scope: {curr_information_set_scope}')
 
-        self.plot_path = f"{output_path}/{dataset}"
+		# rest set is remaining variables excluding the variables in current information set
+		rest_set_scope = [var_scope for var_scope in remaining_vars_scope if
+						  var_scope not in curr_information_set_scope]
+		logging.debug(f'rest_set_scope: {rest_set_scope}')
 
+		scope_index = sum([len(x) for x in self.params.partial_order[:index]])
+		next_scope_index = sum([len(x) for x in self.params.partial_order[:index + 1]])
 
-        if not pth.exists(self.plot_path):
-            try:
-                os.makedirs(self.plot_path)
-            except OSError:
-                print ("Creation of the directory %s failed" % self.plot_path)
-                sys.exit()
+		if remaining_vars_scope == curr_information_set_scope:
+			# this is last information set in partial order. Base case of recursion
 
+			# test if current information set is a decision node
+			if self.params.partial_order[index][0] in self.params.decision_nodes:
+				raise Exception(f'last information set of partial order either contains random '
+								f'and utility variables or just a utility variable. '
+								f'This contains decision variable: {self.params.partial_order[index][0]}')
 
-    def set_next_operation(self, next_op):
-        self.op = next_op
+			else:
+				# contains just the random and utility variables
 
-    def get_curr_operation(self):
-        return self.op
+				logging.info(f'at last information set of this recursive call: {curr_information_set_scope}')
+				ds_context_last_information_set = get_ds_context(remaining_vars_data,
+																 remaining_vars_scope, self.params)
 
-    def __learn_spmn_structure(self, remaining_vars_data, remaining_vars_scope,
-                               curr_information_set_scope, index):
+				if self.params.util_to_bin:
 
-        logging.info(f'start of new recursion in __learn_spmn_structure method of SPMN')
-        logging.debug(f'remaining_vars_scope: {remaining_vars_scope}')
-        logging.debug(f'curr_information_set_scope: {curr_information_set_scope}')
+					last_information_set_spn = learn_parametric_aspmn(remaining_vars_data,
+																ds_context_last_information_set,
+																n=self.n,
+																k_limit=self.limit,
+																min_instances_slice=20,
+																initial_scope=remaining_vars_scope)
 
-        # rest set is remaining variables excluding the variables in current information set
-        rest_set_scope = [var_scope for var_scope in remaining_vars_scope if
-                          var_scope not in curr_information_set_scope]
-        logging.debug(f'rest_set_scope: {rest_set_scope}')
+				else:
 
-        scope_index = sum([len(x) for x in self.params.partial_order[:index]])
-        next_scope_index = sum([len(x) for x in self.params.partial_order[:index + 1]])
+					last_information_set_spn = learn_mspn_for_aspmn(remaining_vars_data,
+																   ds_context_last_information_set,
+																   n=self.n,
+																   k_limit=self.limit,
+																   min_instances_slice=20,
+																   initial_scope=remaining_vars_scope)
 
-        if remaining_vars_scope == curr_information_set_scope:
-            # this is last information set in partial order. Base case of recursion
+			logging.info(f'created spn at last information set')
+			return last_information_set_spn
 
-            # test if current information set is a decision node
-            if self.params.partial_order[index][0] in self.params.decision_nodes:
-                raise Exception(f'last information set of partial order either contains random '
-                                f'and utility variables or just a utility variable. '
-                                f'This contains decision variable: {self.params.partial_order[index][0]}')
+		# test for decision node. test if current information set is a decision node
+		elif self.params.partial_order[index][0] in self.params.decision_nodes:
 
-            else:
-                # contains just the random and utility variables
+			decision_node = self.params.partial_order[index][0]
 
-                logging.info(f'at last information set of this recursive call: {curr_information_set_scope}')
-                ds_context_last_information_set = get_ds_context(remaining_vars_data,
-                                                                 remaining_vars_scope, self.params)
+			logging.info(f'Encountered Decision Node: {decision_node}')
 
-                if self.params.util_to_bin:
+			# cluster the data from remaining variables w.r.t values of decision node
+			#clusters_on_next_remaining_vars, dec_vals = anytime_split_on_decision_node(remaining_vars_data, self.d)
+			clusters_on_next_remaining_vars, dec_vals = split_on_decision_node(remaining_vars_data)
 
-                    last_information_set_spn = learn_parametric_aspmn(remaining_vars_data,
-                                                                ds_context_last_information_set,
-                                                                n=self.n,
-                                                                k_limit=self.limit,
-                                                                min_instances_slice=20,
-                                                                initial_scope=remaining_vars_scope)
+			decision_node_children_spns = []
+			index += 1
 
-                else:
+			next_information_set_scope = np.array(range(next_scope_index, next_scope_index +
+														len(self.params.partial_order[index]))).tolist()
 
-                    last_information_set_spn = learn_mspn_for_aspmn(remaining_vars_data,
-                                                                   ds_context_last_information_set,
-                                                                   n=self.n,
-                                                                   k_limit=self.limit,
-                                                                   min_instances_slice=20,
-                                                                   initial_scope=remaining_vars_scope)
+			next_remaining_vars_scope = rest_set_scope
+			self.set_next_operation('Any')
 
-            logging.info(f'created spn at last information set')
-            return last_information_set_spn
+			logging.info(f'split clusters based on decision node values')
+			for cluster_on_next_remaining_vars in clusters_on_next_remaining_vars:
 
-        # test for decision node. test if current information set is a decision node
-        elif self.params.partial_order[index][0] in self.params.decision_nodes:
+				decision_node_children_spns.append(self.__learn_spmn_structure(cluster_on_next_remaining_vars,
+																			   next_remaining_vars_scope,
+																			   next_information_set_scope, index
+																			   ))
 
-            decision_node = self.params.partial_order[index][0]
+			decision_node_spn_branch = Max(dec_idx=scope_index, dec_values=dec_vals,
+										   children=decision_node_children_spns, feature_name=decision_node)
 
-            logging.info(f'Encountered Decision Node: {decision_node}')
+			assign_ids(decision_node_spn_branch)
+			rebuild_scopes_bottom_up(decision_node_spn_branch)
+			logging.info(f'created decision node')
+			return decision_node_spn_branch
 
-            # cluster the data from remaining variables w.r.t values of decision node
-            #clusters_on_next_remaining_vars, dec_vals = anytime_split_on_decision_node(remaining_vars_data, self.d)
-            clusters_on_next_remaining_vars, dec_vals = split_on_decision_node(remaining_vars_data)
+		# testing for independence
+		else:
 
-            decision_node_children_spns = []
-            index += 1
+			curr_op = self.get_curr_operation()
+			logging.debug(f'curr_op at prod node (independence test): {curr_op}')
 
-            next_information_set_scope = np.array(range(next_scope_index, next_scope_index +
-                                                        len(self.params.partial_order[index]))).tolist()
+			if curr_op != 'Sum':    # fails if correlated variable set found in previous recursive call.
+									# Without this condition code keeps looping at this stage
 
-            next_remaining_vars_scope = rest_set_scope
-            self.set_next_operation('Any')
+				ds_context = get_ds_context(remaining_vars_data, remaining_vars_scope, self.params)
 
-            logging.info(f'split clusters based on decision node values')
-            for cluster_on_next_remaining_vars in clusters_on_next_remaining_vars:
+				#split_cols = get_split_cols_single_RDC_py(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
+				split_cols = get_split_cols_distributed_RDC_py1(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
+				data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope, rest_set_scope)
+				#split_cols = get_split_cols_RDC_py()
+				#data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope)
 
-                decision_node_children_spns.append(self.__learn_spmn_structure(cluster_on_next_remaining_vars,
-                                                                               next_remaining_vars_scope,
-                                                                               next_information_set_scope, index
-                                                                               ))
+				logging.debug(f'{len(data_slices_prod)} slices found at data_slices_prod: ')
 
-            decision_node_spn_branch = Max(dec_idx=scope_index, dec_values=dec_vals,
-                                           children=decision_node_children_spns, feature_name=decision_node)
+				prod_children = []
+				next_remaining_vars_scope = []
+				independent_vars_scope = []
 
-            assign_ids(decision_node_spn_branch)
-            rebuild_scopes_bottom_up(decision_node_spn_branch)
-            logging.info(f'created decision node')
-            return decision_node_spn_branch
+				'''
+				print('\n\nProduct:')
+				for cluster, scope, weight in data_slices_prod:
+					print(scope)
+				'''
 
-        # testing for independence
-        else:
+				for correlated_var_set_cluster, correlated_var_set_scope, weight in data_slices_prod:
 
-            curr_op = self.get_curr_operation()
-            logging.debug(f'curr_op at prod node (independence test): {curr_op}')
+					if any(var_scope in correlated_var_set_scope for var_scope in rest_set_scope):
 
-            if curr_op != 'Sum':    # fails if correlated variable set found in previous recursive call.
-                                    # Without this condition code keeps looping at this stage
+						next_remaining_vars_scope.extend(correlated_var_set_scope)
 
-                ds_context = get_ds_context(remaining_vars_data, remaining_vars_scope, self.params)
+					else:
+						# this variable set of current information set is
+						# not correlated to any variable in the rest set
 
-                #split_cols = get_split_cols_single_RDC_py(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
-                split_cols = get_split_cols_distributed_RDC_py1(rand_gen=None, ohe=False, n_jobs=-1, n=round(self.n))
-                data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope, rest_set_scope)
-                #split_cols = get_split_cols_RDC_py()
-                #data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope)
+						logging.info(f'independent variable set found: {correlated_var_set_scope}')
 
-                logging.debug(f'{len(data_slices_prod)} slices found at data_slices_prod: ')
+						ds_context_prod = get_ds_context(correlated_var_set_cluster,
+														 correlated_var_set_scope, self.params)
 
-                prod_children = []
-                next_remaining_vars_scope = []
-                independent_vars_scope = []
+						if self.params.util_to_bin:
 
-                '''
-                print('\n\nProduct:')
-                for cluster, scope, weight in data_slices_prod:
-                    print(scope)
-                '''
+							independent_var_set_prod_child = learn_parametric_aspmn(correlated_var_set_cluster,
+																			  ds_context_prod,
+																			  n=self.n,
+																			  k_limit=self.limit,
+																			  min_instances_slice=20,
+																			  initial_scope=correlated_var_set_scope)
 
-                for correlated_var_set_cluster, correlated_var_set_scope, weight in data_slices_prod:
+						else:
 
-                    if any(var_scope in correlated_var_set_scope for var_scope in rest_set_scope):
+							independent_var_set_prod_child = learn_mspn_for_aspmn(correlated_var_set_cluster,
+																				 ds_context_prod,
+																				 n=self.n,
+																				 k_limit=self.limit,
+																				 min_instances_slice=20,
+																				 initial_scope=correlated_var_set_scope)
+						independent_vars_scope.extend(correlated_var_set_scope)
+						prod_children.append(independent_var_set_prod_child)
 
-                        next_remaining_vars_scope.extend(correlated_var_set_scope)
+				logging.info(f'correlated variables over entire remaining variables '
+							 f'at prod, passed for next recursion: '
+							 f'{next_remaining_vars_scope}')
+				# check if all variables in current information set are consumed
+				if all(var_scope in independent_vars_scope for var_scope in curr_information_set_scope):
 
-                    else:
-                        # this variable set of current information set is
-                        # not correlated to any variable in the rest set
+					index += 1
+					next_information_set_scope = np.array(range(next_scope_index, next_scope_index +
+																len(self.params.partial_order[index]))).tolist()
 
-                        logging.info(f'independent variable set found: {correlated_var_set_scope}')
+					# since current information set is totally consumed
+					next_remaining_vars_scope = rest_set_scope
 
-                        ds_context_prod = get_ds_context(correlated_var_set_cluster,
-                                                         correlated_var_set_scope, self.params)
+				else:
+					# some variables in current information set still remain
+					index = index
 
-                        if self.params.util_to_bin:
+					next_information_set_scope = set(curr_information_set_scope) - set(independent_vars_scope)
+					next_remaining_vars_scope = next_information_set_scope | set(rest_set_scope)
 
-                            independent_var_set_prod_child = learn_parametric_aspmn(correlated_var_set_cluster,
-                                                                              ds_context_prod,
-                                                                              n=self.n,
-                                                                              k_limit=self.limit,
-                                                                              min_instances_slice=20,
-                                                                              initial_scope=correlated_var_set_scope)
+					# convert unordered sets of scope to sorted lists to keep in sync with partial order
+					next_information_set_scope = sorted(list(next_information_set_scope))
+					next_remaining_vars_scope = sorted(list(next_remaining_vars_scope))
+				self.set_next_operation('Sum')
 
-                        else:
+				next_remaining_vars_data = column_slice_data_by_scope(remaining_vars_data,
+																	  remaining_vars_scope,
+																	  next_remaining_vars_scope)
 
-                            independent_var_set_prod_child = learn_mspn_for_aspmn(correlated_var_set_cluster,
-                                                                                 ds_context_prod,
-                                                                                 n=self.n,
-                                                                                 k_limit=self.limit,
-                                                                                 min_instances_slice=20,
-                                                                                 initial_scope=correlated_var_set_scope)
-                        independent_vars_scope.extend(correlated_var_set_scope)
-                        prod_children.append(independent_var_set_prod_child)
+				logging.info(
+					f'independence test completed for current information set {curr_information_set_scope} '
+					f'and rest set {rest_set_scope} ')
 
-                logging.info(f'correlated variables over entire remaining variables '
-                             f'at prod, passed for next recursion: '
-                             f'{next_remaining_vars_scope}')
-                # check if all variables in current information set are consumed
-                if all(var_scope in independent_vars_scope for var_scope in curr_information_set_scope):
+				remaining_vars_prod_child = self.__learn_spmn_structure(next_remaining_vars_data,
+																		next_remaining_vars_scope,
+																		next_information_set_scope,
+																		index)
 
-                    index += 1
-                    next_information_set_scope = np.array(range(next_scope_index, next_scope_index +
-                                                                len(self.params.partial_order[index]))).tolist()
+				prod_children.append(remaining_vars_prod_child)
 
-                    # since current information set is totally consumed
-                    next_remaining_vars_scope = rest_set_scope
+				product_node = Product(children=prod_children)
+				assign_ids(product_node)
+				rebuild_scopes_bottom_up(product_node)
 
-                else:
-                    # some variables in current information set still remain
-                    index = index
+				logging.info(f'created product node')
+				return product_node
 
-                    next_information_set_scope = set(curr_information_set_scope) - set(independent_vars_scope)
-                    next_remaining_vars_scope = next_information_set_scope | set(rest_set_scope)
+			# Cluster the data
+			else:
 
-                    # convert unordered sets of scope to sorted lists to keep in sync with partial order
-                    next_information_set_scope = sorted(list(next_information_set_scope))
-                    next_remaining_vars_scope = sorted(list(next_remaining_vars_scope))
-                self.set_next_operation('Sum')
+				curr_op = self.get_curr_operation()
+				logging.debug(f'curr_op at sum node (cluster test): {curr_op}')
 
-                next_remaining_vars_data = column_slice_data_by_scope(remaining_vars_data,
-                                                                      remaining_vars_scope,
-                                                                      next_remaining_vars_scope)
+				split_rows = get_split_rows_XMeans(limit=self.limit)    # from SPMNHelper.py
+				#split_rows = get_split_rows_KMeans()
 
-                logging.info(
-                    f'independence test completed for current information set {curr_information_set_scope} '
-                    f'and rest set {rest_set_scope} ')
+				if self.cluster_by_curr_information_set:
 
-                remaining_vars_prod_child = self.__learn_spmn_structure(next_remaining_vars_data,
-                                                                        next_remaining_vars_scope,
-                                                                        next_information_set_scope,
-                                                                        index)
+					curr_information_set_data = column_slice_data_by_scope(remaining_vars_data,
+																		   remaining_vars_scope,
+																		   curr_information_set_scope)
 
-                prod_children.append(remaining_vars_prod_child)
+					ds_context_sum = get_ds_context(curr_information_set_data, curr_information_set_scope, self.params)
+					data_slices_sum, km_model = split_rows(curr_information_set_data, ds_context_sum,
+														   curr_information_set_scope)
 
-                product_node = Product(children=prod_children)
-                assign_ids(product_node)
-                rebuild_scopes_bottom_up(product_node)
+					logging.info(f'split clusters based on current information set {curr_information_set_scope}')
 
-                logging.info(f'created product node')
-                return product_node
+				else:
+					# cluster on whole remaining variables
+					ds_context_sum = get_ds_context(remaining_vars_data, remaining_vars_scope, self.params)
+					data_slices_sum, km_model = split_rows(remaining_vars_data, ds_context_sum, remaining_vars_scope)
 
-            # Cluster the data
-            else:
+					logging.info(f'split clusters based on whole remaining variables {remaining_vars_scope}')
 
-                curr_op = self.get_curr_operation()
-                logging.debug(f'curr_op at sum node (cluster test): {curr_op}')
+				sum_node_children = []
+				weights = []
+				index = index
+				logging.debug(f'{len(data_slices_sum)} clusters found at data_slices_sum')
 
-                split_rows = get_split_rows_XMeans(limit=self.limit)    # from SPMNHelper.py
-                #split_rows = get_split_rows_KMeans()
 
-                if self.cluster_by_curr_information_set:
 
-                    curr_information_set_data = column_slice_data_by_scope(remaining_vars_data,
-                                                                           remaining_vars_scope,
-                                                                           curr_information_set_scope)
+				cluster_num = 0
+				labels_array = km_model.labels_
+				logging.debug(f'cluster labels of rows: {labels_array} used to cluster data on '
+							  f'total remaining variables {remaining_vars_scope}')
 
-                    ds_context_sum = get_ds_context(curr_information_set_data, curr_information_set_scope, self.params)
-                    data_slices_sum, km_model = split_rows(curr_information_set_data, ds_context_sum,
-                                                           curr_information_set_scope)
+				for cluster, scope, weight in data_slices_sum:
 
-                    logging.info(f'split clusters based on current information set {curr_information_set_scope}')
+					self.set_next_operation("Prod")
 
-                else:
-                    # cluster on whole remaining variables
-                    ds_context_sum = get_ds_context(remaining_vars_data, remaining_vars_scope, self.params)
-                    data_slices_sum, km_model = split_rows(remaining_vars_data, ds_context_sum, remaining_vars_scope)
+					# cluster whole remaining variables based on clusters formed.
+					# below methods are useful if clusters were formed on just the current information set
 
-                    logging.info(f'split clusters based on whole remaining variables {remaining_vars_scope}')
+					cluster_indices = get_row_indices_of_cluster(labels_array, cluster_num)
+					cluster_on_remaining_vars = row_slice_data_by_indices(remaining_vars_data, cluster_indices)
 
-                sum_node_children = []
-                weights = []
-                index = index
-                logging.debug(f'{len(data_slices_sum)} clusters found at data_slices_sum')
+					# logging.debug(np.array_equal(cluster_on_remaining_vars, cluster ))
 
+					sum_node_children.append(
+						self.__learn_spmn_structure(cluster_on_remaining_vars, remaining_vars_scope,
+													curr_information_set_scope, index))
 
+					weights.append(weight)
 
-                cluster_num = 0
-                labels_array = km_model.labels_
-                logging.debug(f'cluster labels of rows: {labels_array} used to cluster data on '
-                              f'total remaining variables {remaining_vars_scope}')
+					cluster_num += 1
 
-                for cluster, scope, weight in data_slices_sum:
+				sum_node = Sum(weights=weights, children=sum_node_children)
 
-                    self.set_next_operation("Prod")
+				assign_ids(sum_node)
+				rebuild_scopes_bottom_up(sum_node)
+				logging.info(f'created sum node')
+				return sum_node
 
-                    # cluster whole remaining variables based on clusters formed.
-                    # below methods are useful if clusters were formed on just the current information set
-
-                    cluster_indices = get_row_indices_of_cluster(labels_array, cluster_num)
-                    cluster_on_remaining_vars = row_slice_data_by_indices(remaining_vars_data, cluster_indices)
-
-                    # logging.debug(np.array_equal(cluster_on_remaining_vars, cluster ))
-
-                    sum_node_children.append(
-                        self.__learn_spmn_structure(cluster_on_remaining_vars, remaining_vars_scope,
-                                                    curr_information_set_scope, index))
-
-                    weights.append(weight)
-
-                    cluster_num += 1
-
-                sum_node = Sum(weights=weights, children=sum_node_children)
-
-                assign_ids(sum_node)
-                rebuild_scopes_bottom_up(sum_node)
-                logging.info(f'created sum node')
-                return sum_node
-
-
-    def get_loglikelihood(self, instance):
+	#Return log-likelihood for the given test instance
+	def get_loglikelihood(self, instance):
         test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
         return log_likelihood(self.spmn, test_data)[0][0]
 
 
+    # Get reward by simulating policy in the environment
     def get_reward(self, id):
 
         state = self.env.reset()
@@ -342,7 +345,8 @@ class Anytime_SPMN:
             if done:
                 return reward
 
-    def get_reward1(self, ids):
+    #Get policy by running spmn in environment
+    def get_policy(self, ids):
 
         policy = ""
         state = self.env.reset()
@@ -354,332 +358,258 @@ class Anytime_SPMN:
             if done:
                 return policy
 
-    def learn_aspmn(self, train, test, k=None):
-        """
-        :param
-        :return: learned spmn
-        """
-        
-        original_stats = {
-            'Export_Textiles': {"ll" : -1.0890750655173789, "meu" : 1722313.8158882717, 'nodes' : 38, 'reward':1721301.8260000004, 'dev':3861.061525772288},
-            'Test_Strep': {"ll" : -0.9130071749277912, "meu" : 54.9416526618876, 'nodes' : 130, 'reward':54.91352060400901, 'dev':0.013189836549851251},
-            'LungCancer_Staging': {"ll" : -1.1489156814245234, "meu" : 3.138664586296027, 'nodes' : 312, 'reward':3.108005299999918, 'dev':0.011869627022775012},
-            'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.559788119992646, 'dev':0.06067708771159484},
-            'Computer_Diagnostician': {"ll" : -0.9011245432112749, "meu" : -208.351, 'nodes' : 56, 'reward':-210.15520000000004, 'dev':0.3810022440878799},
-            'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2759870.4, 'dev':6825.630813338794}
-        }
+	def learn_aspmn(self, train, test=None, get_stats = False, save_models=True):
+		"""
+		:param: train dataset
+		:return: learned ASPMNs
+		"""
+		
+		
+		if save_models:
+			#Create output directory if it doesn't exist
+			if not pth.exists(f'{self.plot_path}/models'):
+				try:
+					os.makedirs(f'{self.plot_path}/models')
+				except OSError:
+					print ("Creation of the directory %s failed" % f'{self.plot_path}/models')
+					sys.exit()
 
-        optimal_meu = {
-            'Export_Textiles' : 1721300,
-            'Computer_Diagnostician': -210.13,
-            'Powerplant_Airpollution': -2760000,
-            'HIV_Screening': 42.5597,
-            'Test_Strep': 54.9245,
-            'LungCancer_Staging': 3.12453
-        }
-
-        random_reward = {
-            'Export_Textiles' : {'reward': 1300734.02, 'dev':7087.350616838437},
-            'Computer_Diagnostician': {'reward': -226.666, 'dev':0.37205611135956335},
-            'Powerplant_Airpollution': {'reward': -3032439.0, 'dev':7870.276615214995},
-            'HIV_Screening': {'reward': 42.3740002199867, 'dev':0.07524234474837802},
-            'Test_Strep': {'reward': 54.89614493400057, 'dev':0.012847272731391593},
-            'LungCancer_Staging': {'reward': 2.672070640000026, 'dev':0.007416967451081523},
-        }
         
-        
-        trials = 500000
-        interval = 50000
-        batches = 25
-        interval_count = int(trials/interval)
-
-        avg_rewards = [list() for i in range(int(trials/interval))]
-        reward_dev = [list() for i in range(int(trials/interval))]
-
-    
-        
-        avg_ll = list()
-        ll_dev = list()
-        meus = list()
-        nodes = list()
-        past3 = list()
-
-        self.env = get_env(self.dataset)
-        
+        #Initial parameters
         limit = 2 
         n = int(self.vars**0.5)
-        #n= self.vars
-        step = 0 #(self.vars - (self.vars**0.5) + 1)/10
+        step = 0 if self.vars < 10 else (self.vars - (self.vars**0.5) + 1)/10
         d = 2
 
-        if k is not None:
-            if not pth.exists(f"{self.plot_path}/{k}"):
-                try:
-                    os.makedirs(f"{self.plot_path}/{k}")
-                except OSError:
-                    print ("Creation of the directory %s failed" % f"{self.plot_path}/{k}")
-                    sys.exit()
+        #Initialize lists for storing statistics over iterations
+		all_avg_ll = list()
+		all_ll_dev = list()
+		all_meus = list()
+		all_nodes = list()
+		all_avg_rewards = list()
+		all_reward_dev = list()
 
-        i = 0
-        while(True):
 
-            index = 0
-            print(f"\nIteration: {i}\n")
+        #Start Anytime iterations
+		i = 0
+		while(True):
+
+			index = 0
+			print(f"\nIteration: {i}\n")
+			
+			#Get Current and remaining scopes and initialize next operation
+			curr_information_set_scope = np.array(range(len(self.params.partial_order[0]))).tolist()
+			remaining_vars_scope = np.array(range(len(self.params.feature_names))).tolist()
+			self.set_next_operation('Any')
+			self.limit = limit 
+			self.n = n  
+			self.d = d
+
+			#Start Learning the network
+			print("\nStart Learning...")
+			spmn = self.__learn_spmn_structure(train, remaining_vars_scope, curr_information_set_scope, index)
+			print("SPMN Learned")
+			#spmn = Prune(spmn)
+			self.spmn = spmn
+
+			stats = None
+
+
+			if get_stats:
+				#Store the stats in a dictionary
+				avg_ll, ll_dev = self.evaluate_loglikelihood(test)
+				meu_ = self.evaluate_meu()
+				nodes = self.evaluate_nodes()
+				avg_rewards, reward_dev = self.evaluate_rewards()
+
+				all_avg_ll.append(avg_ll)
+				all_ll_dev.append(ll_dev)
+				all_meus.append(meu_)
+				all_nodes.append(nodes)
+				all_avg_rewards.append(avg_rewards)
+				all_reward_dev.append(reward_dev)
+
+		        stats = {"ll" : all_avg_ll,
+		                "ll_dev": all_ll_dev,
+		                "meu" : all_meus,
+		                "nodes" : all_nodes,
+		                "reward" : all_avg_rewards,
+		                "reward_dev" : all_reward_dev
+		                }
             
-            curr_information_set_scope = np.array(range(len(self.params.partial_order[0]))).tolist()
-            remaining_vars_scope = np.array(range(len(self.params.feature_names))).tolist()
-            self.set_next_operation('Any')
-            self.limit = limit 
-            self.n = n  
-            self.d = d
+	            #Print the stats
+				print("\n\n\n\n\n")
+				print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
+				print("#Nodes: ",nodes)
+				print("Log Likelihood: ",avg_ll)
+				print("Log Likelihood Deviation: ",ll_dev)
+				print("MEU: ",meu_)
+				print("Average rewards: ",avg_rewards)
+				print("Deviation: ",reward_dev)
+				print("\n\n\n\n\n")
 
-            print("\nStart Learning...")
-            spmn = self.__learn_spmn_structure(train, remaining_vars_scope, curr_information_set_scope, index)
-            print("SPMN Learned")
-            #spmn = Prune(spmn)
-            self.spmn = spmn
+				#Save the stats in a file
+				f = open(f"{self.plot_path}/stats.txt", "w")
 
-
-            
-
-            
-
-            nodes.append(get_structure_stats_dict(spmn)["nodes"])
-
-            
-            if k is None:
-                plot_spn(spmn, f'{self.plot_path}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
-            else:
-                plot_spn(spmn, f'{self.plot_path}/{k}/spmn{i}.pdf', feature_labels=self.params.feature_labels)
-            
-            
-            #try:
-            '''
-            total_ll = 0
-            trials1 = test.shape[0]
-            batch_size = int(trials1 / 10)
-            batch = list()
-            pool = multiprocessing.Pool()
-
-            
-            
-            for b in range(10):
-                test_slice = test[b*batch_size:(b+1)*batch_size]
-                lls = pool.map(self.get_loglikelihood, test_slice)
-                total_ll = sum(lls)
-                batch.append(total_ll/batch_size)
-                printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-            '''
-            '''
-            for j, instance in enumerate(test):
-                test_data = np.array(instance).reshape(-1, len(self.params.feature_names))
-                total_ll += log_likelihood(spmn, test_data)[0][0]
-                if (j+1) % batch_size == 0:
-                    batch.append(total_ll/batch_size)
-                    total_ll = 0
-                printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
-            '''
-
-            #avg_ll.append(np.mean(batch))
-            #ll_dev.append(np.std(batch))
-            
-
-
-            test_data = [[np.nan]*len(self.params.feature_names)]
-            m = meu(spmn, test_data)
-            meus.append(m[0])
-
-            plt.close()
-            
-            plt.plot(meus, marker="o", label="Anytime")
-            plt.plot([optimal_meu[self.dataset]]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
-            plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dashed", color ="red", label="LearnSPMN")
-            plt.title(f"{self.dataset} MEU")
-            plt.legend()
-            if k is None:
-                plt.savefig(f"{self.plot_path}/meu.png", dpi=100)
-            else:
-                plt.savefig(f"{self.plot_path}/{k}/meu.png", dpi=100)
-            plt.close()
-            
-            
-            
-            total_reward = 0
-            rewards = list()
-
-            
-            from collections import Counter
-            pool = multiprocessing.Pool()
-            for inter in range(interval_count):
-                
-                for y in range(batches):
-                    ids = [None for x in range(int(interval/batches))]
-
-                    cur = pool.map(self.get_reward, ids)
-                    rewards += cur
-                    z = (inter*batches) + y + 1
-                    printProgressBar(z, interval_count*batches, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
-
-                
-                batch = list()
-                batch_size = int(len(rewards) / batches)
-                for l in range(batches):
-                    m = l*batch_size
-                    batch.append(sum(rewards[m:m+batch_size]) / batch_size)
-                
-
-                avg_rewards[inter].append(np.mean(batch))
-                reward_dev[inter].append(np.std(batch))
-
-                plt.close()
-                rand_reward = np.array([random_reward[self.dataset]["reward"]]*len(avg_rewards[inter]))
-                dev = np.array([random_reward[self.dataset]["dev"]]*len(avg_rewards[inter]))
-                plt.fill_between(np.arange(len(avg_rewards[inter])), rand_reward-dev, rand_reward+dev, alpha=0.1, color="lightgrey")
-                plt.plot(rand_reward, linestyle="dashed", color ="grey", label="Random Policy")
-
-                original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards[inter]))
-                dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards[inter]))
-                plt.fill_between(np.arange(len(avg_rewards[inter])), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
-                plt.plot([optimal_meu[self.dataset]]*len(avg_rewards[inter]), linewidth=3, color ="lime", label="Optimal MEU")
-                plt.plot(original_reward, linestyle="dashed", color ="red", label="LearnSPMN")
-
-                plt.errorbar(np.arange(len(avg_rewards[inter])), avg_rewards[inter], yerr=reward_dev[inter], marker="o", label="Anytime")
-                plt.title(f"{self.dataset} Average Rewards")
-                plt.legend()
-                plt.savefig(f"{self.plot_path}/rewards_trend_{(inter+1)*interval}.png", dpi=100)
-                plt.close()
-
-                f = open(f"{self.plot_path}/stats_trends.txt", "w")
-
-                f.write(f"\n{self.dataset}")
-
-                for x in range(interval_count):
-
-                    f.write(f"\n\n\tAverage Rewards {(x+1)*interval}: {avg_rewards[x]}")
-                    f.write(f"\n\tDeviation {(x+1)*interval}: {reward_dev[x]}")
-
-                f.close()
-
-                
-            
-            
-            print("\n\n\n\n\n")
-            print(f"X-Means Limit: {limit}, \tVariables for splitting: {round(n)}")
-            print("#Nodes: ",nodes[-1])
-            #print("Log Likelihood: ",avg_ll[-1])
-            #print("Log Likelihood Deviation: ",ll_dev[-1])
-            print("MEU: ",meus[-1])
-            print("Average rewards: ",avg_rewards[-1][-1])
-            print("Deviation: ",reward_dev[-1][-1])
-            print(nodes)
-            print(meus)
-            print("\n\n\n\n\n")
-            
-            '''
-            plt.close()
-            # plot line 
-            plt.plot([original_stats[self.dataset]["ll"]]*len(avg_ll), linestyle="dashed", color ="red", label="LearnSPMN")
-            plt.errorbar(np.arange(len(avg_ll)), avg_ll, yerr=ll_dev, marker="o", label="Anytime")
-            plt.title(f"{self.dataset} Log Likelihood")
-            plt.legend()
-            if k is None:
-                plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
-            else:
-                plt.savefig(f"{self.plot_path}/{k}/ll.png", dpi=100)
-            '''
-            plt.close()
-            
-            plt.plot(meus, marker="o", label="Anytime")
-            #plt.plot([optimal_meu[self.dataset]]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
-            plt.plot([original_stats[self.dataset]["meu"]]*len(meus), linestyle="dashed", color ="red", label="LearnSPMN")
-            plt.title(f"{self.dataset} MEU")
-            plt.legend()
-            if k is None:
-                plt.savefig(f"{self.plot_path}/meu1.png", dpi=100)
-            else:
-                plt.savefig(f"{self.plot_path}/{k}/meu1.png", dpi=100)
-            
-            plt.close()
-
-            plt.plot(nodes, marker="o", label="Anytime")
-            plt.plot([original_stats[self.dataset]["nodes"]]*len(nodes), linestyle="dashed", color ="red", label="LearnSPMN")
-            plt.title(f"{self.dataset} Nodes")
-            plt.legend()
-            if k is None:
-                plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
-            else:
-                plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
-            plt.close()
-            
-            '''
-            original_reward = np.array([original_stats[self.dataset]["reward"]]*len(avg_rewards))
-            dev = np.array([original_stats[self.dataset]["dev"]]*len(avg_rewards))
-            plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
-            plt.plot(original_reward, linestyle="dashed", color ="red", label="LearnSPMN")
-            plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
-            plt.title(f"{self.dataset} Average Rewards")
-            plt.legend()
-            if k is None:
-                plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
-            else:
-                plt.savefig(f"{self.plot_path}/rewards.png", dpi=100)
-            plt.close()
-
-
-            
-            '''
-            
-
-            
-            f = open(f"{self.plot_path}/stats.txt", "w") if k is None else open(f"{self.plot_path}/{k}/stats.txt", "w")
-
-            f.write(f"\n{self.dataset}")
-            #f.write(f"\n\tLog Likelihood : {avg_ll}")
-            #f.write(f"\n\tLog Likelihood Deviation: {ll_dev}")
-            f.write(f"\n\tMEU : {meus}")
-            f.write(f"\n\tNodes : {nodes}")
-            f.write(f"\n\tAverage Rewards : {avg_rewards[-1]}")
-            f.write(f"\n\tRewards Deviation : {reward_dev[-1]}")
-            f.close()
-            
-            #except:
-                #pass
-            
-                
-            if n>self.vars:  #and round(np.std(past3), 3) <= 0.001:
+				f.write(f"\n{self.dataset}")
+				f.write(f"\n\tLog Likelihood : {avg_ll}")
+				f.write(f"\n\tLog Likelihood Deviation: {ll_dev}")
+				f.write(f"\n\tMEU : {meus}")
+				f.write(f"\n\tNodes : {nodes}")
+				f.write(f"\n\tAverage Rewards : {avg_rewards}")
+				f.write(f"\n\tRewards Deviation : {reward_dev}")
+				f.close()
+			
+			
+	        
+	        #Return the network and stats for the current iteration
+	        yield self.spmn, stats
+			
+			
+			#Termination criterion
+			if n>self.vars:  #and round(np.std(past3), 3) <= 0.001:
                 break
 
-
+            #Update the parameter values
             i += 1
             limit += 1
             d += 1
             n = n+step
-            if step == 0:
+            if self.vars < 10:
                 step = 1
 
-        '''
-        stats = {"ll" : avg_ll,
-                "ll_dev": ll_dev,
-                "meu" : meus,
-                "nodes" : nodes,
-                "reward" : avg_rewards,
-                "deviation" : reward_dev
-                }
-        '''
-        # Prune(self.spmn)
-        return self.spmn #, stats
+        
+
+    def evaluate_nodes(self, spmn=self.spmn):
+    	#Get nodes in the network
+		return get_structure_stats_dict(spmn)["nodes"]
+		
+	def evaluate_loglikelihood_parallel(self, test, spmn=self.spmn, batches=10):
+
+		if not test:
+			return None, None
+
+		#Initilize parameters for Log-likelihood evaluation
+		total_ll = 0
+        trials1 = test.shape[0]
+        batch_size = int(trials1 / batches)
+        batch = list()
+        pool = multiprocessing.Pool()
+
+        
+        #Get average log-likelihood for the batches
+        for b in range(batches):
+            test_slice = test[b*batch_size:(b+1)*batch_size]
+            lls = pool.map(self.get_loglikelihood, test_slice)
+            total_ll = sum(lls)
+            batch.append(total_ll/batch_size)
+            printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
+        
+        #Get average ll and deviation
+        avg_ll = np.mean(batch)
+        ll_dev = np.std(batch)
+
+        return avg_ll, ll_dev
+
+    def evaluate_loglikelihood_sequential(self, test, spmn=self.spmn, batches=10):
+
+        if not test:
+            return None, None
+
+        #Initilize parameters for Log-likelihood evaluation
+        total_ll = 0
+        trials1 = test.shape[0]
+        batch_size = int(trials1 / batches)
+        batch = list()
+
+        
+        #Get average log-likelihood for the batches
+        for b in range(batches):
+            test_slice = test[b*batch_size:(b+1)*batch_size]
+            lls = list()
+            for instance in test_slice:
+                lls.append(self.get_loglikelihood(instance))
+                printProgressBar(b+1, batches, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
+            total_ll = sum(lls)
+            batch.append(total_ll/batch_size)
+            
+        
+        #Get average ll and deviation
+        avg_ll = np.mean(batch)
+        ll_dev = np.std(batch)
+
+        return avg_ll, ll_dev
+		
+
+    def evaluate_meu(self, spmn=self.spmn):
+        #Compute the MEU of the Network
+		test_data = [[np.nan]*len(self.params.feature_names)]
+		m = meu(spmn, test_data) 
+		return m[0]
 
 
+	def evaluate_rewards_parallel(self, spmn=self.spmn, batch_size = 20000, batches = 25):
 
-    
+		#Initialize domain environment
+		self.env = get_env(self.dataset)
+
+		if not self.env:
+			return None, None
+
+		#Initialize parameters for computing rewards
+		total_reward = 0
+        reward_batch = list()
+        
+        pool = multiprocessing.Pool()
+        #Get the rewards parallely for each batch
+        for y in range(batches):
+            ids = [None for x in range(batch_size)]
+            rewards = pool.map(self.get_reward, ids)
+            reward_batch.append(sum(rewards) / batch_size)
+            printProgressBar(y+1, batches, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+
+        #get the mean and std dev of the rewards    
+        avg_rewards = np.mean(reward_batch)
+        reward_dev = np.std(reward_batch)
+
+        return avg_rewards, reward_dev
+
+    def evaluate_rewards_sequential(self, spmn=self.spmn, batch_size = 20000, batches = 25):
+
+        #Initialize domain environment
+        self.env = get_env(self.dataset)
+
+        if not self.env:
+            return None, None
+
+        #Initialize parameters for computing rewards
+        total_reward = 0
+        reward_batch = list()
+
+        #Get the rewards parallely for each batch
+        for y in range(batches):
+            rewards = list()
+            for z in range(batch_size):
+                rewards.append(self.get_reward(z))
+                printProgressBar(y*batch_size + z+1, batches*batch_size, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+            reward_batch.append(sum(rewards) / batch_size)
+            
+
+        #get the mean and std dev of the rewards    
+        avg_rewards = np.mean(reward_batch)
+        reward_dev = np.std(reward_batch)
+
+        return avg_rewards, reward_dev
+
+#Object to store SPMN parameters
 class SPMNParams:
 
-    def __init__(self, partial_order, decision_nodes, utility_nodes, feature_names, feature_labels, meta_types, util_to_bin):
+	def __init__(self, partial_order, decision_nodes, utility_nodes, feature_names, feature_labels, meta_types, util_to_bin):
 
-        self.partial_order = partial_order
-        self.decision_nodes = decision_nodes
-        self.utility_nodes = utility_nodes
-        self.feature_names = feature_names
-        self.feature_labels = feature_labels
-        self.meta_types = meta_types
-        self.util_to_bin = util_to_bin
+		self.partial_order = partial_order
+		self.decision_nodes = decision_nodes
+		self.utility_nodes = utility_nodes
+		self.feature_names = feature_names
+		self.feature_labels = feature_labels
+		self.meta_types = meta_types
+		self.util_to_bin = util_to_bin
