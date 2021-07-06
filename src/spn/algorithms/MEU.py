@@ -57,9 +57,13 @@ def meu_max(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
     
         dec_value = np.select([np.isnan(decision_value_given), True],
                               [max_value, decision_value_given]).astype(int)
-        dec_value_to_child_id = lambda val: node.children[list(node.dec_values).index(val)].id
-        dec_value_to_child_id = np.vectorize(dec_value_to_child_id)
-        child_id = dec_value_to_child_id(dec_value)
+        for idx, dec_value_group in enumerate(list(node.dec_values)):
+            if dec_value in dec_value_group:
+                dec_idx = idx
+        #dec_value_to_child_id = lambda val: node.children[list(node.dec_values).index(val)].id
+        #dec_value_to_child_id = np.vectorize(dec_value_to_child_id)
+        #child_id = dec_value_to_child_id(dec_value)
+        child_id = node.children[dec_idx].id
         meu_per_node[:,node.id] = meu_per_node[np.arange(meu_per_node.shape[0]),child_id]
 
 
