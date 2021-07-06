@@ -40,6 +40,7 @@ def meu_prod(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
 def meu_max(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
     meu_children = meu_per_node[:, [child.id for child in node.children]]
     decision_value_given = data[:, node.dec_idx]
+    print(meu_children)
     argid = np.argmax(meu_children, axis=1)
     print(argid)
     max_value = node.dec_values[argid]
