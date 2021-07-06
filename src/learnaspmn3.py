@@ -27,7 +27,7 @@ import sys, os
 
 
 datasets = ['Export_Textiles']
-path = "latest_rewards"
+path = "test"
 
 
 
