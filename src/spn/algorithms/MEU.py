@@ -43,7 +43,7 @@ def meu_max(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
     decision_value_given = data[:, node.dec_idx]
     argid = np.argmax(meu_children, axis=1)
     print(type(argid))
-    if type(argid) == list:
+    if type(argid) != int:
         argid = argid[0]
     max_value = node.dec_values[argid]
     print(max_value)
