@@ -10,6 +10,7 @@ import numpy as np
 
 from spn.algorithms.Inference import interface_switch_log_likelihood
 from spn.structure.Base import InterfaceSwitch
+import random
 
 
 def meu_sum(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
@@ -40,10 +41,15 @@ def meu_prod(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
 def meu_max(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
     meu_children = meu_per_node[:, [child.id for child in node.children]]
     decision_value_given = data[:, node.dec_idx]
-    print(meu_children)
     argid = np.argmax(meu_children, axis=1)
     print(argid)
+    if type(argid) == list:
+        argid = argid[0]
     max_value = node.dec_values[argid]
+    print(max_value)
+    if type(max_value) == list:
+        max_value = random.sample(max_value)
+    print(max_value)
     # if data contains a decision value use that otherwise use max
     if not np.isnan(decision_value_given) and decision_value_given not in node.dec_values:
         meu_per_node[:, node.id] = np.nan

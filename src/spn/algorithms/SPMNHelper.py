@@ -170,7 +170,7 @@ def anytime_split_on_decision_node(data, m=None) :
 
 	#Assign the decision values to the groups in a circular fashion
 	for i in range(len(dec_vals)):
-		dec_vals1[(i)%m].append(dec_vals[i])
+		dec_vals1[(i+1)%m].append(dec_vals[i])
 	
 	# cluster remaining data based on decision values
 	clusters_on_remaining_columns = anytime_cluster(data, dec_vals1)
