@@ -416,6 +416,11 @@ class Anytime_SPMN:
 
 			stats = None
 
+			if save_models:
+				file = open(f"{self.plot_path}/models/spmn_{i}.pkle",'wb')
+				pickle.dump(spmn, file)
+				file.close()
+
 
 			if get_stats:
 				#Store the stats in a dictionary
