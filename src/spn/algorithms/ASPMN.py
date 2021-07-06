@@ -531,7 +531,7 @@ class Anytime_SPMN:
 
 	def evaluate_loglikelihood_sequential(self, test, spmn=None, batches=10):
 
-		if test is not None:
+		if test is None:
 			return None, None
 
 		if not spmn:
