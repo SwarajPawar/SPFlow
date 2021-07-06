@@ -40,7 +40,8 @@ def meu_prod(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
 def meu_max(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
     meu_children = meu_per_node[:, [child.id for child in node.children]]
     decision_value_given = data[:, node.dec_idx]
-    max_value = node.dec_values[np.argmax(meu_children, axis=1)]
+    argid = np.argmax(meu_children, axis=1)
+    max_value = node.dec_values[argid]
     # if data contains a decision value use that otherwise use max
     if not np.isnan(decision_value_given) and decision_value_given not in node.dec_values:
         meu_per_node[:, node.id] = np.nan
