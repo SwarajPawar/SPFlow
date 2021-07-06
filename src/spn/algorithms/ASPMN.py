@@ -501,7 +501,7 @@ class Anytime_SPMN:
 		
 	def evaluate_loglikelihood_parallel(self, test, spmn=None, batches=10):
 
-		if not test:
+		if test is None:
 			return None, None
 
 		if not spmn:
@@ -531,7 +531,7 @@ class Anytime_SPMN:
 
 	def evaluate_loglikelihood_sequential(self, test, spmn=None, batches=10):
 
-		if not test:
+		if test is not None:
 			return None, None
 
 		if not spmn:
