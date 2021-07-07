@@ -83,6 +83,7 @@ for dataset in datasets:
 		f = open(f"{plot_path}/stats.txt", "a")
 		f.write(f"\n\n\n\n")
 		f.close()
+		
 		#Plot the SPMN
 		#plot_spn(spmn, f'{plot_path}/spmn{i}.pdf', feature_labels=feature_labels)
 

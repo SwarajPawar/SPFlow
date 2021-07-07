@@ -6,17 +6,16 @@ import collections
 import pandas as pd
 import random
 import csv
-
+import pickle
 
 import matplotlib.pyplot as plt
 
 from spn.data.simulator import get_env
 import multiprocessing
+from spn.data.metaData import *
 
-dataset = 'FrozenLake'
-df = pd.read_csv(f"spn/data/{dataset}/{dataset}_new.tsv", sep='\t')
-
-data = df.values
-reward = data[:,-1]
-from collections import Counter
-print(Counter(reward))
+a = [1,2,3]
+b=tuple(a)
+b += tuple((4))
+for x in b:
+	print(x)

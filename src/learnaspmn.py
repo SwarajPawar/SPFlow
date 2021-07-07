@@ -21,13 +21,15 @@ from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
 from spn.algorithms.SPMN import SPMN
 from spn.algorithms.ASPMN import Anytime_SPMN
+from spn.io.Graphics import plot_spn
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 
 
 datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'HIV_Screening', 'Computer_Diagnostician', 'Test_Strep', 'LungCancer_Staging']
-path = "output"
+datasets = ['Export_Textiles']
+path = "test1"
 
 
 
@@ -67,7 +69,7 @@ for dataset in datasets:
 	aspmn = Anytime_SPMN(dataset, path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=True, util_to_bin = False)
 	
 	#Start anytime learning
-	for i, output in enumerate(aspmn.learn_aspmn(train, test, get_stats=True)):
+	for i, output in enumerate(aspmn.learn_aspmn(train, test, get_stats=True, evaluate_parallel=True)):
 
 		spmn, stats = output
 
@@ -108,22 +110,22 @@ for dataset in datasets:
 		plt.close()
 
 		
-        rand_reward = np.array([random_policy_reward["reward"]]*len(avg_rewards))
-        dev = np.array([random_policy_reward["dev"]]*len(avg_rewards))
-        plt.fill_between(np.arange(len(avg_rewards)), rand_reward-dev, rand_reward+dev, alpha=0.1, color="lightgrey")
-        plt.plot(rand_reward, linestyle="dashed", color ="grey", label="Random Policy")
+		rand_reward = np.array([random_policy_reward["reward"]]*len(avg_rewards))
+		dev = np.array([random_policy_reward["dev"]]*len(avg_rewards))
+		plt.fill_between(np.arange(len(avg_rewards)), rand_reward-dev, rand_reward+dev, alpha=0.1, color="lightgrey")
+		plt.plot(rand_reward, linestyle="dashed", color ="grey", label="Random Policy")
 
-        original_reward = np.array([original_stats["reward"]]*len(avg_rewards))
-        dev = np.array([original_stats["dev"]]*len(avg_rewards))
-        plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
-        plt.plot([optimal_meu]*len(avg_rewards), linewidth=3, color ="lime", label="Optimal MEU")
-        plt.plot(original_reward, linestyle="dashed", color ="red", label="LearnSPMN")
+		original_reward = np.array([original_stats["reward"]]*len(avg_rewards))
+		dev = np.array([original_stats["dev"]]*len(avg_rewards))
+		plt.fill_between(np.arange(len(avg_rewards)), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
+		plt.plot([optimal_meu]*len(avg_rewards), linewidth=3, color ="lime", label="Optimal MEU")
+		plt.plot(original_reward, linestyle="dashed", color ="red", label="LearnSPMN")
 
-        plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
-        plt.title(f"{dataset} Average Rewards")
-        plt.legend()
-        plt.savefig(f"{plot_path}/rewards.png", dpi=100)
-        plt.close()
+		plt.errorbar(np.arange(len(avg_rewards)), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
+		plt.title(f"{dataset} Average Rewards")
+		plt.legend()
+		plt.savefig(f"{plot_path}/rewards.png", dpi=100)
+		plt.close()
 
 
 		

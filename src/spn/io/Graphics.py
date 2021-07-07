@@ -77,7 +77,7 @@ def get_networkx_obj(spn, feature_labels=None):
             g.add_edge(c.id, n.id, weight=edge_label)
 
             if isinstance(n, Max):
-                if type(n.dec_values[i]) == list:
+                if type(n.dec_values[i]) == tuple:
                     edge_label = [np.round(weights, 2) for weights in n.dec_values[i]]
                 else:
                     edge_label = np.round(n.dec_values[i], 2)

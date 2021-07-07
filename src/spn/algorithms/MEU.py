@@ -50,7 +50,7 @@ def meu_max(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
         max_value = random.choice(max_value)
         
     # if data contains a decision value use that otherwise use max
-    if not np.isnan(decision_value_given) and decision_value_given not in node.dec_values:
+    if not np.isnan(decision_value_given) and all(decision_value_given not in dec_value_groups for dec_value_groups in node.dec_values):
         meu_per_node[:, node.id] = np.nan
     else:
     
@@ -234,9 +234,9 @@ def best_next_decision(root, input_data, in_place=False):
     for node in nodes:
         if type(node) == Max:
             if node.dec_idx in dec_dict:
-                    dec_dict[node.dec_idx] = dec_dict[node.dec_idx].union(set(node.dec_values))
+                    dec_dict[node.dec_idx] = dec_dict[node.dec_idx].union(set([tuple(dec_value) for dec_value in node.dec_values]))
             else:
-                dec_dict[node.dec_idx] = set(node.dec_values)
+                dec_dict[node.dec_idx] = set([tuple(dec_value) for dec_value in node.dec_values])
     next_dec_idx = None
     # find next undefined decision
     for idx in dec_dict.keys():
@@ -247,11 +247,11 @@ def best_next_decision(root, input_data, in_place=False):
     assert next_dec_idx is not None, "please assign all values of next decision to np.nan"
     # determine best decisions based on meu
     dec_vals = list(dec_dict[next_dec_idx])
-    best_decisions = np.full((1,data.shape[0]),dec_vals[0])
+    best_decisions = np.full((1,data.shape[0]), random.choice(dec_vals[0]))
     data[:,next_dec_idx] = best_decisions
     meu_best = meu(root, data)
     for i in range(1, len(dec_vals)):
-        decisions_i = np.full((1,data.shape[0]), dec_vals[i])
+        decisions_i = np.full((1,data.shape[0]), random.choice(dec_vals[i]))
         data[:,next_dec_idx] = decisions_i
         meu_i = meu(root, data)
         best_decisions = np.select([np.greater(meu_i, meu_best),True],[decisions_i, best_decisions])

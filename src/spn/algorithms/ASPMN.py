@@ -18,6 +18,7 @@ from os import path as pth
 import sys, os
 import math
 import pickle
+import multiprocessing
 
 from spn.algorithms.TransformStructure import Prune
 
@@ -359,7 +360,8 @@ class Anytime_SPMN:
 			if done:
 				return policy
 
-	def learn_aspmn(self, train, test=None, get_stats = False, save_models=True, evaluate_parallel=False):
+	def learn_aspmn(self, train, test=None, get_stats = False, save_models=True, evaluate_parallel=False, log_likelihood_batches=10,
+					 rewards_batch_size=20000, rewards_batch_count=25):
 		"""
 		:param: train dataset
 		:return: learned ASPMNs
@@ -429,11 +431,11 @@ class Anytime_SPMN:
 				meu_ = self.evaluate_meu()
 				nodes = self.evaluate_nodes()
 				if evaluate_parallel:
-					avg_ll, ll_dev = self.evaluate_loglikelihood_parallel(test)
-					avg_rewards, reward_dev = self.evaluate_rewards_parallel()
+					avg_ll, ll_dev = self.evaluate_loglikelihood_parallel(test, batches=log_likelihood_batches)
+					avg_rewards, reward_dev = self.evaluate_rewards_parallel(batch_size=rewards_batch_size, batches=rewards_batch_count)
 				else:
-					avg_ll, ll_dev = self.evaluate_loglikelihood_sequential(test)
-					avg_rewards, reward_dev = self.evaluate_rewards_sequential()
+					avg_ll, ll_dev = self.evaluate_loglikelihood_sequential(test, batches=log_likelihood_batches)
+					avg_rewards, reward_dev = self.evaluate_rewards_sequential(batch_size=rewards_batch_size, batches=rewards_batch_count)
 
 				all_avg_ll.append(avg_ll)
 				all_ll_dev.append(ll_dev)
@@ -467,7 +469,7 @@ class Anytime_SPMN:
 				f.write(f"\n{self.dataset}")
 				f.write(f"\n\tLog Likelihood : {avg_ll}")
 				f.write(f"\n\tLog Likelihood Deviation: {ll_dev}")
-				f.write(f"\n\tMEU : {meus}")
+				f.write(f"\n\tMEU : {meu_}")
 				f.write(f"\n\tNodes : {nodes}")
 				f.write(f"\n\tAverage Rewards : {avg_rewards}")
 				f.write(f"\n\tRewards Deviation : {reward_dev}")
