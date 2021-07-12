@@ -20,7 +20,7 @@ from spn.data.domain_stats import get_original_stats, get_optimal_meu, get_rando
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
 from spn.algorithms.SPMN import SPMN
-from spn.algorithms.ASPMN import Anytime_SPMN
+from spn.algorithms.ASPMN_level import Anytime_SPMN
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
@@ -97,7 +97,7 @@ for dataset in datasets:
 		f.write(f"\n\tMEU : {all_meus}")
 		f.close()
 
-		
+		'''
 		avg_ll, ll_dev = aspmn.evaluate_loglikelihood_sequential(test, spmn)
 		all_avg_ll.append(avg_ll)
 		all_ll_dev.append(ll_dev)
@@ -105,6 +105,7 @@ for dataset in datasets:
 		f.write(f"\n\tLog Likelihood : {all_avg_ll}")
 		f.write(f"\n\tLog Likelihood Deviation: {all_ll_dev}")
 		f.close()
+		'''
 
 
 
