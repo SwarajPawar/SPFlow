@@ -90,6 +90,12 @@ def split_data_by_clusters(data, clusters, scope, rows=True):
     return result
 
 
+def split_all_cols(local_data, scope):
+
+    clusters= [i for i in range(len(scope))]
+    return split_data_by_clusters(local_data, clusters, scope, rows=False)
+
+
 def split_conditional_data_by_clusters(data, clusters, scope, rows=True):
     logger.info(clusters)
 
