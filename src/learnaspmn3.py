@@ -76,6 +76,8 @@ for dataset in datasets:
 		#Plot the SPMN
 		plot_spn(spmn, f'{plot_path}/spmn{i}.pdf', feature_labels=feature_labels)
 
+		print(stats)
+
 		#Get stats
 		avg_ll = stats["ll"]
 		ll_dev = stats["ll_dev"]
