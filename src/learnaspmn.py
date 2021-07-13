@@ -58,7 +58,7 @@ for dataset in datasets:
 	random_policy_reward = get_random_policy_reward(dataset)
 
 	#Get test and train data
-	df = pd.read_csv(f"spn/data/{dataset}/{dataset}_new.tsv", sep='\t')
+	df = pd.read_csv(f"spn/data/{dataset}/{dataset}.tsv", sep='\t')
 	df, column_titles = align_data(df, partial_order)
 	data = df.values
 

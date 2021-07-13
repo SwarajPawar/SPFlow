@@ -20,7 +20,7 @@ from spn.data.domain_stats import get_original_stats, get_optimal_meu, get_rando
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
 from spn.algorithms.SPMN import SPMN
-from spn.algorithms.ASPMN_level import Anytime_SPMN
+from spn.algorithms.ASPMN import Anytime_SPMN
 from spn.io.Graphics import plot_spn
 import matplotlib.pyplot as plt
 from os import path as pth
@@ -58,7 +58,7 @@ for dataset in datasets:
 	random_policy_reward = get_random_policy_reward(dataset)
 
 	#Get test and train data
-	df = pd.read_csv(f"spn/data/{dataset}/{dataset}_new.tsv", sep='\t')
+	df = pd.read_csv(f"spn/data/{dataset}/{dataset}.tsv", sep='\t')
 	df, column_titles = align_data(df, partial_order)
 	data = df.values
 
@@ -86,7 +86,8 @@ for dataset in datasets:
 
 		# plot the statistics
 		plt.close()
-		
+		print(avg_ll)
+		print(ll_dev)
 		plt.plot([original_stats["ll"]]*len(avg_ll), linestyle="dotted", color ="red", label="LearnSPMN")
 		plt.errorbar(np.arange(len(avg_ll)), avg_ll, yerr=ll_dev, marker="o", label="Anytime")
 		plt.title(f"{dataset} Log Likelihood")

@@ -13,7 +13,7 @@ import multiprocessing
 
 instances = 500000
 n_actions = 4
-ext = "_new"
+ext = ""
 
 dataset = 'FrozenLake'
 #datasets = ["Export_Textiles", 'Test_Strep', 'LungCancer_Staging', 'HIV_Screening', 'Computer_Diagnostician', 'Powerplant_Airpollution']

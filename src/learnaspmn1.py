@@ -44,7 +44,7 @@ for dataset in datasets:
 	meta_types = [MetaType.DISCRETE]*(len(feature_names)-1)+[MetaType.UTILITY]
 
 			
-	df = pd.read_csv(f"spn/data/{dataset}/{dataset}_new.tsv", sep='\t')
+	df = pd.read_csv(f"spn/data/{dataset}/{dataset}.tsv", sep='\t')
 
 	df, column_titles = align_data(df, partial_order)
 
