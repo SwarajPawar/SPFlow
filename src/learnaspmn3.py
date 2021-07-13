@@ -69,7 +69,7 @@ for dataset in datasets:
 	aspmn = Anytime_SPMN(dataset, path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=True, util_to_bin = False)
 	
 	#Start anytime learning
-	for i, output in enumerate(aspmn.learn_aspmn(train, test, get_stats=True, evaluate_parallel=True)):
+	for i, output in enumerate(aspmn.learn_aspmn(train, test, get_stats=True, evaluate_parallel=True, rewards_batch_size=1000, rewards_batch_count=5)):
 
 		spmn, stats = output
 
