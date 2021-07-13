@@ -69,14 +69,12 @@ for dataset in datasets:
 	aspmn = Anytime_SPMN(dataset, path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=True, util_to_bin = False)
 	
 	#Start anytime learning
-	for i, output in enumerate(aspmn.learn_aspmn(train, test, get_stats=True, evaluate_parallel=True, rewards_batch_size=1000, rewards_batch_count=5)):
+	for i, output in enumerate(aspmn.learn_aspmn(train, test, get_stats=True, evaluate_parallel=True)):
 
 		spmn, stats = output
 
 		#Plot the SPMN
 		plot_spn(spmn, f'{plot_path}/spmn{i}.pdf', feature_labels=feature_labels)
-
-		print(stats)
 
 		#Get stats
 		avg_ll = stats["ll"]
@@ -88,8 +86,6 @@ for dataset in datasets:
 
 		# plot the statistics
 		plt.close()
-		print(avg_ll)
-		print(ll_dev)
 		plt.plot([original_stats["ll"]]*len(avg_ll), linestyle="dotted", color ="red", label="LearnSPMN")
 		plt.errorbar(np.arange(len(avg_ll)), avg_ll, yerr=ll_dev, marker="o", label="Anytime")
 		plt.title(f"{dataset} Log Likelihood")
