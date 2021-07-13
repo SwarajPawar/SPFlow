@@ -512,13 +512,14 @@ class Anytime_SPMN:
 				all_nodes.append(nodes)
 				all_avg_rewards.append(avg_rewards)
 				all_reward_dev.append(reward_dev)
-
+				
 				stats["ll"] = all_avg_ll
-				stats["ll_dev"] = all_ll_dev,
-				stats["meu"] = all_meus,
-				stats["nodes"] = all_nodes,
-				stats["reward"] = all_avg_rewards,
+				stats["ll_dev"] = all_ll_dev
+				stats["meu"] = all_meus
+				stats["nodes"] = all_nodes
+				stats["reward"] = all_avg_rewards
 				stats["reward_dev"] = all_reward_dev
+				
 			
 				#Print the stats
 				print("\n\n\n\n\n")
