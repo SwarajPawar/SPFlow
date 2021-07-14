@@ -1,8 +1,0 @@
-
-Export_Textiles
-	Log Likelihood : -1.0893151805811623
-	Log Likelihood Deviation: 0.0021715837203045837
-	MEU : 1722313.8158882717
-	Nodes : 38
-	Average Rewards : 1720446.0679999997
-	Rewards Deviation : 4042.1357846658225

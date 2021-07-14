@@ -479,8 +479,8 @@ class Anytime_SPMN:
 			spmn = self.__learn_spmn_structure(train, remaining_vars_scope, curr_information_set_scope, index)
 			end_time = time.time()
 			print("SPMN Learned")
-			#spmn = Prune(spmn)
-			self.spmn = Prune(spmn)
+			self.spmn = spmn
+			#self.spmn = Prune(spmn)
 
 			#Get Run time
 			runtime = end_time - start_time
@@ -496,15 +496,15 @@ class Anytime_SPMN:
 
 			if get_stats:
 				#Store the stats in a dictionary
-				
+				avg_rewards, reward_dev = None, None
 				meu_ = self.evaluate_meu()
 				nodes = self.evaluate_nodes()
 				if evaluate_parallel:
 					avg_ll, ll_dev = self.evaluate_loglikelihood_parallel(test, batches=log_likelihood_batches)
-					avg_rewards, reward_dev = self.evaluate_rewards_parallel(batch_size=rewards_batch_size, batches=rewards_batch_count)
+					#avg_rewards, reward_dev = self.evaluate_rewards_parallel(batch_size=rewards_batch_size, batches=rewards_batch_count)
 				else:
 					avg_ll, ll_dev = self.evaluate_loglikelihood_sequential(test, batches=log_likelihood_batches)
-					avg_rewards, reward_dev = self.evaluate_rewards_sequential(batch_size=rewards_batch_size, batches=rewards_batch_count)
+					#avg_rewards, reward_dev = self.evaluate_rewards_sequential(batch_size=rewards_batch_size, batches=rewards_batch_count)
 
 				all_avg_ll.append(avg_ll)
 				all_ll_dev.append(ll_dev)

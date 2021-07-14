@@ -29,7 +29,7 @@ import sys, os
 
 datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'HIV_Screening', 'Computer_Diagnostician', 'Test_Strep', 'LungCancer_Staging']
 datasets = ['Test_Strep', 'LungCancer_Staging']
-path = "new_results_depth"
+path = "new_results_depth_no_prune"
 
 
 
@@ -62,7 +62,7 @@ for dataset in datasets:
 	df, column_titles = align_data(df, partial_order)
 	data = df.values
 
-	test_size = int(data.shape[0]*0.2)
+	test_size = int(data.shape[0]*0.1)
 	train, test = data, np.array(random.sample(list(data), test_size))
 
 	#Initialize anytime Learning
@@ -125,6 +125,6 @@ for dataset in datasets:
 		plt.legend()
 		plt.savefig(f"{plot_path}/rewards.png", dpi=100)
 		plt.close()
-
+		
 
 		
