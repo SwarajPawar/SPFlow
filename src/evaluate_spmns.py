@@ -30,9 +30,9 @@ import pickle
 
 datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'HIV_Screening', 'Computer_Diagnostician', 'Test_Strep', 'LungCancer_Staging']
 datasets = ['Test_Strep', 'LungCancer_Staging']
-path = "new_results_depth_no_prune"
+path = "new_results_depth"
 
-model_count = 10
+model_count = 11
 
 
 
@@ -70,6 +70,9 @@ for dataset in datasets:
 		file = open(f"{path}/models/spmn_{model}.pkle","rb")
 		spmn = pickle.load(file)
 		file.close()
+
+		if not spmn:
+			print("Is None")
 
 		avg_rewards, reward_dev = aspmn.evaluate_rewards_parallel(spmn = spmn)
 		all_avg_rewards.append(avg_rewards)
