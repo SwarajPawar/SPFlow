@@ -72,6 +72,8 @@ for dataset in datasets:
 
 		if not spmn:
 			print("Is None")
+		else:
+			print("Not None")
 
 		avg_rewards, reward_dev = aspmn.evaluate_rewards_parallel(spmn = spmn)
 		all_avg_rewards.append(avg_rewards)
