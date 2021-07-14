@@ -576,6 +576,8 @@ class Anytime_SPMN:
 		#Get nodes in the network
 		if spmn is not None:
 			self.spmn = spmn
+		if not self.spmn:
+			return None
 		return get_structure_stats_dict(spmn)["nodes"]
 		
 	def evaluate_loglikelihood_parallel(self, test, spmn=None, batches=10):
@@ -585,6 +587,9 @@ class Anytime_SPMN:
 
 		if spmn is not None:
 			self.spmn = spmn
+
+		if not self.spmn:
+			return None
 
 		#Initilize parameters for Log-likelihood evaluation
 		total_ll = 0
@@ -617,6 +622,9 @@ class Anytime_SPMN:
 		if spmn is not None:
 			self.spmn = spmn
 
+		if not self.spmn:
+			return None
+
 		#Initilize parameters for Log-likelihood evaluation
 		total_ll = 0
 		trials1 = test.shape[0]
@@ -648,6 +656,9 @@ class Anytime_SPMN:
 		if spmn is not None:
 			self.spmn = spmn
 
+		if not self.spmn:
+			return None
+
 		test_data = [[np.nan]*len(self.params.feature_names)]
 		m = meu(spmn, test_data) 
 		return m[0]
@@ -661,9 +672,11 @@ class Anytime_SPMN:
 		if not self.env:
 			return None, None
 
-
 		if spmn is not None:
 			self.spmn = spmn
+
+		if not self.spmn:
+			return None
 
 		#Initialize parameters for computing rewards
 		total_reward = 0
@@ -693,10 +706,12 @@ class Anytime_SPMN:
 
 		if not self.env:
 			return None, None
-
 		
 		if spmn is not None:
 			self.spmn = spmn
+			
+		if not self.spmn:
+			return None
 
 		#Initialize parameters for computing rewards
 		total_reward = 0
