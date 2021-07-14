@@ -25,6 +25,7 @@ from spn.io.Graphics import plot_spn
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
+import pickle
 
 
 datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'HIV_Screening', 'Computer_Diagnostician', 'Test_Strep', 'LungCancer_Staging']
