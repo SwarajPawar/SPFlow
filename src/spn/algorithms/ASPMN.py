@@ -664,6 +664,7 @@ class Anytime_SPMN:
 
 		if not spmn:
 			spmn = self.spmn
+			print("None")
 
 		#Initialize parameters for computing rewards
 		total_reward = 0
