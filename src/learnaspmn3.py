@@ -28,7 +28,7 @@ import sys, os
 
 
 datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'HIV_Screening', 'Computer_Diagnostician', 'Test_Strep', 'LungCancer_Staging']
-datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'HIV_Screening', 'Computer_Diagnostician']
+datasets = ['Test_Strep', 'LungCancer_Staging']
 path = "new_results_depth"
 
 
