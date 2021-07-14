@@ -66,20 +66,23 @@ for dataset in datasets:
 	#Start evaluation
 	for model in range(model_count):
 
+		#Get the model from the file
 		file = open(f"{path}/models/spmn_{model}.pkle","rb")
 		spmn = pickle.load(file)
 		file.close()
 
-
+		#Evaluate the reward for the SPMNs
 		avg_rewards, reward_dev = aspmn.evaluate_rewards_parallel(spmn = spmn)
 		all_avg_rewards.append(avg_rewards)
 		all_reward_dev.append(reward_dev)
+
+		#Save the results to a file
 		f = open(f"{path}/reward_stats.txt", "w")
 		f.write(f"\n\tAverage Reward : {all_avg_rewards}")
 		f.write(f"\n\tReward Deviation: {all_reward_dev}")
 		f.close()
 
-		
+		#Plot the reward
 		rand_reward = np.array([random_policy_reward["reward"]]*len(all_avg_rewards))
 		dev = np.array([random_policy_reward["dev"]]*len(all_avg_rewards))
 		plt.fill_between(np.arange(len(all_avg_rewards)), rand_reward-dev, rand_reward+dev, alpha=0.1, color="lightgrey")
