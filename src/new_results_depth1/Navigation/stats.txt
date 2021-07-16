@@ -1,0 +1,12 @@
+
+Navigation
+	Run Time : [145.29267168045044, 436.09778928756714]
+	Log Likelihood : [-4.0880219823450314, -2.049680238096561]
+	Log Likelihood Deviation: [0.09862152329505344, 0.07712501063510499]
+	MEU : [-4.776024118453267, -4.765703262088994]
+	Nodes : [893, 4621]
+	Average Rewards : [None, None]
+	Rewards Deviation : [None, None]
+
+
+

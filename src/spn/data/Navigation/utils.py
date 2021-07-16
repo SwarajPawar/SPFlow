@@ -58,7 +58,7 @@ class Navigation:
 
 	def __init__(self):
 		self.decisions = 5
-		self.info_set_size = 1
+		self.info_set_size = 6
 
 
 	def reset(self):

@@ -604,7 +604,7 @@ class Anytime_SPMN:
 
 		if not self.spmn:
 			return None
-		return get_structure_stats_dict(spmn)["nodes"]
+		return get_structure_stats_dict(self.spmn)["nodes"]
 		
 	def evaluate_loglikelihood_parallel(self, test, spmn=None, batches=10):
 
@@ -690,7 +690,7 @@ class Anytime_SPMN:
 		return m[0]
 
 
-	def evaluate_rewards_parallel(self, spmn=None, batch_size = 20000, batches = 25):
+	def evaluate_rewards_parallel(self, spmn=None, batch_size = 20000, batches = 25, interval_size = 20000):
 
 		#Initialize domain environment
 		self.env = get_env(self.dataset)
@@ -717,6 +717,18 @@ class Anytime_SPMN:
 			rewards = pool.map(self.get_reward, ids)
 			reward_batch.append(sum(rewards) / batch_size)
 			printProgressBar(y+1, batches, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+
+
+		intervals = int(batch_size/interval_size)
+		for x in range(batches):
+			rewards = list()
+			for y in range(intervals):
+				reward_slice = list()
+				ids = [None for z in range(interval_size)]
+				reward_slice = pool.map(self.get_reward, ids)
+				rewards += reward_slice
+				printProgressBar(x*intervals + y+1, batches*intervals, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
+			reward_batch.append(sum(rewards) / batch_size)
 
 		#get the mean and std dev of the rewards    
 		avg_rewards = np.mean(reward_batch)
