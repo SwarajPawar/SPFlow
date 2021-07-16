@@ -43,12 +43,15 @@ def convert_state_variables_Navigation(state):
 	Robot_at_6 = state[3]
 
 	Robot_Locations = [Robot_at_1, Robot_at_2, Robot_at_3, Robot_at_4, Robot_at_5, Robot_at_6]
+	return Robot_Locations
+	'''
 	if 1 not in Robot_Locations:
 		Robot_Location = 0
 	else:
 		Robot_Location = Robot_Locations.index(1)
 
 	return [Robot_Location]
+	'''
 
 
 class Navigation:

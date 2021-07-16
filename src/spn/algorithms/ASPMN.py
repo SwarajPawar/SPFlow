@@ -12,6 +12,7 @@ from spn.io.Graphics import plot_spn
 from spn.io.ProgressBar import printProgressBar
 from spn.data.simulator import get_env
 from spn.algorithms.MEU import best_next_decision
+from spn.algorithms.Validity import is_valid_spmn
 import logging
 import numpy as np
 import matplotlib.pyplot as plt
@@ -479,8 +480,15 @@ class Anytime_SPMN:
 			spmn = self.__learn_spmn_structure(train, remaining_vars_scope, curr_information_set_scope, index)
 			end_time = time.time()
 			print("SPMN Learned")
-			self.spmn = spmn
-			#self.spmn = Prune(spmn)
+
+			#self.spmn = spmn
+			self.spmn = Prune(spmn)
+
+			'''
+			if not is_valid_spmn(self.spmn):
+				print("Not Valid")
+				return	
+			'''		
 
 			#Get Run time
 			runtime = end_time - start_time
@@ -576,7 +584,7 @@ class Anytime_SPMN:
 		#Get nodes in the network
 		if spmn is not None:
 			self.spmn = spmn
-		return get_structure_stats_dict(spmn)["nodes"]
+		return get_structure_stats_dict(self.spmn)["nodes"]
 		
 	def evaluate_loglikelihood_parallel(self, test, spmn=None, batches=10):
 
@@ -649,7 +657,7 @@ class Anytime_SPMN:
 			self.spmn = spmn
 
 		test_data = [[np.nan]*len(self.params.feature_names)]
-		m = meu(spmn, test_data) 
+		m = meu(self.spmn, test_data) 
 		return m[0]
 
 

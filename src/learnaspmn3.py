@@ -28,8 +28,8 @@ import sys, os
 
 
 datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'HIV_Screening', 'Computer_Diagnostician', 'Test_Strep', 'LungCancer_Staging']
-datasets = ['Test_Strep', 'LungCancer_Staging']
-path = "new_results_depth_no_prune"
+datasets = ['Export_Textiles']
+path = "test"
 
 
 
@@ -77,6 +77,7 @@ for dataset in datasets:
 		plot_spn(spmn, f'{plot_path}/spmn{i}.pdf', feature_labels=feature_labels)
 
 		#Get stats
+		runtime = stats["runtime"]
 		avg_ll = stats["ll"]
 		ll_dev = stats["ll_dev"]
 		meus = stats["meu"]
@@ -85,6 +86,14 @@ for dataset in datasets:
 		reward_dev = stats["reward_dev"]
 
 		# plot the statistics
+
+		plt.close()
+		plt.plot(runtime, marker="o", label="Anytime")
+		plt.title(f"{dataset} Run Time (in seconds)")
+		plt.legend()
+		plt.savefig(f"{plot_path}/runtime.png", dpi=100)
+		plt.close()
+
 		plt.close()
 		plt.plot([original_stats["ll"]]*len(avg_ll), linestyle="dotted", color ="red", label="LearnSPMN")
 		plt.errorbar(np.arange(len(avg_ll)), avg_ll, yerr=ll_dev, marker="o", label="Anytime")

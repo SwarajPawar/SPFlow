@@ -95,7 +95,7 @@ for dataset in datasets:
 		plt.errorbar(np.arange(len(all_avg_rewards)), all_avg_rewards, yerr=all_reward_dev, marker="o", label="Anytime")
 		plt.title(f"{dataset} Average Rewards")
 		plt.legend()
-		plt.savefig(f"{plot_path}/rewards.png", dpi=100)
+		plt.savefig(f"{path}/rewards.png", dpi=100)
 		plt.close()
 		
 

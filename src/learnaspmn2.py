@@ -26,8 +26,8 @@ from os import path as pth
 import sys, os
 
 
-datasets = ['Elevators']
-path = "latest_rewards"
+datasets = ['Navigation']
+path = "new_results_depth"
 
 
 
@@ -55,7 +55,7 @@ for dataset in datasets:
 	df, column_titles = align_data(df, partial_order)
 	data = df.values
 
-	test_size = int(data.shape[0]*0.1)
+	test_size = int(data.shape[0]*0.02)
 	train, test = data, np.array(random.sample(list(data), test_size))
 
 	#Initialize anytime Learning
@@ -76,7 +76,7 @@ for dataset in datasets:
 
 
 	#Start anytime learning
-	for i, output in enumerate(aspmn.learn_aspmn(train, get_stats=False)):
+	for i, output in enumerate(aspmn.learn_aspmn(train, test, get_stats=True, evaluate_parallel=True)):
 
 		spmn, stats = output
 
@@ -86,6 +86,48 @@ for dataset in datasets:
 		
 		#Plot the SPMN
 		#plot_spn(spmn, f'{plot_path}/spmn{i}.pdf', feature_labels=feature_labels)
+
+		#Get stats
+		runtime = stats["runtime"]
+		avg_ll = stats["ll"]
+		ll_dev = stats["ll_dev"]
+		meus = stats["meu"]
+		nodes = stats["nodes"]
+
+		# plot the statistics
+
+		plt.close()
+		plt.plot(runtime, marker="o", label="Anytime")
+		plt.title(f"{dataset} Run Time (in seconds)")
+		plt.legend()
+		plt.savefig(f"{plot_path}/runtime.png", dpi=100)
+		plt.close()
+
+		plt.close()
+		plt.errorbar(np.arange(len(avg_ll)), avg_ll, yerr=ll_dev, marker="o", label="Anytime")
+		plt.title(f"{dataset} Log Likelihood")
+		plt.legend()
+		plt.savefig(f"{plot_path}/ll.png", dpi=100)
+		plt.close()
+		
+		plt.plot(meus, marker="o", label="Anytime")
+		plt.title(f"{dataset} MEU")
+		plt.legend()
+		plt.savefig(f"{plot_path}/meu.png", dpi=100)
+		plt.close()
+
+		plt.plot(nodes, marker="o", label="Anytime")
+		plt.title(f"{dataset} Nodes")
+		plt.legend()
+		plt.savefig(f"{plot_path}/nodes.png", dpi=100)
+		plt.close()
+
+		'''
+		#Get stats
+		all_runtime = stats["runtime"]
+		f = open(f"{plot_path}/stats.txt", "a")
+		f.write(f"\n\tRuntime : {all_runtime}")
+		f.close()
 
 		#Get stats
 		all_nodes.append(aspmn.evaluate_nodes(spmn))
@@ -106,7 +148,7 @@ for dataset in datasets:
 		f.write(f"\n\tLog Likelihood : {all_avg_ll}")
 		f.write(f"\n\tLog Likelihood Deviation: {all_ll_dev}")
 		f.close()
-
+		'''
 
 
 		
