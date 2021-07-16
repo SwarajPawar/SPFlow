@@ -27,7 +27,7 @@ import sys, os
 
 
 datasets = ['Navigation']
-path = "new_results_depth"
+path = "new_results_depth1"
 
 
 
