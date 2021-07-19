@@ -16,7 +16,8 @@ optimal_meu = {
 	'Powerplant_Airpollution': -2760000,
 	'HIV_Screening': 42.5597,
 	'Test_Strep': 54.9245,
-	'LungCancer_Staging': 3.12453
+	'LungCancer_Staging': 3.12453,
+	'Navigation': -3.09726
 }
 
 #Rewards by simulating random policy
@@ -27,6 +28,7 @@ random_reward = {
 	'HIV_Screening': {'reward': 42.3740002199867, 'dev':0.07524234474837802},
 	'Test_Strep': {'reward': 54.89614493400057, 'dev':0.012847272731391593},
 	'LungCancer_Staging': {'reward': 2.672070640000026, 'dev':0.007416967451081523},
+	'Navigation': {'reward': -4.941799999999999, 'dev':0.018664404624846833},
 }
 
 def get_original_stats(dataset):

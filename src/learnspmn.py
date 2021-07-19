@@ -35,7 +35,7 @@ from collections import Counter
 
 datasets = ['Computer_Diagnostician',  'Test_Strep', 'LungCancer_Staging']
 #datasets = ['Export_Textiles','HIV_Screening, 'Powerplant_Airpollution', ]
-datasets = ['FrozenLake' ]
+datasets = ['Navigation' ]
 path = "original_new"
 
 def get_loglikelihood(instance):
@@ -51,11 +51,6 @@ def get_reward(ids):
 		action = output[0][0]
 		#policy += f"{action}  "
 		state, reward, done = env.step(action)
-		'''
-		if action==1:
-			print(state)
-			#
-		'''
 		if done:
 			return reward
 			#return policy
@@ -87,8 +82,7 @@ for dataset in datasets:
 	df, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
 	
 	data = df.values
-	#train, test = train_test_split(data, test_size=0.9, shuffle=True)
-	train, test = data, data #random.sample(list(data), 1000)
+	train, test = data, data #random.sample(list(data), 10000)
 
 	print("Start Learning...")
 	spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, meta_types, cluster_by_curr_information_set = True, util_to_bin = False)
@@ -129,12 +123,11 @@ for dataset in datasets:
 	m = meu(spmn, test_data)
 	meus = (m[0])
 	
-	
+	'''
 	env = get_env(dataset)
 	total_reward = 0
-	#trials = 200000
 	batch_count = 25
-	batch_size = 20000 #int(trials / batch_count)
+	batch_size = 20000 
 	batch = list()
 
 	pool = multiprocessing.Pool()
@@ -144,11 +137,12 @@ for dataset in datasets:
 		
 		ids = [None for x in range(batch_size)]
 		rewards = pool.map(get_reward, ids)
-		'''
-		policies = pool.map(get_reward, ids)
-		policy_set += policies
-		print(Counter(policy_set))
-		'''
+		
+
+		#policies = pool.map(get_reward, ids)
+		#policy_set += policies
+		#print(Counter(policy_set))
+		
 		batch.append(sum(rewards)/batch_size)
 		#print(batch[-1])
 		printProgressBar(z+1, batch_count, prefix = f'Average Reward Evaluation :', suffix = 'Complete', length = 50)
@@ -156,21 +150,22 @@ for dataset in datasets:
 	
 	avg_rewards = np.mean(batch)
 	reward_dev = np.std(batch)
-	
+	'''
+
 	print(f"\n\tLog Likelihood : {ll}")
 	print(f"\n\tMEU : {meus}")
 	print(f"\n\tNodes : {nodes}")
-	print(f"\n\tAverage rewards : {avg_rewards}")
-	print(f"\n\tDeviation : {reward_dev}")
+	#print(f"\n\tAverage rewards : {avg_rewards}")
+	#print(f"\n\tDeviation : {reward_dev}")
 	
 	
-	f = open(f"{path}/{dataset}/stats1.txt", "w")
+	f = open(f"{path}/{dataset}/stats.txt", "w")
 	f.write(f"\n{dataset}")
 	f.write(f"\n\tLog Likelihood : {ll}")
 	f.write(f"\n\tMEU : {meus}")
 	f.write(f"\n\tNodes : {nodes}")
-	f.write(f"\n\tAverage rewards : {avg_rewards}")
-	f.write(f"\n\tDeviation : {reward_dev}")
+	#f.write(f"\n\tAverage rewards : {avg_rewards}")
+	#f.write(f"\n\tDeviation : {reward_dev}")
 	f.close()
 	
 	

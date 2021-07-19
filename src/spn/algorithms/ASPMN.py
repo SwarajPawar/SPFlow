@@ -480,7 +480,7 @@ class Anytime_SPMN:
 		while(True):
 
 			index = 0
-			print(f"\nIteration: {i}\n")
+			print(f"\nIteration: {i+1}\n")
 			
 			#Get Current and remaining scopes and initialize next operation
 			curr_information_set_scope = np.array(range(len(self.params.partial_order[0]))).tolist()
@@ -514,7 +514,7 @@ class Anytime_SPMN:
 
 			#Save the model
 			if save_models:
-				file = open(f"{self.plot_path}/models/spmn_{i}.pkle",'wb')
+				file = open(f"{self.plot_path}/models/spmn_{i+1}.pkle",'wb')
 				pickle.dump(self.spmn, file)
 				file.close()
 

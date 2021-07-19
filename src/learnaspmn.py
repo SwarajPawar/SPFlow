@@ -77,6 +77,7 @@ for dataset in datasets:
 		plot_spn(spmn, f'{plot_path}/spmn{i}.pdf', feature_labels=feature_labels)
 
 		#Get stats
+		runtime = stats["runtime"]
 		avg_ll = stats["ll"]
 		ll_dev = stats["ll_dev"]
 		meus = stats["meu"]
@@ -85,6 +86,12 @@ for dataset in datasets:
 		reward_dev = stats["reward_dev"]
 
 		# plot the statistics
+
+		plt.close()
+		plt.plot(runtime, marker="o", label="Anytime")
+		plt.title(f"{dataset} Run Time (in seconds)")
+		plt.legend()
+		plt.savefig(f"{plot_path}/runtime.png", dpi=100)
 		plt.close()
 		
 		plt.plot([original_stats["ll"]]*len(avg_ll), linestyle="dotted", color ="red", label="LearnSPMN")
