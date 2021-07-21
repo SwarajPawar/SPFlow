@@ -32,6 +32,7 @@ import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 from collections import Counter
+import time
 
 datasets = ['Computer_Diagnostician',  'Test_Strep', 'LungCancer_Staging']
 #datasets = ['Export_Textiles','HIV_Screening, 'Powerplant_Airpollution', ]
@@ -82,12 +83,21 @@ for dataset in datasets:
 	df, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
 	
 	data = df.values
-	train, test = data, data #random.sample(list(data), 10000)
+	train, test = data, random.sample(list(data), 50000)
 
 	print("Start Learning...")
 	spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, meta_types, cluster_by_curr_information_set = True, util_to_bin = False)
+	start = time.time()
 	spmn = spmn.learn_spmn(train)
+	end = time.time()
 	print("Done")
+
+
+	runtime = end - start
+
+	file = open(f"{path}/spmn.pkle",'wb')
+	pickle.dump(spmn, file)
+	file.close()
 	
 	
 	nodes = get_structure_stats_dict(spmn)["nodes"]
@@ -152,6 +162,7 @@ for dataset in datasets:
 	reward_dev = np.std(batch)
 	'''
 
+	print(f"\n\tRun Time: {runtime}")
 	print(f"\n\tLog Likelihood : {ll}")
 	print(f"\n\tMEU : {meus}")
 	print(f"\n\tNodes : {nodes}")
@@ -161,6 +172,7 @@ for dataset in datasets:
 	
 	f = open(f"{path}/{dataset}/stats.txt", "w")
 	f.write(f"\n{dataset}")
+	f.write(f"\n\tRun Time : {runtime}")
 	f.write(f"\n\tLog Likelihood : {ll}")
 	f.write(f"\n\tMEU : {meus}")
 	f.write(f"\n\tNodes : {nodes}")
