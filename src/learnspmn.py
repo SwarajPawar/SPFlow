@@ -102,8 +102,8 @@ for dataset in datasets:
 	
 	nodes = get_structure_stats_dict(spmn)["nodes"]
 	
-	
-	plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
+	if nodes <= 500:
+		plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
 
 
 	pool = multiprocessing.Pool()
