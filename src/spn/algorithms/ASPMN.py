@@ -5,13 +5,13 @@ from spn.algorithms.LearningWrappers import learn_parametric_aspmn, learn_mspn_f
 from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py1, get_split_cols_RDC_py, get_split_cols_single_RDC_py
 from spn.algorithms.splitting.Base import split_all_cols
 from spn.algorithms.SPMNHelper import *
-from spn.algorithms.MEU import meu
+from spn.algorithms.Anytime_MEU import meu
 from spn.algorithms.Inference import log_likelihood
 from spn.algorithms.Statistics import get_structure_stats_dict
 from spn.io.Graphics import plot_spn
 from spn.io.ProgressBar import printProgressBar
 from spn.data.simulator import get_env
-from spn.algorithms.MEU import best_next_decision
+from spn.algorithms.Anytime_MEU import best_next_decision
 from spn.algorithms.Validity import is_valid_spmn
 import logging
 import numpy as np
