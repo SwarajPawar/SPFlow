@@ -73,7 +73,7 @@ for dataset in datasets:
 		file.close()
 
 		#Evaluate the reward for the SPMNs
-		avg_rewards, reward_dev = aspmn.evaluate_rewards_parallel(spmn = spmn)
+		avg_rewards, reward_dev = aspmn.evaluate_rewards_parallel(spmn = spmn, batch_size = 15000, batches = 15, interval_size = 5000)
 		all_avg_rewards.append(avg_rewards)
 		all_reward_dev.append(reward_dev)
 
