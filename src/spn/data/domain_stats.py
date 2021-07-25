@@ -7,7 +7,7 @@ original_stats = {
 	'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.559788119992646, 'dev':0.06067708771159484},
 	'Computer_Diagnostician': {"ll" : -0.9011245432112749, "meu" : -208.351, 'nodes' : 56, 'reward':-210.15520000000004, 'dev':0.3810022440878799},
 	'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2759870.4, 'dev':6825.630813338794},
-	'Navigation': {"ll" : -0.24199351938969704, "meu" : -3.120315581854044, 'nodes' : 17338, 'reward':None, 'dev':None}
+	'Navigation': {"ll" : -0.24199351938969704, "meu" : -3.120315581854044, 'nodes' : 17338, 'reward':-3.1046000000000005, 'dev':0.042266298631415615}
 }
 
 #Optimal MEU values from the IDs

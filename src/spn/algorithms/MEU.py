@@ -51,10 +51,15 @@ def meu_max(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
     # else:
     dec_value = np.select([np.isnan(decision_value_given), True],
                           [max_value, decision_value_given]).astype(int)
-    dec_value_to_child_id = lambda val: node.children[list(node.dec_values).index(val)].id
-    dec_value_to_child_id = np.vectorize(dec_value_to_child_id)
-    child_id = dec_value_to_child_id(dec_value)
-    meu_per_node[:,node.id] = meu_per_node[np.arange(meu_per_node.shape[0]),child_id]
+
+    if dec_value[0] not in node.dec_values:
+        meu_per_node[:, node.id] = np.nan
+    else:
+
+        dec_value_to_child_id = lambda val: node.children[list(node.dec_values).index(val)].id
+        dec_value_to_child_id = np.vectorize(dec_value_to_child_id)
+        child_id = dec_value_to_child_id(dec_value)
+        meu_per_node[:,node.id] = meu_per_node[np.arange(meu_per_node.shape[0]),child_id]
 
 
 def meu_util(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
