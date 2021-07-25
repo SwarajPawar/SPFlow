@@ -37,7 +37,7 @@ import pickle
 
 datasets = ['Computer_Diagnostician',  'Test_Strep', 'LungCancer_Staging']
 #datasets = ['Export_Textiles','HIV_Screening, 'Powerplant_Airpollution', ]
-datasets = ['Navigation' ]
+datasets = ['Elevators' ]
 path = "original_new"
 
 def get_loglikelihood(instance):
@@ -84,7 +84,7 @@ for dataset in datasets:
 	df, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
 	
 	data = df.values
-	train, test = data, np.array(random.sample(list(data), 50000))
+	train, test = data, data #np.array(random.sample(list(data), 50000))
 
 	print("Start Learning...")
 	spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, meta_types, cluster_by_curr_information_set = True, util_to_bin = False)
