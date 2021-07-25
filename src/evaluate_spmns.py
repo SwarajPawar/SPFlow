@@ -41,7 +41,7 @@ model_count = 11
 for dataset in datasets:
 	
 	print(f"\n\n\n{dataset}\n\n\n")
-	path = f'{path}/{dataset}'
+	plot_path = f'{path}/{dataset}'
 
 	
 
@@ -68,7 +68,7 @@ for dataset in datasets:
 	for model in range(model_count):
 
 		#Get the model from the file
-		file = open(f"{path}/models/spmn_{model}.pkle","rb")
+		file = open(f"{plot_path}/models/spmn_{model}.pkle","rb")
 		spmn = pickle.load(file)
 		file.close()
 
@@ -78,7 +78,7 @@ for dataset in datasets:
 		all_reward_dev.append(reward_dev)
 
 		#Save the results to a file
-		f = open(f"{path}/reward_stats.txt", "w")
+		f = open(f"{plot_path}/reward_stats.txt", "w")
 		f.write(f"\n\tAverage Reward : {all_avg_rewards}")
 		f.write(f"\n\tReward Deviation: {all_reward_dev}")
 		f.close()
@@ -98,7 +98,7 @@ for dataset in datasets:
 		plt.errorbar(np.arange(len(all_avg_rewards)), all_avg_rewards, yerr=all_reward_dev, marker="o", label="Anytime")
 		plt.title(f"{dataset} Average Rewards")
 		plt.legend()
-		plt.savefig(f"{path}/rewards.png", dpi=100)
+		plt.savefig(f"{plot_path}/rewards.png", dpi=100)
 		plt.close()
 		
 
