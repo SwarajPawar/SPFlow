@@ -97,58 +97,35 @@ for dataset in datasets:
 		# plot the statistics
 
 		plt.close()
-		plt.plot(runtime, marker="o", label="Anytime")
+		#plt.plot(range(1,len(runtime)+1), [original_stats["runtime"]]*len(runtime), linestyle="dotted", color ="red", label="LearnSPMN")
+		plt.plot(range(1,len(runtime)+1), runtime, marker="o", label="Anytime")
 		plt.title(f"{dataset} Run Time (in seconds)")
 		plt.legend()
 		plt.savefig(f"{plot_path}/runtime.png", dpi=100)
 		plt.close()
 
 		plt.close()
-		plt.errorbar(np.arange(len(avg_ll)), avg_ll, yerr=ll_dev, marker="o", label="Anytime")
+		#plt.plot(range(1,len(avg_ll)+1), [original_stats["ll"]]*len(avg_ll), linestyle="dotted", color ="red", label="LearnSPMN")
+		plt.errorbar(range(1,len(avg_ll)+1), avg_ll, yerr=ll_dev, marker="o", label="Anytime")
 		plt.title(f"{dataset} Log Likelihood")
 		plt.legend()
 		plt.savefig(f"{plot_path}/ll.png", dpi=100)
 		plt.close()
-		
-		plt.plot(meus, marker="o", label="Anytime")
+
+		plt.plot(range(1,len(meus)+1), meus, marker="o", label="Anytime")
+		#plt.plot(range(1,len(meus)+1), [optimal_meu]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
+		#plt.plot(range(1,len(meus)+1), [original_stats["meu"]]*len(meus), linestyle="dotted", color ="red", label="LearnSPMN")
 		plt.title(f"{dataset} MEU")
 		plt.legend()
 		plt.savefig(f"{plot_path}/meu.png", dpi=100)
 		plt.close()
 
-		plt.plot(nodes, marker="o", label="Anytime")
+		plt.plot(range(1,len(nodes)+1), nodes, marker="o", label="Anytime")
+		#plt.plot(range(1,len(nodes)+1), [original_stats["nodes"]]*len(nodes), linestyle="dotted", color ="red", label="LearnSPMN")
 		plt.title(f"{dataset} Nodes")
 		plt.legend()
 		plt.savefig(f"{plot_path}/nodes.png", dpi=100)
 		plt.close()
-
-		'''
-		#Get stats
-		all_runtime = stats["runtime"]
-		f = open(f"{plot_path}/stats.txt", "a")
-		f.write(f"\n\tRuntime : {all_runtime}")
-		f.close()
-
-		#Get stats
-		all_nodes.append(aspmn.evaluate_nodes(spmn))
-		f = open(f"{plot_path}/stats.txt", "a")
-		f.write(f"\n\tNodes : {all_nodes}")
-		f.close()
-
-		all_meus.append(aspmn.evaluate_meu(spmn))
-		f = open(f"{plot_path}/stats.txt", "a")
-		f.write(f"\n\tMEU : {all_meus}")
-		f.close()
-
-		
-		avg_ll, ll_dev = aspmn.evaluate_loglikelihood_sequential(test, spmn)
-		all_avg_ll.append(avg_ll)
-		all_ll_dev.append(ll_dev)
-		f = open(f"{plot_path}/stats.txt", "a")
-		f.write(f"\n\tLog Likelihood : {all_avg_ll}")
-		f.write(f"\n\tLog Likelihood Deviation: {all_ll_dev}")
-		f.close()
-		'''
 
 
 		
