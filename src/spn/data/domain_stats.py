@@ -7,7 +7,8 @@ original_stats = {
 	'HIV_Screening': {"ll" : -0.6276399171508842, "meu" : 42.582734183407034, 'nodes' : 112, 'reward':42.559788119992646, 'dev':0.06067708771159484},
 	'Computer_Diagnostician': {"ll" : -0.9011245432112749, "meu" : -208.351, 'nodes' : 56, 'reward':-210.15520000000004, 'dev':0.3810022440878799},
 	'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2759870.4, 'dev':6825.630813338794},
-	'Navigation': {"ll" : -0.24199351938969704, "meu" : -3.120315581854044, 'nodes' : 17338, 'reward':-3.1046000000000005, 'dev':0.042266298631415615}
+	'Navigation': {"ll" : -0.24199351938969704, "meu" : -3.120315581854044, 'nodes' : 17338, 'reward':-3.1046000000000005, 'dev':0.042266298631415615},
+	'Elevators': {"ll" : 0, "meu" : 0.5, 'nodes' : 38227, 'reward':None, 'dev':None},
 }
 
 #Optimal MEU values from the IDs
@@ -18,7 +19,8 @@ optimal_meu = {
 	'HIV_Screening': 42.5597,
 	'Test_Strep': 54.9245,
 	'LungCancer_Staging': 3.12453,
-	'Navigation': -3.09726
+	'Navigation': -3.09726,
+	'Elevators': 0.5
 }
 
 #Rewards by simulating random policy
@@ -30,6 +32,7 @@ random_reward = {
 	'Test_Strep': {'reward': 54.89614493400057, 'dev':0.012847272731391593},
 	'LungCancer_Staging': {'reward': 2.672070640000026, 'dev':0.007416967451081523},
 	'Navigation': {'reward': -4.941799999999999, 'dev':0.018664404624846833},
+	'Elevators': {'reward' -6.129405499999999: , 'dev':0.006561652878657956},
 }
 
 def get_original_stats(dataset):
