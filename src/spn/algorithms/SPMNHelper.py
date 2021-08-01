@@ -180,6 +180,10 @@ def anytime_split_on_decision_node(data, m=None) :
 def get_split_rows_KMeans(n_clusters=2, pre_proc=None, ohe=False, seed=17):
 
 	def split_rows_KMeans(local_data, ds_context, scope):
+		
+		if local_data.shape[0] == 1:
+			local_data = np.concatenate((local_data, local_data))
+
 		data = preproc(local_data, ds_context, pre_proc, ohe)
 
 		km_model = KMeans(n_clusters=n_clusters, random_state=seed)
@@ -190,6 +194,10 @@ def get_split_rows_KMeans(n_clusters=2, pre_proc=None, ohe=False, seed=17):
 
 def get_split_rows_XMeans(pre_proc=None, ohe=False, seed=17, limit=math.inf, returnk = False, n=100, k=2):
 	def split_rows_XMeans(local_data, ds_context, scope, k=k):
+
+		if local_data.shape[0] == 1:
+			local_data = np.concatenate((local_data, local_data))
+
 		data = preproc(local_data, ds_context, pre_proc, ohe)
 
 		km_model = None
