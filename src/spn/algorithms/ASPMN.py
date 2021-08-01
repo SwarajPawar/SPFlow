@@ -487,7 +487,7 @@ class Anytime_SPMN:
 			remaining_vars_scope = np.array(range(len(self.params.feature_names))).tolist()
 			print(len(curr_information_set_scope))
 			print(len(remaining_vars_scope))
-			print(train.shape[0])
+			print(train.shape[1])
 			self.set_next_operation('Any')
 			self.limit = limit 
 			self.n = n  
