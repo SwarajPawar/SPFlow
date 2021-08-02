@@ -74,7 +74,6 @@ def clusters_by_adjacency_matrix(adm, threshold, n_features):
 def split_data_by_clusters(data, clusters, scope, rows=True):
     unique_clusters = np.unique(clusters)
     result = []
-
     nscope = np.asarray(scope)
 
     for uc in unique_clusters:

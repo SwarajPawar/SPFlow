@@ -332,6 +332,9 @@ class Anytime_SPMN:
 				split_rows = get_split_rows_XMeans(limit=self.limit)    # from SPMNHelper.py
 				#split_rows = get_split_rows_KMeans()
 
+				if remaining_vars_data.shape[0] == 1:
+					remaining_vars_data = np.concatenate((remaining_vars_data, remaining_vars_data))
+
 				if self.cluster_by_curr_information_set:
 
 					curr_information_set_data = column_slice_data_by_scope(remaining_vars_data,
@@ -369,10 +372,8 @@ class Anytime_SPMN:
 
 					# cluster whole remaining variables based on clusters formed.
 					# below methods are useful if clusters were formed on just the current information set
-
 					cluster_indices = get_row_indices_of_cluster(labels_array, cluster_num)
 					cluster_on_remaining_vars = row_slice_data_by_indices(remaining_vars_data, cluster_indices)
-
 					# logging.debug(np.array_equal(cluster_on_remaining_vars, cluster ))
 
 					sum_node_children.append(
