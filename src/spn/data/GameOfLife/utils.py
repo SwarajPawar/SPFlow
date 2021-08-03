@@ -11,8 +11,9 @@ import numpy as np
 	State:
 
 	Cell Locations
-	| 1 | 3 | 5 |
-	| 2 | 4 | 6 |
+	| 1 | 4 | 7 |
+	| 2 | 5 | 8 |
+	| 3 | 6 | 9 |
 	
 	0: Dead
 	1: Alive
@@ -29,6 +30,9 @@ import numpy as np
 	4: Set 4
 	5: Set 5
 	6: Set 6
+	7: Set 7
+	8: Set 8
+	9: Set 9
 
 
 	----------------------------------------------------
@@ -45,8 +49,11 @@ def convert_state_variables_GameOfLife(state):
 	Cell_4 = state[3]
 	Cell_5 = state[4]
 	Cell_6 = state[5]
+	Cell_7 = state[6]
+	Cell_8 = state[7]
+	Cell_9 = state[8]
 
-	cells = [Cell_1, Cell_2, Cell_3, Cell_4, Cell_5, Cell_6]
+	cells = [Cell_1, Cell_2, Cell_3, Cell_4, Cell_5, Cell_6, Cell_7, Cell_8, Cell_9]
 	return cells
 	
 
@@ -54,8 +61,8 @@ def convert_state_variables_GameOfLife(state):
 class GameOfLife:
 
 	def __init__(self):
-		self.decisions = 5
-		self.info_set_size = 6
+		self.decisions = 3
+		self.info_set_size = 9
 
 
 	def reset(self):

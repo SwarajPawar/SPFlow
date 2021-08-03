@@ -8,7 +8,7 @@ original_stats = {
 	'Computer_Diagnostician': {"ll" : -0.9011245432112749, "meu" : -208.351, 'nodes' : 56, 'reward':-210.15520000000004, 'dev':0.3810022440878799},
 	'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2759870.4, 'dev':6825.630813338794},
 	'Navigation': {"ll" : -0.24199351938969704, "meu" : -3.120315581854044, 'nodes' : 17338, 'reward':-3.1046000000000005, 'dev':0.042266298631415615, 'runtime':3610.374293088913},
-	'Elevators': {"ll" : 0, "meu" : 0.5, 'nodes' : 38227, 'reward':None, 'dev':None, 'runtime':2499.035037279129},
+	'Elevators': {"ll" : 0, "meu" : 0.5, 'nodes' : 38227, 'reward':0.5, 'dev':0.0, 'runtime':2499.035037279129},
 }
 
 #Optimal MEU values from the IDs

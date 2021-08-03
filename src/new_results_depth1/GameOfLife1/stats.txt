@@ -1,0 +1,12 @@
+
+GameOfLife
+	Run Time : [634.5038788318634, 4151.638468027115]
+	Log Likelihood : [-11.223379240410171, -12.23058463186012]
+	Log Likelihood Deviation: [0.30228887828681683, 0.49618711043349356]
+	MEU : [104.55008472310767, 103.4067475286069]
+	Nodes : [14340, 171543]
+	Average Rewards : [None, None]
+	Rewards Deviation : [None, None]
+
+
+

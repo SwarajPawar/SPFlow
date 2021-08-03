@@ -21,7 +21,7 @@ def get_decNode(dataset_name):
     elif dataset_name == 'Navigation':
         return [f'Action_{i}' for i in range(5)]
     elif dataset_name == 'GameOfLife':
-        return [f'Action_{i}' for i in range(5)]
+        return [f'Action_{i}' for i in range(3)]
     else:
         print(dataset_name)
 
@@ -117,13 +117,6 @@ def get_partial_order(dataset_name):
         partialOrder += [[f'Elevator_at_Floor_6', f'Person_Waiting_6', f'Person_in_Elevator_Going_Up_6', 
                                 f'Elevator_Direction_6', f'Elevator_Closed_6', 'Reward']]
         return partialOrder
-    '''
-    if dataset_name == 'Navigation':
-        partialOrder = list()
-        for i in range(5):
-            partialOrder += [[f'Robot_loc_{i}'], [f'Action_{i}']]
-        partialOrder += [[f'Robot_loc_5', 'Reward']]
-    '''
     if dataset_name == 'Navigation':
         partialOrder = list()
         for i in range(5):
@@ -132,6 +125,7 @@ def get_partial_order(dataset_name):
         partialOrder += [[f'Robot_at_1_t5', f'Robot_at_2_t5', f'Robot_at_3_t5', 
                                 f'Robot_at_4_t5', f'Robot_at_5_t5', f'Robot_at_6_t5', 'Reward']]
         return partialOrder
+    '''
     if dataset_name == 'GameOfLife':
         partialOrder = list()
         for i in range(5):
@@ -139,6 +133,17 @@ def get_partial_order(dataset_name):
                                 f'Cell_4_t{i}', f'Cell_5_t{i}', f'Cell_6_t{i}'], [f'Action_{i}']]
         partialOrder += [[f'Cell_1_t5', f'Cell_2_t5', f'Cell_3_t5', 
                                 f'Cell_4_t5', f'Cell_5_t5', f'Cell_6_t5', 'Reward']]
+        return partialOrder
+    '''
+    if dataset_name == 'GameOfLife':
+        partialOrder = list()
+        for i in range(3):
+            partialOrder += [[f'Cell_1_t{i}', f'Cell_2_t{i}', f'Cell_3_t{i}', 
+                                f'Cell_4_t{i}', f'Cell_5_t{i}', f'Cell_6_t{i}',
+                                f'Cell_7_t{i}', f'Cell_8_t{i}', f'Cell_9_t{i}'], [f'Action_{i}']]
+        partialOrder += [[f'Cell_1_t3', f'Cell_2_t3', f'Cell_3_t3', 
+                                f'Cell_4_t3', f'Cell_5_t3', f'Cell_6_t3',
+                                f'Cell_7_t3', f'Cell_8_t3', f'Cell_9_t3', 'Reward']]
         return partialOrder
     else:
         print(dataset_name)
@@ -170,25 +175,25 @@ def get_feature_labels(dataset_name):
             features += [f'EF{i}', f'PW{i}', f'PU{i}', f'ED{i}', f'EC{i}',  f'A{i}']
         features += [f'EF6', f'PW6', f'PU6', f'ED6', f'EC6', 'RW']
         return features
-    '''
-    if dataset_name == 'Navigation': 
-        features = list()
-        for i in range(5):
-            features += [f'RL{i}', f'A{i}']
-        features += [f'RL5', 'RW']
-        return features
-    '''
     if dataset_name == 'Navigation': 
         features = list()
         for i in range(5):
             features += [f'R1{i}', f'R2{i}', f'R3{i}', f'R4{i}',  f'R5{i}', f'R6{i}', f'A{i}']
         features += [f'R15', f'R25', f'R35', f'R45', f'R55', f'R65', 'RW']
         return features
+    '''
     if dataset_name == 'GameOfLife': 
         features = list()
         for i in range(5):
             features += [f'C1{i}', f'C2{i}', f'C3{i}', f'C4{i}',  f'C5{i}', f'C6{i}', f'A{i}']
         features += [f'C15', f'C25', f'C35', f'C45', f'C55', f'C65', 'RW']
+        return features
+    '''
+    if dataset_name == 'GameOfLife': 
+        features = list()
+        for i in range(3):
+            features += [f'C1{i}', f'C2{i}', f'C3{i}', f'C4{i}',  f'C5{i}', f'C6{i}', f'C7{i}',  f'C8{i}', f'C9{i}', f'A{i}']
+        features += [f'C13', f'C23', f'C33', f'C43', f'C53', f'C63', f'C73', f'C83', f'C93', 'RW']
         return features
 
 
