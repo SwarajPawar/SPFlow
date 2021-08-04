@@ -491,6 +491,7 @@ class Anytime_SPMN:
 		i = 0
 		while(True):
 
+			'''
 			if i < 2:
 				i += 1
 				limit += 1
@@ -500,7 +501,8 @@ class Anytime_SPMN:
 				if self.vars < 10:
 					step = 1
 				continue
-
+			'''
+			
 			index = 0
 			print(f"\nIteration: {i+1}\n")
 			
