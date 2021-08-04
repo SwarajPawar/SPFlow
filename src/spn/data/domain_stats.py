@@ -33,6 +33,8 @@ random_reward = {
 	'LungCancer_Staging': {'reward': 2.672070640000026, 'dev':0.007416967451081523},
 	'Navigation': {'reward': -4.941799999999999, 'dev':0.018664404624846833},
 	'Elevators': {'reward': -6.129405499999999 , 'dev':0.006561652878657956},
+	'GameOfLife': {'reward': 9.671382000000001 , 'dev':0.02171178887148651},
+	'SysAdmin': {'reward': 12.110048999999998 , 'dev':0.02391732450547092},
 }
 
 def get_original_stats(dataset):

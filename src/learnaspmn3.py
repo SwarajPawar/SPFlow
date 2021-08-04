@@ -28,8 +28,8 @@ import sys, os
 
 
 datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'HIV_Screening', 'Computer_Diagnostician', 'Test_Strep', 'LungCancer_Staging']
-datasets = ['Export_Textiles']
-path = "test"
+datasets = ['LungCancer_Staging']
+path = "lung"
 
 
 
@@ -62,7 +62,7 @@ for dataset in datasets:
 	df, column_titles = align_data(df, partial_order)
 	data = df.values
 
-	test_size = int(data.shape[0]*0.1)
+	test_size = int(data.shape[0]*0.01)
 	train, test = data, np.array(random.sample(list(data), test_size))
 
 	#Initialize anytime Learning
@@ -118,7 +118,7 @@ for dataset in datasets:
 		plt.savefig(f"{plot_path}/nodes.png", dpi=100)
 		plt.close()
 
-		
+		'''
 		rand_reward = np.array([random_policy_reward["reward"]]*len(avg_rewards))
 		dev = np.array([random_policy_reward["dev"]]*len(avg_rewards))
 		plt.fill_between(range(1,len(avg_rewards)+1),  rand_reward-dev, rand_reward+dev, alpha=0.1, color="lightgrey")
@@ -135,6 +135,6 @@ for dataset in datasets:
 		plt.legend()
 		plt.savefig(f"{plot_path}/rewards.png", dpi=100)
 		plt.close()
-		
+		'''
 
 		
