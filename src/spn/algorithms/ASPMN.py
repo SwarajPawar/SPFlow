@@ -458,7 +458,7 @@ class Anytime_SPMN:
 		past3 = list()
 
 		#Initialize lists for storing statistics over iterations
-		
+		'''
 		all_run_time = [226.77999544143677, 1015.1628892421722]
 		all_avg_ll = [-10.794036906417146, -14.194113129551187]
 		all_ll_dev = [0.18122495156089177, 0.39906057259141603]
@@ -475,7 +475,7 @@ class Anytime_SPMN:
 		all_nodes = list()
 		all_avg_rewards = list()
 		all_reward_dev = list()
-		'''
+		
 
 		stats ={"runtime": None,
 				"ll" : None,
@@ -502,7 +502,7 @@ class Anytime_SPMN:
 					step = 1
 				continue
 			'''
-			
+
 			index = 0
 			print(f"\nIteration: {i+1}\n")
 			
