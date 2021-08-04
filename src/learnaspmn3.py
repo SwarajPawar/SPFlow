@@ -88,7 +88,7 @@ for dataset in datasets:
 		# plot the statistics
 
 		plt.close()
-		plt.plot(range(1,len(runtime)+1), [original_stats["runtime"]]*len(runtime), linestyle="dotted", color ="red", label="LearnSPMN")
+		#plt.plot(range(1,len(runtime)+1), [original_stats["runtime"]]*len(runtime), linestyle="dotted", color ="red", label="LearnSPMN")
 		plt.plot(range(1,len(runtime)+1), runtime, marker="o", label="Anytime")
 		plt.title(f"{dataset} Run Time (in seconds)")
 		plt.legend()
