@@ -1,9 +1,9 @@
 
 LungCancer_Staging
-	Run Time : [20.384398221969604]
-	Log Likelihood : [-19.275340363910637]
-	Log Likelihood Deviation: [0.485879376197374]
-	MEU : [66.85696093612827]
-	Nodes : [54]
-	Average Rewards : [None]
-	Rewards Deviation : [None]
+	Run Time : [36.10566473007202, 83.62808299064636, 130.86768174171448]
+	Log Likelihood : [-19.71231372459111, -2.043556275674883, -1.1536160869252967]
+	Log Likelihood Deviation: [0.4917365110781685, 0.024734185575802294, 0.022810379579258046]
+	MEU : [66.85696093612827, 3.105327153893771, 3.138664586296027]
+	Nodes : [54, 110, 245]
+	Average Rewards : [None, None, None]
+	Rewards Deviation : [None, None, None]
