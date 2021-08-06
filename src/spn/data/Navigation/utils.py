@@ -17,13 +17,14 @@ import numpy as np
 	0: Robot Disappeared
 
 
+
 	-----------------------------------------------------
 
 	Actions:
 
 	1: West
-	2: South
-	3: North
+	2: North
+	3: South
 	4: East
 
 

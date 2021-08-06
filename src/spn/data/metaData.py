@@ -18,7 +18,7 @@ def get_decNode(dataset_name):
         return [f'Action_{i}' for i in range(10)]
     elif dataset_name == 'Elevators':
         return [f'Action_{i}' for i in range(6)]
-    elif dataset_name == 'Navigation':
+    elif dataset_name == 'Navigation' or dataset_name == 'CrossingTraffic':
         return [f'Action_{i}' for i in range(5)]
     elif dataset_name == 'GameOfLife':
         return [f'Action_{i}' for i in range(3)]
@@ -44,7 +44,7 @@ def get_utilityNode(dataset_name):
         return ['Reward']
     elif dataset_name == 'Elevators':
         return ['Reward']
-    elif dataset_name == 'Navigation':
+    elif dataset_name == 'Navigation' or dataset_name == 'CrossingTraffic':
         return ['Reward']
     elif dataset_name == 'GameOfLife':
         return ['Reward']
@@ -85,13 +85,10 @@ def get_partial_order(dataset_name):
                         ['Rheumatic_Heart_Disease', 'Die_from_Anaphylaxis', 'Days_with_sore_throat', 'QALE']]
         return partialOrder
     if dataset_name == 'LungCancer_Staging':
+        #partialOrder = [['CT'],['CTResult', 'Mediastinal_Metastases'],['Mediastinoscopy'],['Mediastinoscopy_death', 'Mediastinoscopy_Result'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
         #partialOrder = [['CT'],['CTResult', 'Mediastinal_Metastases'],['Mediastinoscopy'],['Mediastinoscopy_Result', 'Mediastinoscopy_death'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
         #ltest1
-        #partialOrder = [['CT'],['Mediastinal_Metastases', 'CTResult'],['Mediastinoscopy'],['Mediastinoscopy_Result', 'Mediastinoscopy_death'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
-        #ltest2
-        partialOrder = [['CT'],['Mediastinal_Metastases', 'CTResult'],['Mediastinoscopy'],['Mediastinoscopy_death', 'Mediastinoscopy_Result'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
-        #ltest3
-        #partialOrder = [['CT'],['Mediastinal_Metastases'], ['CTResult'],['Mediastinoscopy'],['Mediastinoscopy_Result', 'Mediastinoscopy_death'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
+        partialOrder = [['CT'],['Mediastinal_Metastases', 'CTResult'],['Mediastinoscopy'],['Mediastinoscopy_Result', 'Mediastinoscopy_death'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
         return partialOrder
     if dataset_name == 'HIV_Screening':
         #partialOrder = [['Screen'], ['HIV_Test_Result', 'HIV_Status'],['Treat_Counsel'],
@@ -124,16 +121,16 @@ def get_partial_order(dataset_name):
         partialOrder += [[f'Robot_at_1_t5', f'Robot_at_2_t5', f'Robot_at_3_t5', 
                                 f'Robot_at_4_t5', f'Robot_at_5_t5', f'Robot_at_6_t5', 'Reward']]
         return partialOrder
-    '''
-    if dataset_name == 'GameOfLife':
+    if dataset_name == 'CrossingTraffic':
         partialOrder = list()
         for i in range(5):
-            partialOrder += [[f'Cell_1_t{i}', f'Cell_2_t{i}', f'Cell_3_t{i}', 
-                                f'Cell_4_t{i}', f'Cell_5_t{i}', f'Cell_6_t{i}'], [f'Action_{i}']]
-        partialOrder += [[f'Cell_1_t5', f'Cell_2_t5', f'Cell_3_t5', 
-                                f'Cell_4_t5', f'Cell_5_t5', f'Cell_6_t5', 'Reward']]
+            partialOrder += [[f'Robot_at_1_t{i}', f'Robot_at_2_t{i}', f'Robot_at_3_t{i}', 
+                                f'Robot_at_4_t{i}', f'Robot_at_5_t{i}', f'Robot_at_6_t{i}',
+                                f'Obstacle_at_2_t{i}', f'Obstacle_at_5_t{i}'], [f'Action_{i}']]
+        partialOrder += [[f'Robot_at_1_t5', f'Robot_at_2_t5', f'Robot_at_3_t5', 
+                                f'Robot_at_4_t5', f'Robot_at_5_t5', f'Robot_at_6_t5',
+                                f'Obstacle_at_2_t5', f'Obstacle_at_5_t5', 'Reward']]
         return partialOrder
-    '''
     if dataset_name == 'GameOfLife':
         partialOrder = list()
         for i in range(3):
@@ -180,19 +177,17 @@ def get_feature_labels(dataset_name):
             features += [f'R1{i}', f'R2{i}', f'R3{i}', f'R4{i}',  f'R5{i}', f'R6{i}', f'A{i}']
         features += [f'R15', f'R25', f'R35', f'R45', f'R55', f'R65', 'RW']
         return features
-    '''
-    if dataset_name == 'GameOfLife': 
-        features = list()
-        for i in range(5):
-            features += [f'C1{i}', f'C2{i}', f'C3{i}', f'C4{i}',  f'C5{i}', f'C6{i}', f'A{i}']
-        features += [f'C15', f'C25', f'C35', f'C45', f'C55', f'C65', 'RW']
-        return features
-    '''
     if dataset_name == 'GameOfLife': 
         features = list()
         for i in range(3):
             features += [f'C1{i}', f'C2{i}', f'C3{i}', f'C4{i}',  f'C5{i}', f'C6{i}', f'C7{i}',  f'C8{i}', f'C9{i}', f'A{i}']
         features += [f'C13', f'C23', f'C33', f'C43', f'C53', f'C63', f'C73', f'C83', f'C93', 'RW']
+        return features
+    if dataset_name == 'CrossingTraffic': 
+        features = list()
+        for i in range(5):
+            features += [f'R1{i}', f'R2{i}', f'R3{i}', f'R4{i}', f'R5{i}', f'R6{i}', f'O2{i}', f'O5{i}', f'A{i}']
+        features += [f'R15', f'R25', f'R35', f'R45', f'R55', f'R65', f'O25', f'O55', 'RW']
         return features
 
 

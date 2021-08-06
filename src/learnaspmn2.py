@@ -26,7 +26,7 @@ from os import path as pth
 import sys, os
 
 
-datasets = ['GameOfLife']
+datasets = ['Navigation']
 path = "new_results_depth1"
 
 
