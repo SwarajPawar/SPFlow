@@ -97,12 +97,14 @@ for dataset in datasets:
 	runtime = end - start
 	
 
-	file = open(f"{path}/{dataset}/spmn.pkle",'wb')
+	file = open(f"{path}/{dataset}/spmn_original.pkle",'wb')
 	pickle.dump(spmn, file)
 	file.close()
 	
 	
 	nodes = get_structure_stats_dict(spmn)["nodes"]
+	edges = get_structure_stats_dict(spmn)["nodes"]
+	layers = get_structure_stats_dict(spmn)["nodes"]
 	
 	if nodes <= 500:
 		plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
@@ -168,6 +170,8 @@ for dataset in datasets:
 	print(f"\n\tLog Likelihood : {ll}")
 	print(f"\n\tMEU : {meus}")
 	print(f"\n\tNodes : {nodes}")
+	print(f"\n\tEdges : {edges}")
+	print(f"\n\tLayers : {layers}")
 	#print(f"\n\tAverage rewards : {avg_rewards}")
 	#print(f"\n\tDeviation : {reward_dev}")
 	
@@ -178,6 +182,8 @@ for dataset in datasets:
 	f.write(f"\n\tLog Likelihood : {ll}")
 	f.write(f"\n\tMEU : {meus}")
 	f.write(f"\n\tNodes : {nodes}")
+	f.write(f"\n\tEdges : {edges}")
+	f.write(f"\n\tLayers : {layers}")
 	#f.write(f"\n\tAverage rewards : {avg_rewards}")
 	#f.write(f"\n\tDeviation : {reward_dev}")
 	f.close()

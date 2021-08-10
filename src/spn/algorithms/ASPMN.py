@@ -473,6 +473,8 @@ class Anytime_SPMN:
 		all_ll_dev = list()
 		all_meus = list()
 		all_nodes = list()
+		all_edges = list()
+		all_layers = list()
 		all_avg_rewards = list()
 		all_reward_dev = list()
 		
@@ -482,6 +484,8 @@ class Anytime_SPMN:
 				"ll_dev": None,
 				"meu" : None,
 				"nodes" : None,
+				"edges" : None,
+				"layers" : None,
 				"reward" : None,
 				"reward_dev" : None
 				}
@@ -548,18 +552,24 @@ class Anytime_SPMN:
 				#Store the stats in a dictionary
 				avg_rewards, reward_dev = None, None
 				meu_ = self.evaluate_meu()
-				nodes = self.evaluate_nodes()
+				struct_stats = self.evaluate_structure_stats()
+				nodes = struct_stats['nodes']
+				edges = struct_stats['edges']
+				layers = struct_stats['layers']
+
 				if evaluate_parallel:
 					avg_ll, ll_dev = self.evaluate_loglikelihood_parallel(test, batches=log_likelihood_batches)
-					#avg_rewards, reward_dev = self.evaluate_rewards_parallel(batch_size=rewards_batch_size, batches=rewards_batch_count)
+					avg_rewards, reward_dev = self.evaluate_rewards_parallel(batch_size=rewards_batch_size, batches=rewards_batch_count)
 				else:
 					avg_ll, ll_dev = self.evaluate_loglikelihood_sequential(test, batches=log_likelihood_batches)
-					#avg_rewards, reward_dev = self.evaluate_rewards_sequential(batch_size=rewards_batch_size, batches=rewards_batch_count)
+					avg_rewards, reward_dev = self.evaluate_rewards_sequential(batch_size=rewards_batch_size, batches=rewards_batch_count)
 
 				all_avg_ll.append(avg_ll)
 				all_ll_dev.append(ll_dev)
 				all_meus.append(meu_)
 				all_nodes.append(nodes)
+				all_edges.append(edges)
+				all_layers.append(layers)
 				all_avg_rewards.append(avg_rewards)
 				all_reward_dev.append(reward_dev)
 				
@@ -567,6 +577,8 @@ class Anytime_SPMN:
 				stats["ll_dev"] = all_ll_dev
 				stats["meu"] = all_meus
 				stats["nodes"] = all_nodes
+				stats["edges"] = all_edges
+				stats["layers"] = all_layers
 				stats["reward"] = all_avg_rewards
 				stats["reward_dev"] = all_reward_dev
 				
@@ -580,6 +592,8 @@ class Anytime_SPMN:
 				print("\n\n")
 				print("Run Time: ", runtime)
 				print("#Nodes: ",nodes)
+				print("#Edges: ",edges)
+				print("#Layers: ",layers)
 				print("Log Likelihood: ",avg_ll)
 				print("Log Likelihood Deviation: ",ll_dev)
 				print("MEU: ",meu_)
@@ -596,6 +610,8 @@ class Anytime_SPMN:
 				f.write(f"\n\tLog Likelihood Deviation: {all_ll_dev}")
 				f.write(f"\n\tMEU : {all_meus}")
 				f.write(f"\n\tNodes : {all_nodes}")
+				f.write(f"\n\tEdges : {all_edges}")
+				f.write(f"\n\tLayers : {all_layers}")
 				f.write(f"\n\tAverage Rewards : {all_avg_rewards}")
 				f.write(f"\n\tRewards Deviation : {all_reward_dev}")
 				f.close()
@@ -622,14 +638,16 @@ class Anytime_SPMN:
 
 		
 
-	def evaluate_nodes(self, spmn=None):
+	def evaluate_structure_stats(self, spmn=None):
 		#Get nodes in the network
 		if spmn is not None:
 			self.spmn = spmn
 
 		if not self.spmn:
 			return None
-		return get_structure_stats_dict(self.spmn)["nodes"]
+		return get_structure_stats_dict(self.spmn)
+
+
 		
 	def evaluate_loglikelihood_parallel(self, test, spmn=None, batches=10):
 
