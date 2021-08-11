@@ -56,8 +56,7 @@ for dataset in datasets:
 	#Get Baseline stats
 	#original_stats = get_original_stats(dataset)
 	
-	all_edges = list()
-	all_layers = list()
+	
 
 	
 
@@ -68,13 +67,15 @@ for dataset in datasets:
 
 	#Get edges and layers for the SPMNs
 	struct_stats = get_structure_stats_dict(spmn)
-	all_edges.append(struct_stats['edges'])
-	all_layers.append(struct_stats['layers'])
+	nodes = struct_stats['nodes']
+	edges = struct_stats['edges']
+	layers = struct_stats['layers']
 
 	#Save the results to a file
 	f = open(f"{plot_path}/struct_stats.txt", "w")
-	f.write(f"\n\t#Edges : {all_edges}")
-	f.write(f"\n\t#Layers : {all_layers}")
+	f.write(f"\n\t#Nodes : {nodes}")
+	f.write(f"\n\t#Edges : {edges}")
+	f.write(f"\n\t#Layers : {layers}")
 	f.close()
 
 

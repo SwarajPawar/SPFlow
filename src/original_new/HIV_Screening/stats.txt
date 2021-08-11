@@ -3,5 +3,7 @@ HIV_Screening
 	Log Likelihood : -0.6276399171508842
 	MEU : 42.582734183407034
 	Nodes : 112
-	Average rewards : 42.5504879999994
-		Deviation : 0.23971563294033557
+	Edges : 101
+	Layers : 10
+	Average rewards : 42.559788119992646
+	Deviation : 0.06067708771159484

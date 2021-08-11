@@ -55,7 +55,7 @@ for dataset in datasets:
 	df, column_titles = align_data(df, partial_order)
 	data = df.values
 
-	test_size = int(data.shape[0]*0.02)
+	test_size = int(data.shape[0]*0.005)
 	train, test = data, np.array(random.sample(list(data), test_size))
 
 	#Initialize anytime Learning

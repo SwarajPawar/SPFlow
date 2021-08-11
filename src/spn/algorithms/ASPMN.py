@@ -496,7 +496,7 @@ class Anytime_SPMN:
 		while(True):
 
 			'''
-			if i < 2:
+			if i < 7:
 				i += 1
 				limit += 1
 				max_depth += 1

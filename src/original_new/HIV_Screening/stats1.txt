@@ -1,5 +1,0 @@
-
-HIV_Screening
-	MEU : 42.582734183407034
-	Average rewards : 42.559788119992646
-	Deviation : 0.06067708771159484

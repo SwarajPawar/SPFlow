@@ -35,9 +35,9 @@ from collections import Counter
 import time
 import pickle
 
-datasets = ['Computer_Diagnostician',  'Test_Strep', 'LungCancer_Staging']
-#datasets = ['Export_Textiles','HIV_Screening, 'Powerplant_Airpollution', ]
-datasets = ['Navigation']
+datasets = ['Export_Textiles','HIV_Screening', 'Powerplant_Airpollution', 'Computer_Diagnostician',  'Test_Strep', 'LungCancer_Staging']
+#datasets = []
+#datasets = ['Navigation']
 path = "original_new"
 
 def get_loglikelihood(instance):
@@ -103,13 +103,17 @@ for dataset in datasets:
 	
 	
 	nodes = get_structure_stats_dict(spmn)["nodes"]
-	edges = get_structure_stats_dict(spmn)["nodes"]
-	layers = get_structure_stats_dict(spmn)["nodes"]
+	edges = get_structure_stats_dict(spmn)["edges"]
+	layers = get_structure_stats_dict(spmn)["layers"]
+
+	print(f"\n\tNodes : {nodes}")
+	print(f"\n\tEdges : {edges}")
+	print(f"\n\tLayers : {layers}")
 	
 	if nodes <= 500:
 		plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
 
-
+	'''
 	pool = multiprocessing.Pool()
 
 	
@@ -123,13 +127,7 @@ for dataset in datasets:
 		total_ll += sum(lls)
 		printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
 	
-	'''
-	for j, instance in enumerate(test):
-		test_data = np.array(instance).reshape(-1, len(feature_names))
-		total_ll += log_likelihood(spmn, test_data)[0][0]
-		printProgressBar(j+1, len(test), prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
 	
-	'''
 	ll = (total_ll/len(test))
 	
 	
@@ -137,7 +135,7 @@ for dataset in datasets:
 	m = meu(spmn, test_data)
 	meus = (m[0])
 	
-	'''
+	
 	env = get_env(dataset)
 	total_reward = 0
 	batch_count = 25
@@ -164,7 +162,7 @@ for dataset in datasets:
 	
 	avg_rewards = np.mean(batch)
 	reward_dev = np.std(batch)
-	'''
+	
 
 	print(f"\n\tRun Time: {runtime}")
 	print(f"\n\tLog Likelihood : {ll}")
@@ -187,6 +185,6 @@ for dataset in datasets:
 	#f.write(f"\n\tAverage rewards : {avg_rewards}")
 	#f.write(f"\n\tDeviation : {reward_dev}")
 	f.close()
-	
+	'''
 	
 

@@ -1,3 +1,4 @@
 
-	#Edges : [32766]
-	#Layers : [14]
+	#Nodes : 38227
+	#Edges : 32766
+	#Layers : 14
