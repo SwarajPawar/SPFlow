@@ -104,6 +104,7 @@ for dataset in datasets:
 		plt.savefig(f"{plot_path}/runtime.png", dpi=100)
 		plt.close()
 
+		'''
 		plt.close()
 		#plt.plot(range(1,len(avg_ll)+1), [original_stats["ll"]]*len(avg_ll), linestyle="dotted", color ="red", label="LearnSPMN")
 		plt.errorbar(range(1,len(avg_ll)+1), avg_ll, yerr=ll_dev, marker="o", label="Anytime")
@@ -111,6 +112,7 @@ for dataset in datasets:
 		plt.legend()
 		plt.savefig(f"{plot_path}/ll.png", dpi=100)
 		plt.close()
+		'''
 
 		plt.plot(range(1,len(meus)+1), meus, marker="o", label="Anytime")
 		#plt.plot(range(1,len(meus)+1), [optimal_meu]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")

@@ -1,2 +1,14 @@
 
 CrossingTraffic
+	Run Time : [11957.648134231567, 12560.33174777031, 12428.710459947586, 6803.5443415641785]
+	Log Likelihood : [None, None, None, None]
+	Log Likelihood Deviation: [None, None, None, None]
+	MEU : [-2.897592095165004, -2.897592095165004, -2.897592095165004, -2.897592095165004]
+	Nodes : [198840, 198840, 198840, 198840]
+	Edges : [180126, 180126, 180126, 180126]
+	Layers : [20, 20, 20, 20]
+	Average Rewards : [None, None, None, None]
+	Rewards Deviation : [None, None, None, None]
+
+
+

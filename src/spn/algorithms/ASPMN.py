@@ -658,7 +658,9 @@ class Anytime_SPMN:
 			self.spmn = spmn
 
 		if not self.spmn:
-			return None
+			return None, None
+
+		return None, None
 
 		#Initilize parameters for Log-likelihood evaluation
 		total_ll = 0
@@ -692,7 +694,7 @@ class Anytime_SPMN:
 			self.spmn = spmn
 
 		if not self.spmn:
-			return None
+			return None, None
 
 		#Initilize parameters for Log-likelihood evaluation
 		total_ll = 0
@@ -745,7 +747,7 @@ class Anytime_SPMN:
 			self.spmn = spmn
 
 		if not self.spmn:
-			return None
+			return None, None
 
 		#Initialize parameters for computing rewards
 		total_reward = 0
@@ -792,7 +794,7 @@ class Anytime_SPMN:
 			self.spmn = spmn
 
 		if not self.spmn:
-			return None
+			return None, None
 
 		#Initialize parameters for computing rewards
 		total_reward = 0
