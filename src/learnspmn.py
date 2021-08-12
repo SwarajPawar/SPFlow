@@ -37,7 +37,7 @@ import pickle
 
 datasets = ['Export_Textiles','HIV_Screening', 'Powerplant_Airpollution', 'Computer_Diagnostician',  'Test_Strep', 'LungCancer_Staging']
 #datasets = []
-#datasets = ['Navigation']
+datasets = ['CrossingTraffic']
 path = "original_new"
 
 def get_loglikelihood(instance):
@@ -113,7 +113,7 @@ for dataset in datasets:
 	if nodes <= 500:
 		plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
 
-	'''
+	
 	pool = multiprocessing.Pool()
 
 	
@@ -185,6 +185,6 @@ for dataset in datasets:
 	#f.write(f"\n\tAverage rewards : {avg_rewards}")
 	#f.write(f"\n\tDeviation : {reward_dev}")
 	f.close()
-	'''
+	
 	
 
