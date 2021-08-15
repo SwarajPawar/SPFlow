@@ -1,0 +1,11 @@
+
+Export_Textiles
+	Run Time : [0.04210495948791504, 113.70898294448853]
+	Log Likelihood : [None, None]
+	Log Likelihood Deviation: [None, None]
+	MEU : [851.3059740880921, 944288.1922867566]
+	Nodes : [7, 11]
+	Edges : [4, 8]
+	Layers : [3, 4]
+	Average Rewards : [None, None]
+	Rewards Deviation : [None, None]
