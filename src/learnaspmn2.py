@@ -27,7 +27,7 @@ import sys, os
 
 
 datasets = ['CrossingTraffic']
-path = "new_results_depth1"
+path = "test1"
 
 
 
