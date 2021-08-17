@@ -30,8 +30,8 @@ import pickle
 
 
 datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'HIV_Screening', 'Computer_Diagnostician', 'Test_Strep', 'LungCancer_Staging']
-datasets = ['Navigation']
-path = "new_results_depth"
+datasets = ['CrossingTraffic']
+path = "new_results_depth1"
 
 model_count = 11
 

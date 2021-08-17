@@ -84,7 +84,7 @@ for dataset in datasets:
 	df, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
 	
 	data = df.values
-	train, test = data, np.array(random.sample(list(data), 50000))
+	train, test = data, np.array(random.sample(list(data), 2500))
 
 	print("Start Learning...")
 	spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, meta_types, cluster_by_curr_information_set = True, util_to_bin = False)
@@ -135,7 +135,7 @@ for dataset in datasets:
 	m = meu(spmn, test_data)
 	meus = (m[0])
 	
-	
+	'''
 	env = get_env(dataset)
 	total_reward = 0
 	batch_count = 25
@@ -162,7 +162,7 @@ for dataset in datasets:
 	
 	avg_rewards = np.mean(batch)
 	reward_dev = np.std(batch)
-	
+	'''
 
 	print(f"\n\tRun Time: {runtime}")
 	print(f"\n\tLog Likelihood : {ll}")
