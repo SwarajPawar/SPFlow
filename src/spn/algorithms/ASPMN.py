@@ -457,16 +457,6 @@ class Anytime_SPMN:
 		max_depth = 1
 		past3 = list()
 
-		#Initialize lists for storing statistics over iterations
-		'''
-		all_run_time = [226.77999544143677, 1015.1628892421722]
-		all_avg_ll = [-10.794036906417146, -14.194113129551187]
-		all_ll_dev = [0.18122495156089177, 0.39906057259141603]
-		all_meus = [77.420539264374, 130.6425637286554]
-		all_nodes = [1378, 4401]
-		all_avg_rewards = [None, None]
-		all_reward_dev = [None, None]
-		'''
 
 		all_run_time = list()
 		all_avg_ll = list()
@@ -659,8 +649,6 @@ class Anytime_SPMN:
 
 		if not self.spmn:
 			return None, None
-
-		return None, None
 
 		#Initilize parameters for Log-likelihood evaluation
 		total_ll = 0

@@ -26,7 +26,7 @@ from os import path as pth
 import sys, os
 
 
-datasets = ['CrossingTraffic']
+datasets = ['GameOfLife']
 path = "new_results_depth1"
 
 
@@ -93,6 +93,8 @@ for dataset in datasets:
 		ll_dev = stats["ll_dev"]
 		meus = stats["meu"]
 		nodes = stats["nodes"]
+		edges = stats["edges"]
+		layers = stats["layers"]
 
 		# plot the statistics
 
@@ -104,7 +106,7 @@ for dataset in datasets:
 		plt.savefig(f"{plot_path}/runtime.png", dpi=100)
 		plt.close()
 
-		'''
+		
 		plt.close()
 		#plt.plot(range(1,len(avg_ll)+1), [original_stats["ll"]]*len(avg_ll), linestyle="dotted", color ="red", label="LearnSPMN")
 		plt.errorbar(range(1,len(avg_ll)+1), avg_ll, yerr=ll_dev, marker="o", label="Anytime")
@@ -112,7 +114,7 @@ for dataset in datasets:
 		plt.legend()
 		plt.savefig(f"{plot_path}/ll.png", dpi=100)
 		plt.close()
-		'''
+		
 
 		plt.plot(range(1,len(meus)+1), meus, marker="o", label="Anytime")
 		#plt.plot(range(1,len(meus)+1), [optimal_meu]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
@@ -127,6 +129,20 @@ for dataset in datasets:
 		plt.title(f"{dataset} Nodes")
 		plt.legend()
 		plt.savefig(f"{plot_path}/nodes.png", dpi=100)
+		plt.close()
+
+		plt.plot(range(1,len(edges)+1), edges, marker="o", label="Anytime")
+		#plt.plot(range(1,len(edges)+1), [original_stats["edges"]]*len(edges), linestyle="dotted", color ="red", label="LearnSPMN")
+		plt.title(f"{dataset} Edges")
+		plt.legend()
+		plt.savefig(f"{plot_path}/edges.png", dpi=100)
+		plt.close()
+
+		plt.plot(range(1,len(layers)+1), layers, marker="o", label="Anytime")
+		#plt.plot(range(1,len(layers)+1), [original_stats["layers"]]*len(layers), linestyle="dotted", color ="red", label="LearnSPMN")
+		plt.title(f"{dataset} Layers")
+		plt.legend()
+		plt.savefig(f"{plot_path}/layers.png", dpi=100)
 		plt.close()
 
 
