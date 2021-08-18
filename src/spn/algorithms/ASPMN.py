@@ -2,7 +2,7 @@
 from spn.structure.Base import Sum, Product, Max
 from spn.structure.Base import assign_ids, rebuild_scopes_bottom_up
 from spn.algorithms.LearningWrappers import learn_parametric_aspmn, learn_mspn_for_aspmn
-from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py1, get_split_cols_RDC_py, get_split_cols_single_RDC_py
+from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py1, get_split_cols_RDC_py
 from spn.algorithms.splitting.Base import split_all_cols
 from spn.algorithms.SPMNHelper import *
 from spn.algorithms.Anytime_MEU import meu
@@ -452,7 +452,7 @@ class Anytime_SPMN:
 		n = int(self.vars**0.5)
 		step = 0 if self.vars < 10 else (self.vars - (self.vars**0.5) + 1)/10
 		d = 2
-		d_max = 4
+		d_max = np.unique(train[:, self.dec_node_vars]).shape[0]
 		d_step = (d_max - d + 1)/10
 		max_depth = 1
 		past3 = list()
@@ -485,7 +485,7 @@ class Anytime_SPMN:
 		i = 0
 		while(True):
 
-			
+			'''
 			if i < 7:
 				i += 1
 				limit += 1
@@ -495,7 +495,7 @@ class Anytime_SPMN:
 				if self.vars < 10:
 					step = 1
 				continue
-			
+			'''
 
 			index = 0
 			print(f"\nIteration: {i+1}\n")
