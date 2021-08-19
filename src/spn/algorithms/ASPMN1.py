@@ -76,8 +76,11 @@ class Anytime_SPMN:
 							   curr_information_set_scope, index, depth=None):
 
 		logging.info(f'start of new recursion in __learn_spmn_structure method of SPMN')
+		print("\n\n")
 		print(f'remaining_vars_scope: {remaining_vars_scope}')
 		print(f'curr_information_set_scope: {curr_information_set_scope}')
+		print("data")
+
 
 		# rest set is remaining variables excluding the variables in current information set
 		rest_set_scope = [var_scope for var_scope in remaining_vars_scope if
@@ -223,6 +226,7 @@ class Anytime_SPMN:
 
 			if curr_op != 'Sum':    # fails if correlated variable set found in previous recursive call.
 									# Without this condition code keeps looping at this stage
+				print("prod")
 
 				ds_context = get_ds_context(remaining_vars_data, remaining_vars_scope, self.params)
 
@@ -325,6 +329,7 @@ class Anytime_SPMN:
 			# Cluster the data
 			else:
 
+				print("sum")
 				curr_op = self.get_curr_operation()
 				logging.debug(f'curr_op at sum node (cluster test): {curr_op}')
 
