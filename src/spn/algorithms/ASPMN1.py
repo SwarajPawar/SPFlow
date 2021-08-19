@@ -2,7 +2,7 @@
 from spn.structure.Base import Sum, Product, Max
 from spn.structure.Base import assign_ids, rebuild_scopes_bottom_up
 from spn.algorithms.LearningWrappers import learn_parametric_aspmn, learn_mspn_for_aspmn
-from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py1, get_split_cols_RDC_py, get_split_cols_single_RDC_py
+from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py1, get_split_cols_RDC_py
 from spn.algorithms.splitting.Base import split_all_cols
 from spn.algorithms.SPMNHelper import *
 from spn.algorithms.Anytime_MEU import meu
@@ -238,23 +238,16 @@ class Anytime_SPMN:
 				next_remaining_vars_scope = []
 				independent_vars_scope = []
 
-				print("Rest",rest_set_scope)
-
 
 				for correlated_var_set_cluster, correlated_var_set_scope, weight in data_slices_prod:
 
 					if any(var_scope in correlated_var_set_scope for var_scope in rest_set_scope):
 
-						print("correlated in rest",correlated_var_set_scope)
-
 						next_remaining_vars_scope.extend(correlated_var_set_scope)
-						print("Next rem",next_remaining_vars_scope)
 
 					else:
 						# this variable set of current information set is
 						# not correlated to any variable in the rest set
-
-						print("correlated not in rest",correlated_var_set_scope)
 
 						logging.info(f'independent variable set found: {correlated_var_set_scope}')
 
@@ -279,7 +272,6 @@ class Anytime_SPMN:
 																				 min_instances_slice=20,
 																				 initial_scope=correlated_var_set_scope)
 						independent_vars_scope.extend(correlated_var_set_scope)
-						print("independent var", independent_vars_scope)
 						prod_children.append(independent_var_set_prod_child)
 
 				logging.info(f'correlated variables over entire remaining variables '
@@ -294,9 +286,6 @@ class Anytime_SPMN:
 
 					# since current information set is totally consumed
 					next_remaining_vars_scope = rest_set_scope
-					print("Cur consumed")
-					print(next_information_set_scope)
-					print(next_remaining_vars_scope)
 
 				else:
 					# some variables in current information set still remain
@@ -308,13 +297,7 @@ class Anytime_SPMN:
 					# convert unordered sets of scope to sorted lists to keep in sync with partial order
 					next_information_set_scope = sorted(list(next_information_set_scope))
 					next_remaining_vars_scope = sorted(list(next_remaining_vars_scope))
-
-					print("Remain")
-					print(next_information_set_scope)
-					print(next_remaining_vars_scope)
 				self.set_next_operation('Sum')
-
-				input("\n\n")
 
 				next_remaining_vars_data = column_slice_data_by_scope(remaining_vars_data,
 																	  remaining_vars_scope,
@@ -474,16 +457,6 @@ class Anytime_SPMN:
 		max_depth = 1
 		past3 = list()
 
-		#Initialize lists for storing statistics over iterations
-		'''
-		all_run_time = [226.77999544143677, 1015.1628892421722]
-		all_avg_ll = [-10.794036906417146, -14.194113129551187]
-		all_ll_dev = [0.18122495156089177, 0.39906057259141603]
-		all_meus = [77.420539264374, 130.6425637286554]
-		all_nodes = [1378, 4401]
-		all_avg_rewards = [None, None]
-		all_reward_dev = [None, None]
-		'''
 
 		all_run_time = list()
 		all_avg_ll = list()
@@ -512,17 +485,7 @@ class Anytime_SPMN:
 		i = 0
 		while(True):
 
-			'''
-			if i < 7:
-				i += 1
-				limit += 1
-				max_depth += 1
-				d += d_step
-				n = n+step
-				if self.vars < 10:
-					step = 1
-				continue
-			'''
+			
 
 			index = 0
 			print(f"\nIteration: {i+1}\n")
@@ -677,8 +640,6 @@ class Anytime_SPMN:
 		if not self.spmn:
 			return None, None
 
-		return None, None
-
 		#Initilize parameters for Log-likelihood evaluation
 		total_ll = 0
 		trials1 = test.shape[0]
@@ -766,8 +727,6 @@ class Anytime_SPMN:
 		if not self.spmn:
 			return None, None
 
-		return None, None
-
 		#Initialize parameters for computing rewards
 		total_reward = 0
 		reward_batch = list()
@@ -814,7 +773,6 @@ class Anytime_SPMN:
 
 		if not self.spmn:
 			return None, None
-		return None, None
 
 		#Initialize parameters for computing rewards
 		total_reward = 0
