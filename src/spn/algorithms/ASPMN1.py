@@ -242,7 +242,8 @@ class Anytime_SPMN:
 				next_remaining_vars_scope = []
 				independent_vars_scope = []
 
-
+				for dslice in data_slices_prod:
+					print(dslice[1])
 				for correlated_var_set_cluster, correlated_var_set_scope, weight in data_slices_prod:
 
 					if any(var_scope in correlated_var_set_scope for var_scope in rest_set_scope):
@@ -371,6 +372,8 @@ class Anytime_SPMN:
 				logging.debug(f'cluster labels of rows: {labels_array} used to cluster data on '
 							  f'total remaining variables {remaining_vars_scope}')
 
+				for dslice in data_slices_sum:
+					print(dslice[1])
 				for cluster, scope, weight in data_slices_sum:
 
 					self.set_next_operation("Prod")
