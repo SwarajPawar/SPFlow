@@ -10,4 +10,4 @@ import pickle
 
 import sys
 
-print(sys.getrecursionlimit())
+print(sys.setrecursionlimit(10000))

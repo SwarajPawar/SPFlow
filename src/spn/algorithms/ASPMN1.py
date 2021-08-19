@@ -76,8 +76,8 @@ class Anytime_SPMN:
 							   curr_information_set_scope, index, depth=None):
 
 		logging.info(f'start of new recursion in __learn_spmn_structure method of SPMN')
-		logging.debug(f'remaining_vars_scope: {remaining_vars_scope}')
-		logging.debug(f'curr_information_set_scope: {curr_information_set_scope}')
+		print(f'remaining_vars_scope: {remaining_vars_scope}')
+		print(f'curr_information_set_scope: {curr_information_set_scope}')
 
 		# rest set is remaining variables excluding the variables in current information set
 		rest_set_scope = [var_scope for var_scope in remaining_vars_scope if
