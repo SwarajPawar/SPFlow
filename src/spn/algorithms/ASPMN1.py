@@ -469,7 +469,7 @@ class Anytime_SPMN:
 		n = int(self.vars**0.5)
 		step = 0 if self.vars < 10 else (self.vars - (self.vars**0.5) + 1)/10
 		d = 2
-		d_max = 4
+		d_max = np.unique(train[:, self.dec_node_vars]).shape[0]
 		d_step = (d_max - d + 1)/10
 		max_depth = 1
 		past3 = list()

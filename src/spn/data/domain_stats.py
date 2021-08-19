@@ -8,8 +8,8 @@ original_stats = {
 	'Computer_Diagnostician': {"ll" : -0.9011245432112749, "meu" : -208.351, 'nodes' : 56, 'reward':-210.15520000000004, 'dev':0.3810022440878799},
 	'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2759870.4, 'dev':6825.630813338794},
 	'Navigation': {"ll" : -0.25421657291373406, "meu" : -4.049331963001028, 'nodes' : 17426, 'edges' : 15274, 'layers' : 16, 'reward':-4.052, 'dev':0.022825424421026797, 'runtime':2044.684020280838},
-	'Navigation1': {"ll" : -0.24199351938969704, "meu" : -3.120315581854044, 'nodes' : 17338, 'reward':-3.1046000000000005, 'dev':0.042266298631415615, 'runtime':3610.374293088913},
 	'Elevators': {"ll" : 0, "meu" : 0.5, 'nodes' : 38227, 'edges' : 32766, 'layers' : 14, 'reward':0.5, 'dev':0.0, 'runtime':2499.035037279129},
+	'CrossingTraffic': {"ll" : -3.024408393022007, "meu" : -2.897592095165004, 'nodes' : 198840, 'edges' : 180126, 'layers' : 20, 'reward':-5.0, 'dev':0.0, 'runtime':6904.133388757706},
 }
 
 #Optimal MEU values from the IDs
@@ -20,9 +20,9 @@ optimal_meu = {
 	'HIV_Screening': 42.5597,
 	'Test_Strep': 54.9245,
 	'LungCancer_Staging': 3.12453,
-	'Navigation1': -3.09726,
 	'Navigation': -4.046906,
-	'Elevators': 0.5
+	'Elevators': 0.5,
+	'CrossingTraffic': None,
 }
 
 #Rewards by simulating random policy
@@ -33,7 +33,6 @@ random_reward = {
 	'HIV_Screening': {'reward': 42.3740002199867, 'dev':0.07524234474837802},
 	'Test_Strep': {'reward': 54.89614493400057, 'dev':0.012847272731391593},
 	'LungCancer_Staging': {'reward': 2.672070640000026, 'dev':0.007416967451081523},
-	'Navigation1': {'reward': -4.941799999999999, 'dev':0.018664404624846833},
 	'Navigation': {'reward': -4.972862, 'dev':0.00189885649800079},
 	'CrossingTraffic': {'reward': -4.779254, 'dev':0.005551430806557858},
 	'Elevators': {'reward': -6.129405499999999 , 'dev':0.006561652878657956},
