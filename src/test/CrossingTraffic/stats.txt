@@ -1,0 +1,11 @@
+
+CrossingTraffic
+	Run Time : [374.90063977241516]
+	Log Likelihood : [-12.910155665533912]
+	Log Likelihood Deviation: [0.5103966792113942]
+	MEU : [-5.0]
+	Nodes : [2990]
+	Edges : [2773]
+	Layers : [20]
+	Average Rewards : [None]
+	Rewards Deviation : [None]
