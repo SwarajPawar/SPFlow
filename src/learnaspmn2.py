@@ -26,8 +26,8 @@ from os import path as pth
 import sys, os
 
 
-datasets = ['GameOfLife']
-path = "new_results_depth1"
+datasets = ['CrossingTraffic']
+path = "new_results_depth2"
 
 
 
