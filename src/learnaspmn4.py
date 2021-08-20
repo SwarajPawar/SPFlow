@@ -29,7 +29,7 @@ import sys, os
 
 datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'HIV_Screening', 'Computer_Diagnostician', 'Test_Strep', 'LungCancer_Staging']
 datasets = ['CrossingTraffic']
-path = "test"
+path = "test1"
 
 
 
