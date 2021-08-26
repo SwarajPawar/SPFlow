@@ -22,7 +22,7 @@ optimal_meu = {
 	'LungCancer_Staging': 3.12453,
 	'Navigation': -4.046906,
 	'Elevators': 0.5,
-	'CrossingTraffic': None,
+	'CrossingTraffic': -2.92106,
 }
 
 #Rewards by simulating random policy

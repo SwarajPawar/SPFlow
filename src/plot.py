@@ -77,7 +77,7 @@ plt.savefig(f"{plot_path}/ll.png", dpi=100)
 plt.close()
 
 plt.plot(range(1,len(meus)+1), meus, marker="o", label="Anytime")
-#plt.plot(range(1,len(meus)+1), [optimal_meu]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
+plt.plot(range(1,len(meus)+1), [optimal_meu]*len(meus), linewidth=3, color ="lime", label="Optimal MEU")
 plt.plot(range(1,len(meus)+1), [original_stats["meu"]]*len(meus), linestyle="dotted", color ="red", label="LearnSPMN")
 plt.title(f"{dataset} MEU")
 plt.xlabel("Iteration")
@@ -121,7 +121,7 @@ plt.plot(range(1,len(avg_rewards)+1), rand_reward, linestyle="dashed", color ="g
 original_reward = np.array([original_stats["reward"]]*len(avg_rewards))
 dev = np.array([original_stats["dev"]]*len(avg_rewards))
 plt.fill_between(range(1,len(avg_rewards)+1), original_reward-dev, original_reward+dev, alpha=0.3, color="red")
-#plt.plot(range(1,len(avg_rewards)+1), [optimal_meu]*len(avg_rewards), linewidth=3, color ="lime", label="Optimal MEU")
+plt.plot(range(1,len(avg_rewards)+1), [optimal_meu]*len(avg_rewards), linewidth=3, color ="lime", label="Optimal MEU")
 plt.plot(range(1,len(avg_rewards)+1), original_reward, linestyle="dashed", color ="red", label="LearnSPMN")
 
 plt.errorbar(range(1,len(avg_rewards)+1), avg_rewards, yerr=reward_dev, marker="o", label="Anytime")
