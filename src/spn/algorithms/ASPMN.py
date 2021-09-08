@@ -423,7 +423,7 @@ class Anytime_SPMN:
 				return policy
 
 	def learn_aspmn(self, train, test=None, get_stats = False, save_models=True, evaluate_parallel=False, log_likelihood_batches=10,
-					 rewards_batch_size=20000, rewards_batch_count=25):
+					 rewards_batch_size=20000, rewards_batch_count=25, start_iteration=1):
 		"""
 		:param: train:- train dataset
 				test:- test dataset
@@ -433,6 +433,7 @@ class Anytime_SPMN:
 				log_likelihood_batches:- Number of batches used for loglikelihood evaluation
 				rewards_batch_size:- Number of reward evaluations per batch
 				rewards_batch_count:- Number of batches used for reward evaluation
+				start_iteration:- Anytime algorithm proceeds from the given iteration
 		:return: learned ASPMNs and stats
 		"""
 		
@@ -485,8 +486,10 @@ class Anytime_SPMN:
 		i = 0
 		while(True):
 
-			'''
-			if i < 3:
+			
+			#Restart the algorithm from the given iteration
+			#Skip all the previous iterations
+			if (i+1) < start_iteration:
 				i += 1
 				limit += 1
 				max_depth += 1
@@ -495,7 +498,7 @@ class Anytime_SPMN:
 				if self.vars < 10:
 					step = 1
 				continue
-			'''
+			
 
 			index = 0
 			print(f"\nIteration: {i+1}\n")
@@ -520,11 +523,7 @@ class Anytime_SPMN:
 			#self.spmn = spmn
 			self.spmn = Prune(spmn)
 
-			'''
-			if not is_valid_spmn(self.spmn):
-				print("Not Valid")
-				return	
-			'''		
+				
 
 			#Get Run time
 			runtime = end_time - start_time
