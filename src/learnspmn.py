@@ -37,7 +37,7 @@ import pickle
 
 datasets = ['Export_Textiles','HIV_Screening', 'Powerplant_Airpollution', 'Computer_Diagnostician',  'Test_Strep', 'LungCancer_Staging']
 #datasets = []
-datasets = ['GameOfLife']
+datasets = ['CrossingTraffic']
 path = "original_new"
 
 def get_loglikelihood(instance):
