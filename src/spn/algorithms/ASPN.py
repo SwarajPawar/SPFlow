@@ -22,7 +22,8 @@ from spn.algorithms.splitting.Conditioning import (
 from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
 from spn.algorithms.splitting.RDC import get_split_cols_single_RDC_py, get_split_cols_distributed_RDC_py
 from spn.algorithms.Inference import log_likelihood
-
+import time
+import pickle
 import logging
 
 logger = logging.getLogger(__name__)
@@ -55,35 +56,45 @@ cpus=-1
 
 class AnytimeSPN:
 
-	def __init__(self, dataset, output_path, ds_context):
+	def __init__(self, dataset, output_path, ds_context, k=None):
 
 		self.dataset = dataset          #Dataset Name
 		self.spn = None
 		self.ds_context = ds_context
 				
 		#Create directory for output as output_path/dataset
-		self.plot_path = f"{output_path}/{dataset}"
-		if not pth.exists(self.plot_path):
-			try:
-				os.makedirs(self.plot_path)
-			except OSError:
-				print ("Creation of the directory %s failed" % self.plot_path)
-				sys.exit()
+		if k is None:
+			self.plot_path = f"{output_path}/{dataset}"
+			if not pth.exists(self.plot_path):
+				try:
+					os.makedirs(self.plot_path)
+				except OSError:
+					print ("Creation of the directory %s failed" % self.plot_path)
+					sys.exit()
+		else:
+			self.plot_path = f"{output_path}/{dataset}/{k}"
+			if not pth.exists(self.plot_path):
+				try:
+					os.makedirs(self.plot_path)
+				except OSError:
+					print ("Creation of the directory %s failed" % self.plot_path)
+					sys.exit()
 
 	def get_loglikelihood(self, instance):
 		test_data = np.array(instance).reshape(-1, self.max_var)
 		return log_likelihood(self.spn, test_data)[0][0]
 
 	# Learn Anytime SPN
-	def learn_aspn(self, train, test):
+	def learn_aspn(self, train, test=None, get_stats = False, save_models=True, batches=10):
 			
 	
 		#Initialize max_var to total number of variables in the dataset
 		self.max_var = train.shape[1]
 	
 		#Lists to store log-likelihoods and #nodes
-		ll = list()
+		avg_ll = list()
 		nodes = list()
+		runtime = list()
 		
 		#Initialize cluster (k) limit to 2
 		k_limit = 2
@@ -96,8 +107,26 @@ class AnytimeSPN:
 		#Step size for increment in #variables for splitting
 		step = (self.max_var - (self.max_var**0.5))/20
 
+		#Initialize stats:
+		stats = {"runtime": None,
+				"avg_ll" : None,
+				"nodes" : None}
+
+		#Create directory to save models
+		if save_models:
+			if not pth.exists(f'{self.plot_path}/models'):
+				try:
+					os.makedirs(f'{self.plot_path}/models')
+				except OSError:
+					print ("Creation of the directory models failed")
+					sys.exit()
+
 		i = 0
 		while True:
+			
+			print("\n\n\n\n\n")
+			print(f"Iteration {i+1}:\n")
+
 			#Split columns using anytime RDC testing on n variables and distributing remaining variables over the clusters
 			split_cols = get_split_cols_distributed_RDC_py(rand_gen=rand_gen, ohe=ohe, n_jobs=cpus, n=round(n))
 			#Split rows using XMeans clustering given the cluster limit
@@ -107,72 +136,70 @@ class AnytimeSPN:
 			nextop = get_next_operation(min_instances_slice)
 			
 			#Learn the SPN structure
-			print("Start Larning...")
+			print("Start Learning...")
+			start = time.time()
 			spn = learn_structure(train, self.ds_context, split_rows, split_cols, leaves, nextop)
-			print(f"SPN {i} learned")
+			end = time.time()
+			print(f"SPN {i+1} learned!\n\n")
 			self.spn = spn
+
+			runtime.append(end-start)
+
+			if save_models:
+				#Save models
+				file = open(f"{self.plot_path}/models/spn_{i+1}.pkle",'wb')
+				pickle.dump(spn, file)
+				file.close()
 			
-			#Get the total #nodes
-			nodes.append(get_structure_stats_dict(spn)["nodes"])
+			if get_stats:
+				#Get the total #nodes
+				nodes.append(get_structure_stats_dict(spn)["nodes"])
 
-			#Plot the spn
-			plot_spn(spn, f'{self.plot_path}/spn{i}.png')
-			
+						
 
-			#Evaluate the log-likelihood over the test data
-			pool = multiprocessing.Pool()
-			total_ll = 0
-			batches = 10
-			batch_size = int(len(test)/batches)
-			for j in range(batches):
-				test_slice = test[j*batch_size:(j+1)*batch_size]
-				lls = pool.map(self.get_loglikelihood, test_slice)
-				total_ll += sum(lls)
-				printProgressBar(j+1, batches, prefix = f'Evaluation Progress {i}:', suffix = 'Complete', length = 50)
-			ll.append(total_ll/len(test))
+				#Evaluate the log-likelihood over the test data
+				pool = multiprocessing.Pool()
+				batch_size = int(len(test)/batches)
+				batch = list()
+				total_ll = 0
+				for j in range(batches):
+					test_slice = test[j*batch_size:(j+1)*batch_size]
+					lls = pool.map(self.get_loglikelihood, test_slice)
+					total_ll += sum(lls)
+					printProgressBar(j+1, batches, prefix = f'Evaluation Progress {i+1}:', suffix = 'Complete', length = 50)
+				
+				avg_ll.append(total_ll/len(test))
 
-			#Print the stats
-			print("\n\n\n\n\n")
-			print(f"Iteration {i}:\n")
-			print(f"X-Means Limit: {k_limit}, \tVariables for splitting: {round(n)}")
-			print("#Nodes: ",nodes[i])
-			print("Log-likelihood: ",ll[i])
-			print("\n\n\n\n\n")
-			
-			#Plot the log-likelihood and nodes
-			plt.close()
-			plt.plot(ll, marker="o") 
-			plt.title(f"{self.dataset} Log Likelihood")
-			plt.savefig(f"{self.plot_path}/ll.png", dpi=100)
-			
-			plt.close()
-			
-			plt.plot(nodes, marker="o") 
-			plt.title(f"{self.dataset} Nodes")
-			plt.savefig(f"{self.plot_path}/nodes.png", dpi=100)
-			plt.close()
+				#Print the stats
+				
+				print(f"\n\nX-Means Limit: {k_limit}, \tVariables for splitting: {round(n)}")
+				print("#Nodes: ",nodes[i])
+				print("Log-likelihood: ",avg_ll[i])
+				print("Run Time: ",runtime[i])
+				print("\n\n\n")
+				
+				
+				#Save the stats to a file
+				f = open(f"{self.plot_path}/stats.txt", "w")
+				f.write(f'{self.dataset}:')
+				f.write(f"\n\t#Nodes: {nodes}")
+				f.write(f"\n\tLog-likelihood: {avg_ll}")
+				f.write(f"\n\tRun Time: {runtime}")
+				f.close()
 
-			#Save the stats to a file
-			f = open(f"{self.plot_path}/stats.txt", "w")
-			f.write(f"\n\tLog Likelihood: {ll}")
-			f.write(f"\n\t\tNodes: {nodes}")
-			f.close()
+				stats['runtime'] = runtime
+				stats['avg_ll'] = avg_ll
+				stats['nodes'] = nodes
 
-			stats = {"ll" : ll,
-					"nodes" : nodes}
-
-			yield (self.spn, stats)
+				yield (self.spn, stats)
 			
 			#Save the log-likelihood past 3 iterations
-			past3 = ll[-min(len(ll),3):]
+			past3 = avg_ll[-min(len(avg_ll),3):]
 					
 			#Convergence Criteria
 			#If it includes all variables for splitting
 			#And the std for past3 is less than 1e-3
-			if n>=self.max_var and round(np.std(past3), 3) <= 0.001:
-				print("\n\nFinal iteration")
-				print("Log Likelihood: ",ll)
-				print("Nodes: ",nodes)
+			if n>=self.max_var and (round(np.std(past3), 3) <= 0.001 or i>=50):
 				break
 			
 			#Increase the number of clusters and variables for splitting

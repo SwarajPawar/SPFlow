@@ -309,8 +309,5 @@ def learn_structure(
 	assign_ids(node)
 	valid, err = is_valid(node)
 	assert valid, "invalid spn: " + err
-	node = Prune(node)
-	valid, err = is_valid(node)
-	assert valid, "invalid spn: " + err
 
 	return node
