@@ -51,6 +51,7 @@ from os import path as pth
 import sys, os
 import time
 import multiprocessing
+import pickle
 
 #Initialize parameters
 
@@ -80,9 +81,9 @@ for dataset in datasets:
 	print(f"\n\n\n{dataset}\n\n\n")
 	
 	#Create output directory
-	if not pth.exists(path):
+	if not pth.exists(f'{path}/models'):
 		try:
-			os.makedirs(path)
+			os.makedirs(f'{path}/models')
 		except OSError:
 			print ("Creation of the directory %s failed" % path)
 			sys.exit()
@@ -112,6 +113,10 @@ for dataset in datasets:
 	spn = learn_structure(train, ds_context, split_rows, split_cols, leaves, nextop)
 	end = time.time()
 	print('SPN Learned!\n')
+
+	file = open(f"{path}/models/spn_{dataset}.pkle",'wb')
+	pickle.dump(spn, file)
+	file.close()
 
 	from spn.io.Graphics import plot_spn
 	#Plot spn
