@@ -45,6 +45,7 @@ import pandas as pd
 from spn.structure.Base import Context
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.Statistics import get_structure_stats_dict
+from spn.io.Graphics import plot_spn
 from spn.io.ProgressBar import printProgressBar
 import matplotlib.pyplot as plt
 from os import path as pth
