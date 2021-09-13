@@ -145,9 +145,9 @@ for dataset in datasets:
 	print("\n\n\n\n\n")
 	f = open(f"{path}/{dataset}_stats.txt", "w")
 	f.write(f"\n\n\n{dataset}\n\n")
-	f.write(f"#Nodes: {nodes}")
-	f.write(f"Log-likelihood: {ll}")
-	f.write(f"Time: {end-start}")
+	f.write(f"\n#Nodes: {nodes}")
+	f.write(f"\nLog-likelihood: {ll}")
+	f.write(f"\nTime: {end-start}")
 	f.write("\n\n\n\n\n")
 	f.close()
 	
