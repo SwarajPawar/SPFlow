@@ -1,3 +1,3 @@
 python learnspn.py
 python learnspnmax.py
-python learnaspmn_cross.py
+python learnaspn_cross.py
