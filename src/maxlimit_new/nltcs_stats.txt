@@ -3,7 +3,7 @@
 
 nltcs
 
-#Nodes: 2322Log-likelihood: -5.983727733002763Time: 23.770670652389526
+#Nodes: 2322Log-likelihood: -5.983727733002763Time: 22.247119188308716
 
 
 
