@@ -61,6 +61,7 @@ cpus=-1
 
 
 datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
+datasets = ['bnetflix']
 path = "original_new"
 
 #Get log-likelihood for the instance
