@@ -109,7 +109,7 @@ class AnytimeSPN:
 
 		#Initialize stats:
 		stats = {"runtime": None,
-				"avg_ll" : None,
+				"ll" : None,
 				"nodes" : None}
 
 		#Create directory to save models
@@ -188,7 +188,7 @@ class AnytimeSPN:
 				f.close()
 
 				stats['runtime'] = runtime
-				stats['avg_ll'] = avg_ll
+				stats['ll'] = avg_ll
 				stats['nodes'] = nodes
 
 				yield (self.spn, stats)

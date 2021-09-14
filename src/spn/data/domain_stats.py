@@ -13,12 +13,12 @@ original_stats = {
 #Statistics for the LearnSPN with paremeters set to their max values
 max_stats = {
 	'nltcs': {"ll" : -5.983727733002763, 'nodes' : 2322, 'runtime' : 23.770670652389526},
-	'msnbc': {"ll" : , 'nodes' : , 'runtime' : },
-	'kdd': {"ll" : , 'nodes' : , 'runtime' : },
-	'jester': {"ll" : , 'nodes' : , 'runtime' : },
-	'baudio': {"ll" : , 'nodes' : , 'runtime' : },
-	'bnetflix': {"ll" : , 'nodes' : , 'runtime' : },
-	'plants': {"ll" : , 'nodes' : , 'runtime' : },
+	'msnbc': {"ll" : -6.035125836103926, 'nodes' : 5385, 'runtime' : 479.7606608867645},
+	'kdd': {"ll" : -2.3006294371736202, 'nodes' : 8628, 'runtime' : 1634.041729927063},
+	'jester': {"ll" : -51.13606060451481, 'nodes' : 27978, 'runtime' : 1164.8972017765045},
+	'baudio': {"ll" : -39.07453486013839, 'nodes' : 17773, 'runtime' : 656.3769657611847},
+	'bnetflix': {"ll" : -56.373594191535936, 'nodes' : 6074, 'runtime' : 1721.3557472229004},
+	'plants': {"ll" : -12.494126455752165, 'nodes' : 24010, 'runtime' : 247.60532212257385},
 	}
 
 
