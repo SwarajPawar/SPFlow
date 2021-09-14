@@ -82,7 +82,7 @@ for dataset in datasets:
 		ds_context.add_domains(train)
 
 		#Initialize ASPN
-		aspn = AnytimeSPN(dataset, path, ds_context)
+		aspn = AnytimeSPN(dataset, path, ds_context, k)
 		#spn_structure, stats = aspn.learn_aspn(train, test)
 
 		ll = list()
