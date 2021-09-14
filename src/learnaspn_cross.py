@@ -144,9 +144,9 @@ for dataset in datasets:
 	maxlen = max([len(k_ll[i]) for i in range(len(k_ll))])
 	total_ll = np.zeros(min([len(k_ll[i]) for i in range(len(k_ll))]))
 	upperll = [upper["ll"]] * maxlen
-	plt.plot(range(1, maxlen), upperll, linestyle="dashed", color ="darkred", linewidth=3, label="Upper Limit")
+	plt.plot(range(1, maxlen+1), upperll, linestyle="dashed", color ="darkred", linewidth=3, label="Upper Limit")
 	originalll = [original["ll"]] * maxlen
-	plt.plot(range(1, maxlen), originalll, linestyle="dotted", color ="purple", linewidth=3, label="LearnSPN")
+	plt.plot(range(1, maxlen+1), originalll, linestyle="dotted", color ="purple", linewidth=3, label="LearnSPN")
 	for i in range(len(k_ll)):
 		plt.plot(range(1,len(k_ll[i])+1), k_ll[i], marker=f"{i+1}", color =colors[i], label=(i+1))
 		total_ll += np.array(k_ll[i][:len(total_ll)])
@@ -162,9 +162,9 @@ for dataset in datasets:
 	
 	total_nodes = np.zeros(min([len(k_nodes[i]) for i in range(len(k_nodes))]))
 	uppern = [upper["nodes"]] * maxlen
-	plt.plot(range(1, maxlen), uppern, linestyle="dashed", color ="darkred", linewidth=3, label="Upper Limit")
+	plt.plot(range(1, maxlen+1), uppern, linestyle="dashed", color ="darkred", linewidth=3, label="Upper Limit")
 	originaln = [original["nodes"]] * maxlen
-	plt.plot(range(1, maxlen), originaln, linestyle="dotted", color ="purple", linewidth=3, label="LearnSPN")
+	plt.plot(range(1, maxlen+1), originaln, linestyle="dotted", color ="purple", linewidth=3, label="LearnSPN")
 	for i in range(len(k_nodes)):
 		plt.plot(range(1,len(k_nodes[i])+1), k_nodes[i], marker=f"{i+1}", color =colors[i], label=(i+1))
 		total_nodes += np.array(k_nodes[i][:len(total_nodes)])
@@ -180,9 +180,9 @@ for dataset in datasets:
 
 	total_time = np.zeros(min([len(k_runtime[i]) for i in range(len(k_runtime))]))
 	uppertime = [upper["runtime"]] * maxlen
-	plt.plot(range(1, maxlen), uppertime, linestyle="dashed", color ="darkred", linewidth=3, label="Upper Limit")
+	plt.plot(range(1, maxlen+1), uppertime, linestyle="dashed", color ="darkred", linewidth=3, label="Upper Limit")
 	originaltime = [original["runtime"]] * maxlen
-	plt.plot(range(1, maxlen), originaltime, linestyle="dotted", color ="purple", linewidth=3, label="LearnSPN")
+	plt.plot(range(1, maxlen+1), originaltime, linestyle="dotted", color ="purple", linewidth=3, label="LearnSPN")
 	for i in range(len(k_runtime)):
 		plt.plot(range(1,len(k_runtime[i])+1), k_runtime[i], marker=f"{i+1}", color =colors[i], label=(i+1))
 		total_time += np.array(k_runtime[i][:len(total_time)])
