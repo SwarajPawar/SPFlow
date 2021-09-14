@@ -31,7 +31,7 @@ import sys, os
 
 
 
-datasets = ["nltcs", "msnbc", "baudio", "jester", "bnetflix", "kdd", "plants"]
+datasets = ["msnbc", "baudio", "jester", "bnetflix", "kdd", "plants"]
 
 path = "cross_new"
 
@@ -151,7 +151,7 @@ for dataset in datasets:
 		plt.plot(range(1,len(k_ll[i])+1), k_ll[i], marker=f"{i+1}", color =colors[i], label=(i+1))
 		total_ll += np.array(k_ll[i][:len(total_ll)])
 	avg_ll = total_ll/len(k_ll)
-	plt.plot(range(1,len(avg_ll)+1), avg_ll, marker="o", color ="black", label="Mean")
+	plt.plot(range(1,len(avg_ll)+1), avg_ll, marker="o", color ="black", linewidth=3, label="Mean")
 	plt.title(f"{dataset} Log Likelihood")
 	plt.legend()
 	plt.xlabel("Iteration")
@@ -169,7 +169,7 @@ for dataset in datasets:
 		plt.plot(range(1,len(k_nodes[i])+1), k_nodes[i], marker=f"{i+1}", color =colors[i], label=(i+1))
 		total_nodes += np.array(k_nodes[i][:len(total_nodes)])
 	avg_nodes = total_nodes/len(k_nodes)
-	plt.plot(range(1,len(avg_nodes)+1), avg_nodes, marker="o", color ="black", label="Mean")
+	plt.plot(range(1,len(avg_nodes)+1), avg_nodes, marker="o", color ="black", linewidth=3, label="Mean")
 	plt.title(f"{dataset} Nodes")
 	plt.legend()
 	plt.xlabel("Iteration")
@@ -187,7 +187,7 @@ for dataset in datasets:
 		plt.plot(range(1,len(k_runtime[i])+1), k_runtime[i], marker=f"{i+1}", color =colors[i], label=(i+1))
 		total_time += np.array(k_runtime[i][:len(total_time)])
 	avg_time = total_time/len(k_runtime)
-	plt.plot(range(1,len(avg_time)+1), avg_time, marker="o", color ="black", label="Mean")
+	plt.plot(range(1,len(avg_time)+1), avg_time, marker="o", color ="black", linewidth=3, label="Mean")
 	plt.title(f"{dataset} Run Time (in seconds)")
 	plt.legend()
 	plt.xlabel("Iteration")

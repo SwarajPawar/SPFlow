@@ -12,7 +12,7 @@ original_stats = {
 
 #Statistics for the LearnSPN with paremeters set to their max values
 max_stats = {
-	'nltcs': {"ll" : -5.983727733002763, 'nodes' : 2322, 'runtime' : 23.770670652389526},
+	'nltcs': {"ll" : -5.983727733002763, 'nodes' : 2322, 'runtime' : 38.64763617515564},
 	'msnbc': {"ll" : -6.035125836103926, 'nodes' : 5385, 'runtime' : 479.7606608867645},
 	'kdd': {"ll" : -2.3006294371736202, 'nodes' : 8628, 'runtime' : 1634.041729927063},
 	'jester': {"ll" : -51.13606060451481, 'nodes' : 27978, 'runtime' : 1164.8972017765045},
