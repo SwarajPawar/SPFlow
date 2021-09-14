@@ -5,7 +5,7 @@ import numpy as np
 from spn.algorithms.ASPN import AnytimeSPN
 
 from spn.algorithms.Statistics import get_structure_stats_dict
-
+from spn.io.Graphics import plot_spn
 
 from sklearn.model_selection import KFold
 import logging
