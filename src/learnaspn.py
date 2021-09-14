@@ -46,7 +46,7 @@ for dataset in datasets:
 	train = df.values
 
 	df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
-	test = df2.values[:1000,:]
+	test = df2.values
 
 	#Get dataset Context
 	ds_context = Context(meta_types=[MetaType.DISCRETE]*train.shape[1])
