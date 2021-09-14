@@ -114,20 +114,14 @@ class AnytimeSPN:
 
 		#Create directory to save models
 		if save_models:
-			if k is None:
-				if not pth.exists(f'{self.plot_path}/models'):
-					try:
-						os.makedirs(f'{self.plot_path}/models')
-					except OSError:
-						print ("Creation of the directory models failed")
-						sys.exit()
-			else:
-				if not pth.exists(f'{self.plot_path}/{k}/models'):
-					try:
-						os.makedirs(f'{self.plot_path}/{k}/models')
-					except OSError:
-						print ("Creation of the directory models failed")
-						sys.exit()
+			
+			if not pth.exists(f'{self.plot_path}/models'):
+				try:
+					os.makedirs(f'{self.plot_path}/models')
+				except OSError:
+					print ("Creation of the directory models failed")
+					sys.exit()
+			
 
 		i = 0
 		while True:
@@ -155,10 +149,8 @@ class AnytimeSPN:
 
 			if save_models:
 				#Save models
-				if k is None:
-					file = open(f"{self.plot_path}/models/spn_{i+1}.pkle",'wb')
-				else:
-					file = open(f"{self.plot_path}/{k}/models/spn_{i+1}.pkle",'wb')
+				file = open(f"{self.plot_path}/models/spn_{i+1}.pkle",'wb')
+				
 				pickle.dump(spn, file)
 				file.close()
 			
@@ -191,10 +183,7 @@ class AnytimeSPN:
 				
 				
 				#Save the stats to a file
-				if k is None:
-					f = open(f"{self.plot_path}/stats.txt", "w")
-				else:
-					f = open(f"{self.plot_path}/{k}/stats.txt", "w")
+				f = open(f"{self.plot_path}/stats.txt", "w")
 				f.write(f'{self.dataset}:')
 				f.write(f"\n\t#Nodes: {nodes}")
 				f.write(f"\n\tLog-likelihood: {avg_ll}")
