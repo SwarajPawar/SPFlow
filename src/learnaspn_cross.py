@@ -50,9 +50,8 @@ rand_gen=None
 cpus=-1
 
 
-datasets = ["jester", "bnetflix"]
+datasets = ["nltcs", "msnbc", "baudio", "jester", "bnetflix", "kdd", "plants"]
 
-datasets = ["msnbc"]
 path = "cross_new"
 
 #kfolds = 3
@@ -158,57 +157,57 @@ for dataset in datasets:
 	plt.close()
 	colors = ["red", "blue", "green"]
 
-    maxlen = max([len(k_ll[i]) for i in range(len(k_ll))])
-    total_ll = np.zeros(min([len(k_ll[i]) for i in range(len(k_ll))]))
-    #upperll = [upper[dataset]["ll"]] * maxlen
-    #plt.plot(upperll, linestyle="dotted", color ="darkred", linewidth=3, label="Upper Limit")
-    #originalll = [original[dataset]["ll"]] * maxlen
-    #plt.plot(originalll, linestyle="dotted", color ="purple", linewidth=3, label="LearnSPN")
-    for i in range(len(k_ll)):
-    	plt.plot(range(1,len(k_ll[i])+1), k_ll[i], marker=f"{i+1}", color =colors[i], label=(i+1))
-    	total_ll += np.array(k_ll[i][:len(total_ll)])
-    avg_ll = total_ll/len(k_ll)
-    plt.plot(range(1,len(avg_ll)+1), avg_ll, marker="o", color ="black", label="Mean")
-    plt.title(f"{dataset} Log Likelihood")
-    plt.legend()
-    plt.xlabel("Iteration")
+	maxlen = max([len(k_ll[i]) for i in range(len(k_ll))])
+	total_ll = np.zeros(min([len(k_ll[i]) for i in range(len(k_ll))]))
+	#upperll = [upper[dataset]["ll"]] * maxlen
+	#plt.plot(upperll, linestyle="dotted", color ="darkred", linewidth=3, label="Upper Limit")
+	#originalll = [original[dataset]["ll"]] * maxlen
+	#plt.plot(originalll, linestyle="dotted", color ="purple", linewidth=3, label="LearnSPN")
+	for i in range(len(k_ll)):
+		plt.plot(range(1,len(k_ll[i])+1), k_ll[i], marker=f"{i+1}", color =colors[i], label=(i+1))
+		total_ll += np.array(k_ll[i][:len(total_ll)])
+	avg_ll = total_ll/len(k_ll)
+	plt.plot(range(1,len(avg_ll)+1), avg_ll, marker="o", color ="black", label="Mean")
+	plt.title(f"{dataset} Log Likelihood")
+	plt.legend()
+	plt.xlabel("Iteration")
 	plt.ylabel("Log Likelihood")
-    plt.savefig(f"{path}/{dataset}/ll.png", dpi=150)
-    plt.close()
-    
-    
-    total_nodes = np.zeros(min([len(k_nodes[i]) for i in range(len(k_nodes))]))
-    #uppern = [upper[dataset]["n"]] * maxlen
-    #plt.plot(uppern, linestyle="dotted", color ="darkred", linewidth=3, label="Upper Limit")
-    #originaln = [original[dataset]["n"]] * maxlen
-    #plt.plot(originaln, linestyle="dotted", color ="purple", linewidth=3, label="LearnSPN")
-    for i in range(len(k_nodes)):
-    	plt.plot(range(1,len(k_nodes[i])+1), k_nodes[i], marker=f"{i+1}", color =colors[i], label=(i+1))
-    	total_nodes += np.array(k_nodes[i][:len(total_nodes)])
-    avg_nodes = total_nodes/len(k_nodes)
-    plt.plot(range(1,len(avg_nodes)+1), avg_nodes, marker="o", color ="black", label="Mean")
-    plt.title(f"{dataset} Nodes")
-    plt.legend()
-    plt.xlabel("Iteration")
+	plt.savefig(f"{path}/{dataset}/ll.png", dpi=150)
+	plt.close()
+	
+	
+	total_nodes = np.zeros(min([len(k_nodes[i]) for i in range(len(k_nodes))]))
+	#uppern = [upper[dataset]["n"]] * maxlen
+	#plt.plot(uppern, linestyle="dotted", color ="darkred", linewidth=3, label="Upper Limit")
+	#originaln = [original[dataset]["n"]] * maxlen
+	#plt.plot(originaln, linestyle="dotted", color ="purple", linewidth=3, label="LearnSPN")
+	for i in range(len(k_nodes)):
+		plt.plot(range(1,len(k_nodes[i])+1), k_nodes[i], marker=f"{i+1}", color =colors[i], label=(i+1))
+		total_nodes += np.array(k_nodes[i][:len(total_nodes)])
+	avg_nodes = total_nodes/len(k_nodes)
+	plt.plot(range(1,len(avg_nodes)+1), avg_nodes, marker="o", color ="black", label="Mean")
+	plt.title(f"{dataset} Nodes")
+	plt.legend()
+	plt.xlabel("Iteration")
 	plt.ylabel("# Nodes")
-    plt.savefig(f"{path}/{dataset}/nodes.png", dpi=150)
-    plt.close()
+	plt.savefig(f"{path}/{dataset}/nodes.png", dpi=150)
+	plt.close()
 
 
-    total_time = np.zeros(min([len(k_runtime[i]) for i in range(len(k_runtime))]))
-    #uppern = [upper[dataset]["n"]] * maxlen
-    #plt.plot(uppern, linestyle="dotted", color ="darkred", linewidth=3, label="Upper Limit")
-    #originaln = [original[dataset]["n"]] * maxlen
-    #plt.plot(originaln, linestyle="dotted", color ="purple", linewidth=3, label="LearnSPN")
-    for i in range(len(k_runtime)):
-    	plt.plot(range(1,len(k_runtime[i])+1), k_runtime[i], marker=f"{i+1}", color =colors[i], label=(i+1))
-    	total_time += np.array(k_runtime[i][:len(total_time)])
-    avg_time = total_time/len(k_runtime)
-    plt.plot(range(1,len(avg_time)+1), avg_time, marker="o", color ="black", label="Mean")
-    plt.title(f"{dataset} Run Time (in seconds)")
-    plt.legend()
-    plt.xlabel("Iteration")
+	total_time = np.zeros(min([len(k_runtime[i]) for i in range(len(k_runtime))]))
+	#uppern = [upper[dataset]["n"]] * maxlen
+	#plt.plot(uppern, linestyle="dotted", color ="darkred", linewidth=3, label="Upper Limit")
+	#originaln = [original[dataset]["n"]] * maxlen
+	#plt.plot(originaln, linestyle="dotted", color ="purple", linewidth=3, label="LearnSPN")
+	for i in range(len(k_runtime)):
+		plt.plot(range(1,len(k_runtime[i])+1), k_runtime[i], marker=f"{i+1}", color =colors[i], label=(i+1))
+		total_time += np.array(k_runtime[i][:len(total_time)])
+	avg_time = total_time/len(k_runtime)
+	plt.plot(range(1,len(avg_time)+1), avg_time, marker="o", color ="black", label="Mean")
+	plt.title(f"{dataset} Run Time (in seconds)")
+	plt.legend()
+	plt.xlabel("Iteration")
 	plt.ylabel("Run Time")
-    plt.savefig(f"{path}/{dataset}/runtime.png", dpi=150)
-    plt.close()
+	plt.savefig(f"{path}/{dataset}/runtime.png", dpi=150)
+	plt.close()
 	
