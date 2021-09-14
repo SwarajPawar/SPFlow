@@ -29,13 +29,6 @@ from os import path as pth
 import sys, os
 
 
-min_instances_slice=200
-threshold=0.3
-ohe=False
-leaves = create_histogram_leaf
-rand_gen=None
-cpus=-1
-
 
 datasets = ["nltcs", "msnbc", "baudio", "jester", "bnetflix", "kdd", "plants"]
 
