@@ -9,7 +9,7 @@ original_stats = {
 	'Powerplant_Airpollution': {"ll" : -1.0796885930912947, "meu" : -2756263.244346315, 'nodes' : 38, 'reward':-2759870.4, 'dev':6825.630813338794},
 	'Navigation': {"ll" : -0.25421657291373406, "meu" : -4.049331963001028, 'nodes' : 17426, 'edges' : 15274, 'layers' : 16, 'reward':-4.052, 'dev':0.022825424421026797, 'runtime':2044.684020280838},
 	'Elevators': {"ll" : 0, "meu" : 0.5, 'nodes' : 38227, 'edges' : 32766, 'layers' : 14, 'reward':0.5, 'dev':0.0, 'runtime':2499.035037279129},
-	'CrossingTraffic': {"ll" : -3.024408393022007, "meu" : -2.897592095165004, 'nodes' : 198840, 'edges' : 180126, 'layers' : 20, 'reward':-5.0, 'dev':0.0, 'runtime':6904.133388757706},
+	'CrossingTraffic': {"ll" : -3.0326077999664487, "meu" : -4.0, 'nodes' : 273206, 'edges' : 254527, 'layers' : 20, 'reward':-4.0, 'dev':0.0, 'runtime':16691.64990258217},
 	'GameOfLife': {"ll" : -4.851702542481353, "meu" : 85.32740885779461, 'nodes' : 674834, 'edges' : 623912, 'layers' : 49, 'reward':11.294, 'dev':0.2812543332999511, 'runtime':18705.90127849579},
 }
 
@@ -23,7 +23,7 @@ optimal_meu = {
 	'LungCancer_Staging': 3.12453,
 	'Navigation': -4.046906,
 	'Elevators': 0.5,
-	'CrossingTraffic': -4.2999,
+	'CrossingTraffic': -4.0,
 	'CrossingTraffic1': -2.92106,
 	'SkillTeaching': -7.180539,
 	'GameOfLife': 11.567616 #10.808452,
