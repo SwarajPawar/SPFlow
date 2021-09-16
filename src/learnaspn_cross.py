@@ -32,8 +32,8 @@ import sys, os
 
 
 datasets = ["msnbc", "baudio", "jester", "bnetflix", "kdd", "plants"]
-
-path = "cross_new"
+datasets = ["msnbc"]
+path = "cross_new1"
 
 #kfolds = 3
 kfold = KFold(n_splits=3, shuffle=True)
@@ -136,6 +136,7 @@ for dataset in datasets:
 		k_nodes.append(nodes)
 
 		k+=1
+		break
 
 	
 	plt.close()
