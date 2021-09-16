@@ -202,7 +202,8 @@ class AnytimeSPN:
 			#Convergence Criteria
 			#If it includes all variables for splitting
 			#And the std for past3 is less than 1e-3
-			if n>=self.max_var and (round(np.std(past3), 3) <= 0.001 or (i+1)>=50):
+			#if n>=self.max_var and (round(np.std(past3), 3) <= 0.001 or (i+1)>=50):
+			if (i+1)>=45:
 				break
 			
 			#Increase the number of clusters and variables for splitting
