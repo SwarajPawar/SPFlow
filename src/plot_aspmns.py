@@ -66,11 +66,11 @@ for dataset in datasets:
 	for model in range(model_count):
 
 		#Get the model from the file
-		file = open(f"{plot_path}/models/spmn_{model+1}.pkle","rb")
+		file = open(f"{plot_path}/models/spmn_{model}.pkle","rb")
 		spmn = pickle.load(file)
 		file.close()
 
-		plot_spn(spmn, f'{dataset}/spmn.pdf', feature_labels=feature_labels)
+		plot_spn(spmn, f'spmn_{model+1}.pdf', feature_labels=feature_labels)
 		
 
 		
