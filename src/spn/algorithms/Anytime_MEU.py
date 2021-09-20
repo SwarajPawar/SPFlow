@@ -16,6 +16,8 @@ import random
 def meu_sum(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
     meu_children = meu_per_node[:,[child.id for child in node.children]]
     likelihood_children = lls_per_node[:,[child.id for child in node.children]]
+    if np.isnan(likelihood_children).all():
+        likelihood_children = np.ones(likelihood_children.shape)
     weighted_likelihood = np.array(node.weights)*likelihood_children
     norm = np.sum(weighted_likelihood, axis=1)
     normalized_weighted_likelihood = weighted_likelihood / norm.reshape(-1,1)
