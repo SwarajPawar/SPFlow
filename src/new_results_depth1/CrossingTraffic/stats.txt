@@ -1,14 +1,14 @@
 
 CrossingTraffic
-	Run Time : [273.6596667766571]
-	Log Likelihood : [-18.207073210453355]
-	Log Likelihood Deviation: [0.28872423214851506]
-	MEU : [-5.0]
-	Nodes : [1706]
-	Edges : [1611]
-	Layers : [18]
-	Average Rewards : [None]
-	Rewards Deviation : [None]
+	Run Time : [273.6596667766571, 2998.2903044223785]
+	Log Likelihood : [-18.207073210453355, -6.916125229487657]
+	Log Likelihood Deviation: [0.28872423214851506, 0.05175015174657449]
+	MEU : [-5.0, -4.616392555275525]
+	Nodes : [1706, 67203]
+	Edges : [1611, 63616]
+	Layers : [18, 30]
+	Average Rewards : [None, None]
+	Rewards Deviation : [None, None]
 
 
 
