@@ -10,7 +10,7 @@ original_stats = {
 	'Navigation': {"ll" : -0.25421657291373406, "meu" : -4.049331963001028, 'nodes' : 17426, 'edges' : 15274, 'layers' : 16, 'reward':-4.052, 'dev':0.022825424421026797, 'runtime':2044.684020280838},
 	'Elevators': {"ll" : 0, "meu" : 0.5, 'nodes' : 38227, 'edges' : 32766, 'layers' : 14, 'reward':0.5, 'dev':0.0, 'runtime':2499.035037279129},
 	'CrossingTraffic': {"ll" : -3.0326077999664487, "meu" : -4.0, 'nodes' : 273206, 'edges' : 254527, 'layers' : 20, 'reward':-4.0, 'dev':0.0, 'runtime':16691.64990258217},
-	'GameOfLife': {"ll" : -4.851702542481353, "meu" : 85.32740885779461, 'nodes' : 674834, 'edges' : 623912, 'layers' : 49, 'reward':11.294, 'dev':0.2812543332999511, 'runtime':18705.90127849579},
+	'GameOfLife': {"ll" : -4.851702542481353, "meu" : 85.32740885779461, 'nodes' : 674834, 'edges' : 623912, 'layers' : 49, 'reward':10.808334, 'dev':0.027766147446125766, 'runtime':18705.90127849579},
 }
 
 #Optimal MEU values from the IDs
@@ -26,7 +26,7 @@ optimal_meu = {
 	'CrossingTraffic': -4.0,
 	'CrossingTraffic1': -2.92106,
 	'SkillTeaching': -7.180539,
-	'GameOfLife': 11.567616 #10.808452,
+	'GameOfLife': 10.808382,
 }
 
 #Rewards by simulating random policy
