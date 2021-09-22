@@ -24,7 +24,6 @@ optimal_meu = {
 	'Navigation': -4.046906,
 	'Elevators': 0.5,
 	'CrossingTraffic': -4.0,
-	'CrossingTraffic1': -2.92106,
 	'SkillTeaching': -7.180539,
 	'GameOfLife': 10.808382,
 }
@@ -39,7 +38,6 @@ random_reward = {
 	'LungCancer_Staging': {'reward': 2.672070640000026, 'dev':0.007416967451081523},
 	'Navigation': {'reward': -4.972862, 'dev':0.00189885649800079},
 	'CrossingTraffic': {'reward': -4.984152, 'dev':0.0007056174601014786},
-	'CrossingTraffic1': {'reward': -4.779254, 'dev':0.005551430806557858},
 	'Elevators': {'reward': -6.129405499999999 , 'dev':0.006561652878657956},
 	'GameOfLife': {'reward': 9.671382000000001 , 'dev':0.02171178887148651},
 	'SysAdmin': {'reward': 12.110048999999998 , 'dev':0.02391732450547092},
