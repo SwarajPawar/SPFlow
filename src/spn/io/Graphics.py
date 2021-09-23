@@ -114,19 +114,20 @@ def plot_spn(spn, fname="plot.pdf", feature_labels = None):
             node_color="#DDDDDD",
             edge_color="#888888",
             width=1,
-            node_size=180,
+            node_size=300,
             labels=labels,
-            font_size=4,
+            font_size=8,
             node_shape=node_shape,
             nodelist=[
                 sNode[0] for sNode in filter(lambda x: x[1]["s"] == node_shape, g.nodes(data=True))
             ]
         )
 
-
-    ax.collections[0].set_edgecolor("#333333")
+    ax.collections[0].set_edgecolor("#222222")
+    ax.collections[2].set_edgecolor("#222222")
+    ax.collections[4].set_edgecolor("#222222")
     edge_labels = nx.draw_networkx_edge_labels(
-        g, pos=pos, edge_labels=nx.get_edge_attributes(g, "weight"), font_size=5, alpha=0.75
+        g, pos=pos, edge_labels=nx.get_edge_attributes(g, "weight"), font_size=7, alpha=0.9
     )
 
     xpos = list(map(lambda p: p[0], pos.values()))
@@ -138,7 +139,7 @@ def plot_spn(spn, fname="plot.pdf", feature_labels = None):
     plt.margins(0, 0)
     plt.gca().xaxis.set_major_locator(NullLocator())
     plt.gca().yaxis.set_major_locator(NullLocator())
-    plt.savefig(fname, bbox_inches="tight", pad_inches=0, pdi=1500)
+    plt.savefig(fname, bbox_inches="tight", pad_inches=0, pdi=2500)
 
 
 def plot_spn2(spn, fname="plot.pdf"):

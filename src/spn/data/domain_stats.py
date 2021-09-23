@@ -41,6 +41,7 @@ random_reward = {
 	'Elevators': {'reward': -6.129405499999999 , 'dev':0.006561652878657956},
 	'GameOfLife': {'reward': 9.671382000000001 , 'dev':0.02171178887148651},
 	'SysAdmin': {'reward': 12.110048999999998 , 'dev':0.02391732450547092},
+	'SkillTeaching': {'reward': -8.345459249252913 , 'dev':0.017448725006702345},
 }
 
 def get_original_stats(dataset):
