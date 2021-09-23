@@ -83,34 +83,41 @@ def get_partial_order(dataset_name):
     if dataset_name == 'Computer_Diagnostician':
         partialOrder = [['IO_board_fail', 'Logic_board_fail'], ['System_State'], ['Rework_Decision'], ['Rework_Outcome', 'Rework_Cost' ]]
         return partialOrder
+
     if dataset_name == 'Export_Textiles':
         partialOrder = [['Export_Decision'], ['Economical_State'], ['Profit']]
         return partialOrder
+
     if dataset_name == 'Test_Strep':
         partialOrder = [['Test_Decision'],['Streptococcal_Infection', 'Test_Result'],['Treatment_Decision'],
                         ['Rheumatic_Heart_Disease', 'Die_from_Anaphylaxis', 'Days_with_sore_throat', 'QALE']]
         return partialOrder
+
     if dataset_name == 'LungCancer_Staging':
         #partialOrder = [['CT'],['CTResult', 'Mediastinal_Metastases'],['Mediastinoscopy'],['Mediastinoscopy_death', 'Mediastinoscopy_Result'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
         #partialOrder = [['CT'],['CTResult', 'Mediastinal_Metastases'],['Mediastinoscopy'],['Mediastinoscopy_Result', 'Mediastinoscopy_death'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
         #ltest1
         partialOrder = [['CT'],['Mediastinal_Metastases', 'CTResult'],['Mediastinoscopy'],['Mediastinoscopy_Result', 'Mediastinoscopy_death'], ['Treatment'], ['Treatment_Death', 'Life_expectancy' ]]
         return partialOrder
+
     if dataset_name == 'HIV_Screening':
         #partialOrder = [['Screen'], ['HIV_Test_Result', 'HIV_Status'],['Treat_Counsel'],
                         #['Compliance_Medical_Therapy',	'Reduce_Risky_Behavior', 'QALE']]
         partialOrder = [['Screen'], ['HIV_Status', 'HIV_Test_Result'],['Treat_Counsel'],
                         ['Compliance_Medical_Therapy',	'Reduce_Risky_Behavior', 'QALE']]
         return partialOrder
+
     if dataset_name == 'Powerplant_Airpollution':
         partialOrder = [['Installation_Type'],['Coal_Worker_Strike'],['Strike_Intervention'],['Strike_Resolution','Additional_Cost']]
         return partialOrder
+
     if dataset_name == 'FrozenLake':
         partialOrder = list()
         for i in range(10):
             partialOrder += [[f'State_{i}'], [f'Action_{i}']]
         partialOrder += [['State_10', 'Reward']]
         return partialOrder
+
     if dataset_name == 'Elevators':
         partialOrder = list()
         for i in range(6):
@@ -119,6 +126,7 @@ def get_partial_order(dataset_name):
         partialOrder += [[f'Elevator_at_Floor_6', f'Person_Waiting_6', f'Person_in_Elevator_Going_Up_6', 
                                 f'Elevator_Direction_6', f'Elevator_Closed_6', 'Reward']]
         return partialOrder
+
     if dataset_name == 'Navigation':
         partialOrder = list()
         for i in range(5):
@@ -127,6 +135,7 @@ def get_partial_order(dataset_name):
         partialOrder += [[f'Robot_at_1_t5', f'Robot_at_2_t5', f'Robot_at_3_t5', 
                                 f'Robot_at_4_t5', f'Robot_at_5_t5', f'Robot_at_6_t5', 'Reward']]
         return partialOrder
+
     if dataset_name == 'CrossingTraffic':
         partialOrder = list()
         for i in range(5):
@@ -139,6 +148,7 @@ def get_partial_order(dataset_name):
                                 f'Robot_at_7_t5', f'Robot_at_8_t5', f'Robot_at_9_t5',
                                 f'Obstacle_at_2_t5', f'Obstacle_at_5_t5', f'Obstacle_at_8_t5', 'Reward']]
         return partialOrder
+
     if dataset_name == 'GameOfLife':
         partialOrder = list()
         for i in range(3):
@@ -149,6 +159,7 @@ def get_partial_order(dataset_name):
                                 f'Cell_4_t3', f'Cell_5_t3', f'Cell_6_t3',
                                 f'Cell_7_t3', f'Cell_8_t3', f'Cell_9_t3', 'Reward']]
         return partialOrder
+
     if dataset_name == 'SkillTeaching':
         partialOrder = list()
         for i in range(5):
@@ -178,30 +189,35 @@ def get_feature_labels(dataset_name):
         return ['Sc', 'HS', 'HTR', 'TC', 'CMT', 'RRB', 'Q']
     if dataset_name == 'Powerplant_Airpollution':                                    # 5 variables
         return ['IT', 'CWS', 'SI', 'SR', 'AC']
+    
     if dataset_name == 'FrozenLake':                                                 # 22 variables
         features = list()
         for i in range(10):
             features += [f'S{i}', f'A{i}']
         features += ['S10', 'RW']
         return features
+
     if dataset_name == 'Elevators': 
         features = list()
         for i in range(6):
             features += [f'EF{i}', f'PW{i}', f'PU{i}', f'ED{i}', f'EC{i}',  f'A{i}']
         features += [f'EF6', f'PW6', f'PU6', f'ED6', f'EC6', 'RW']
         return features
+
     if dataset_name == 'Navigation': 
         features = list()
         for i in range(5):
             features += [f'R1{i}', f'R2{i}', f'R3{i}', f'R4{i}',  f'R5{i}', f'R6{i}', f'A{i}']
         features += [f'R15', f'R25', f'R35', f'R45', f'R55', f'R65', 'RW']
         return features
+
     if dataset_name == 'GameOfLife': 
         features = list()
         for i in range(3):
             features += [f'C1{i}', f'C2{i}', f'C3{i}', f'C4{i}',  f'C5{i}', f'C6{i}', f'C7{i}',  f'C8{i}', f'C9{i}', f'A{i}']
         features += [f'C13', f'C23', f'C33', f'C43', f'C53', f'C63', f'C73', f'C83', f'C93', 'RW']
         return features
+
     if dataset_name == 'CrossingTraffic': 
         features = list()
         for i in range(5):
@@ -210,6 +226,7 @@ def get_feature_labels(dataset_name):
         features += [f'R15', f'R25', f'R35', f'R45', f'R55', f'R65',
                      f'R75', f'R85', f'R95', f'O25', f'O55', f'O85', 'RW']
         return features
+
     if dataset_name == 'SkillTeaching': 
         features = list()
         for i in range(5):
