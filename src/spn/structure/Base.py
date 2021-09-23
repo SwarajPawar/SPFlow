@@ -220,6 +220,9 @@ class Context:
 def get_number_of_edges(node):
     return sum([len(c.children) for c in get_nodes_by_type(node, (Sum, Product))])
 
+def get_number_of_params(node):
+    return sum([len(c.children) for c in get_nodes_by_type(node, (Sum))])
+
 
 def get_number_of_nodes(spn, node_type=Node):
     return len(get_nodes_by_type(spn, node_type))

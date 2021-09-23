@@ -464,7 +464,7 @@ class Anytime_SPMN:
 		all_ll_dev = list()
 		all_meus = list()
 		all_nodes = list()
-		all_edges = list()
+		all_parameters = list()
 		all_layers = list()
 		all_avg_rewards = list()
 		all_reward_dev = list()
@@ -475,7 +475,7 @@ class Anytime_SPMN:
 				"ll_dev": None,
 				"meu" : None,
 				"nodes" : None,
-				"edges" : None,
+				"parameters" : None,
 				"layers" : None,
 				"reward" : None,
 				"reward_dev" : None
@@ -543,7 +543,7 @@ class Anytime_SPMN:
 				meu_ = self.evaluate_meu()
 				struct_stats = self.evaluate_structure_stats()
 				nodes = struct_stats['nodes']
-				edges = struct_stats['edges']
+				parameters = struct_stats['parameters']
 				layers = struct_stats['layers']
 
 				if evaluate_parallel:
@@ -557,7 +557,7 @@ class Anytime_SPMN:
 				all_ll_dev.append(ll_dev)
 				all_meus.append(meu_)
 				all_nodes.append(nodes)
-				all_edges.append(edges)
+				all_parameters.append(parameters)
 				all_layers.append(layers)
 				all_avg_rewards.append(avg_rewards)
 				all_reward_dev.append(reward_dev)
@@ -566,7 +566,7 @@ class Anytime_SPMN:
 				stats["ll_dev"] = all_ll_dev
 				stats["meu"] = all_meus
 				stats["nodes"] = all_nodes
-				stats["edges"] = all_edges
+				stats["parameters"] = all_parameters
 				stats["layers"] = all_layers
 				stats["reward"] = all_avg_rewards
 				stats["reward_dev"] = all_reward_dev
@@ -581,7 +581,7 @@ class Anytime_SPMN:
 				print("\n\n")
 				print("Run Time: ", runtime)
 				print("#Nodes: ",nodes)
-				print("#Edges: ",edges)
+				print("#parameters: ",parameters)
 				print("#Layers: ",layers)
 				print("Log Likelihood: ",avg_ll)
 				print("Log Likelihood Deviation: ",ll_dev)
@@ -599,7 +599,7 @@ class Anytime_SPMN:
 				f.write(f"\n\tLog Likelihood Deviation: {all_ll_dev}")
 				f.write(f"\n\tMEU : {all_meus}")
 				f.write(f"\n\tNodes : {all_nodes}")
-				f.write(f"\n\tEdges : {all_edges}")
+				f.write(f"\n\tparameters : {all_parameters}")
 				f.write(f"\n\tLayers : {all_layers}")
 				f.write(f"\n\tAverage Rewards : {all_avg_rewards}")
 				f.write(f"\n\tRewards Deviation : {all_reward_dev}")
