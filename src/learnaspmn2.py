@@ -93,7 +93,7 @@ for dataset in datasets:
 		ll_dev = stats["ll_dev"]
 		meus = stats["meu"]
 		nodes = stats["nodes"]
-		edges = stats["edges"]
+		parameters = stats["parameters"]
 		layers = stats["layers"]
 
 		# plot the statistics
@@ -137,13 +137,13 @@ for dataset in datasets:
 		plt.savefig(f"{plot_path}/nodes.png", dpi=100)
 		plt.close()
 
-		plt.plot(range(1,len(edges)+1), edges, marker="o", label="Anytime")
-		#plt.plot(range(1,len(edges)+1), [original_stats["edges"]]*len(edges), linestyle="dotted", color ="red", label="LearnSPMN")
-		plt.title(f"{dataset} Edges")
+		plt.plot(range(1,len(parameters)+1), parameters, marker="o", label="Anytime")
+		#plt.plot(range(1,len(parameters)+1), [original_stats["parameters"]]*len(parameters), linestyle="dotted", color ="red", label="LearnSPMN")
+		plt.title(f"{dataset} Parameters")
 		plt.xlabel("Iteration")
-		plt.ylabel("# Edges")
+		plt.ylabel("# Parameters")
 		plt.legend()
-		plt.savefig(f"{plot_path}/edges.png", dpi=100)
+		plt.savefig(f"{plot_path}/parameters.png", dpi=100)
 		plt.close()
 
 		plt.plot(range(1,len(layers)+1), layers, marker="o", label="Anytime")
