@@ -12,6 +12,9 @@ from spn.algorithms.Validity import is_valid
 
 from spn.structure.Base import Sum, assign_ids
 
+from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py
+from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
+
 from spn.structure.leaves.histogram.Histograms import create_histogram_leaf
 from spn.structure.leaves.parametric.Parametric import create_parametric_leaf
 from spn.structure.leaves.piecewise.PiecewiseLinear import create_piecewise_leaf
@@ -202,3 +205,38 @@ def learn_cnet(
         learn_param = memory.cache(learn_param)
 
     return learn_param(data, ds_context, conditioning, min_instances_slice)
+
+
+def learn_mspn_for_spmn(
+    data,
+    ds_context,
+    cols="rdc",
+    rows="kmeans",
+    min_instances_slice=200,
+    threshold=0.3,
+    initial_scope=None,
+    ohe=False,
+    leaves=None,
+    memory=None,
+    rand_gen=None,
+    cpus=-1,
+):
+    if leaves is None:
+        from spn.structure.leaves.spmnLeaves.SPMNLeaf import create_spmn_leaf
+        leaves = create_spmn_leaf
+
+    if rand_gen is None:
+        rand_gen = np.random.RandomState(17)
+
+    def l_mspn(data, ds_context, cols, rows, min_instances_slice, threshold, ohe):
+        split_cols, split_rows = get_splitting_functions(cols, rows, ohe, threshold, rand_gen, cpus)
+
+        nextop = get_next_operation(min_instances_slice)
+
+        return learn_structure(data, ds_context, split_rows, split_cols, leaves, nextop, initial_scope=initial_scope)
+
+    if memory:
+        l_mspn = memory.cache(l_mspn)
+
+    return l_mspn(data, ds_context, cols, rows, min_instances_slice, threshold, ohe)
+

@@ -5,7 +5,7 @@ Created on March 25, 2018
 """
 from collections import Counter
 
-from spn.structure.Base import get_nodes_by_type, Sum, Product, Leaf, get_number_of_edges, get_depth, Node
+from spn.structure.Base import get_nodes_by_type, Sum, Product, Leaf, get_number_of_edges, get_number_of_params, get_depth, Node
 from spn.structure.leaves.parametric.Parametric import Parametric
 import logging
 
@@ -16,9 +16,10 @@ def get_structure_stats_dict(node):
     node_types = dict(Counter([type(n) for n in get_nodes_by_type(node)]))
     num_nodes = len(get_nodes_by_type(node, Node))
     edges = get_number_of_edges(node)
+    parameters = get_number_of_params(node)
     layers = get_depth(node)
 
-    result = {"nodes": num_nodes, "edges": edges, "layers": layers, "count_per_type": node_types}
+    result = {"nodes": num_nodes, "edges": edges, 'parameters': parameters, "layers": layers, "count_per_type": node_types}
     return result
 
 
@@ -28,6 +29,7 @@ def get_structure_stats(node):
     prod_nodes = len(get_nodes_by_type(node, Product))
     leaf_nodes = len(get_nodes_by_type(node, Leaf))
     edges = get_number_of_edges(node)
+    parameters = get_number_of_params(node)
     layers = get_depth(node)
 
     return """---Structure Statistics---
@@ -42,5 +44,6 @@ def get_structure_stats(node):
         prod_nodes,
         leaf_nodes,
         edges,
+        parameters,
         layers,
     )

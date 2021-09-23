@@ -10,12 +10,15 @@ from networkx.drawing.nx_agraph import graphviz_layout
 # matplotlib.use('Agg')
 import logging
 
+from spn.structure.leaves.spmnLeaves.SPMNLeaf import LatentInterface
+
 logger = logging.getLogger(__name__)
 
 
 def get_networkx_obj(spn, feature_labels=None):
     import networkx as nx
-    from spn.structure.Base import Sum, Product, Leaf, get_nodes_by_type, Max
+    from spn.structure.Base import Sum, Product, Leaf, get_nodes_by_type, Max, InterfaceSwitch
+    from spn.structure.leaves.spmnLeaves.SPMNLeaf import Utility
     import numpy as np
 
     all_nodes = get_nodes_by_type(spn)
@@ -28,16 +31,41 @@ def get_networkx_obj(spn, feature_labels=None):
 
         if isinstance(n, Sum):
             label = "+"
+            shape = 'o'
         elif isinstance(n, Product):
             label = "x"
+            shape = 'o'
         elif isinstance(n, Max):
-            label = n.feature_name
-        else:
+            if feature_labels is not None:
+                label = feature_labels[n.dec_idx]
+                shape = 's'
+            else:
+                label = n.feature_name[0] + n.feature_name[1] + "D" + str(n.id)
+                shape = 's'
+
+        elif isinstance(n, Utility):
             if feature_labels is not None:
                 label = feature_labels[n.scope[0]]
+                shape = 'd'
             else:
-                label = "V"  + str(n.scope[0]) 
-        g.add_node(n.id)
+                shape = 'd'
+                label = "U" + str(n.scope[0])
+
+        elif isinstance(n, InterfaceSwitch):
+            shape = 'o'
+            label = "IFS"
+        elif isinstance(n, LatentInterface):
+            shape = 'o'
+            label = 'LIF' + str(n.interface_idx)
+        else:
+            if feature_labels is not None:
+                label = feature_labels[n.scope[0]] 
+                shape = 'o'
+            else:
+                label = "V" + str(n.scope[0])
+                shape = 'o'
+
+        g.add_node(n.id, s=shape)
         labels[n.id] = label
 
         if isinstance(n, Leaf):
@@ -49,12 +77,15 @@ def get_networkx_obj(spn, feature_labels=None):
             g.add_edge(c.id, n.id, weight=edge_label)
 
             if isinstance(n, Max):
-                edge_label = np.round(n.dec_values[i], 2)
+                if type(n.dec_values[i]) == tuple:
+                    edge_label = [np.round(weights, 2) for weights in n.dec_values[i]]
+                else:
+                    edge_label = np.round(n.dec_values[i], 2)
             g.add_edge(c.id, n.id, weight=edge_label)
 
     return g, labels
 
-#added feature_labels
+
 def plot_spn(spn, fname="plot.pdf", feature_labels = None):
 
     import networkx as nx
@@ -72,21 +103,30 @@ def plot_spn(spn, fname="plot.pdf", feature_labels = None):
 
     # ax.invert_yaxis()
 
-    nx.draw(
-        g,
-        pos,
-        with_labels=True,
-        arrows=False,
-        node_color="#DDDDDD",
-        edge_color="#888888",
-        width=1,
-        node_size=100,
-        labels=labels,
-        font_size=4,
-    )
+    node_shapes = set((node_shape[1]["s"] for node_shape in g.nodes(data=True)))
+
+    for node_shape in node_shapes:
+        nx.draw(
+            g,
+            pos,
+            with_labels=True,
+            arrows=False,
+            node_color="#DDDDDD",
+            edge_color="#888888",
+            width=1,
+            node_size=180,
+            labels=labels,
+            font_size=4,
+            node_shape=node_shape,
+            nodelist=[
+                sNode[0] for sNode in filter(lambda x: x[1]["s"] == node_shape, g.nodes(data=True))
+            ]
+        )
+
+
     ax.collections[0].set_edgecolor("#333333")
     edge_labels = nx.draw_networkx_edge_labels(
-        g, pos=pos, edge_labels=nx.get_edge_attributes(g, "weight"), font_size=5, clip_on=False, alpha=0.6
+        g, pos=pos, edge_labels=nx.get_edge_attributes(g, "weight"), font_size=5, alpha=0.75
     )
 
     xpos = list(map(lambda p: p[0], pos.values()))
@@ -98,7 +138,7 @@ def plot_spn(spn, fname="plot.pdf", feature_labels = None):
     plt.margins(0, 0)
     plt.gca().xaxis.set_major_locator(NullLocator())
     plt.gca().yaxis.set_major_locator(NullLocator())
-    plt.savefig(fname, bbox_inches="tight", pad_inches=0, pdi=1000)
+    plt.savefig(fname, bbox_inches="tight", pad_inches=0, pdi=1500)
 
 
 def plot_spn2(spn, fname="plot.pdf"):
