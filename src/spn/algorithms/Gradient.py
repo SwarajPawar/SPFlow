@@ -4,6 +4,8 @@ from scipy.special import logsumexp
 from spn.algorithms.Inference import log_likelihood
 from spn.structure.Base import eval_spn_top_down, Sum, Product, Max, Leaf, get_number_of_nodes, get_nodes_by_type
 
+from spn.structure.Base import InterfaceSwitch
+
 
 def merge_gradients(parent_gradients):
     return logsumexp(np.concatenate(parent_gradients).reshape(-1, 1), axis=1)
@@ -85,8 +87,19 @@ def max_gradient_backward(node, parent_result, gradient_result=None, lls_per_nod
     return messages_to_children
 
 
-_node_gradients = {Sum: sum_gradient_backward, Product: prod_gradient_backward, Max: max_gradient_backward, Leaf: leaf_gradient_backward}
+def interface_switch_gradient_backward(node, parent_result, gradient_result=None, lls_per_node=None, data=None):
+    messages_to_children = {}
+    for i, c in enumerate(node.children):
+        messages_to_children[c] = node.top_down_pass_val[c]
+    return messages_to_children
+
+
+_node_gradients = {Sum: sum_gradient_backward, Product: prod_gradient_backward,
+                   Max: max_gradient_backward, Leaf: leaf_gradient_backward,
+                   InterfaceSwitch: interface_switch_gradient_backward
+                   }
 _node_feature_gradients = {}
+
 
 
 def add_node_gradient(node_type, lambda_func):
@@ -95,6 +108,10 @@ def add_node_gradient(node_type, lambda_func):
 
 def add_node_feature_gradient(node_type, lambda_func):
     _node_feature_gradients[node_type] = lambda_func
+
+
+def get_node_gradients():
+    return _node_gradients, _node_feature_gradients
 
 
 def gradient_backward(spn, lls_per_node, node_gradients=_node_gradients, data=None):

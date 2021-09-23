@@ -77,10 +77,7 @@ def get_networkx_obj(spn, feature_labels=None):
             g.add_edge(c.id, n.id, weight=edge_label)
 
             if isinstance(n, Max):
-                if type(n.dec_values[i]) == tuple:
-                    edge_label = [np.round(weights, 2) for weights in n.dec_values[i]]
-                else:
-                    edge_label = np.round(n.dec_values[i], 2)
+                edge_label = np.round(n.dec_values[i], 2)
             g.add_edge(c.id, n.id, weight=edge_label)
 
     return g, labels
@@ -126,7 +123,7 @@ def plot_spn(spn, fname="plot.pdf", feature_labels = None):
 
     ax.collections[0].set_edgecolor("#333333")
     edge_labels = nx.draw_networkx_edge_labels(
-        g, pos=pos, edge_labels=nx.get_edge_attributes(g, "weight"), font_size=5, alpha=0.75
+        g, pos=pos, edge_labels=nx.get_edge_attributes(g, "weight"), font_size=5, clip_on=False, alpha=0.6
     )
 
     xpos = list(map(lambda p: p[0], pos.values()))
@@ -138,7 +135,7 @@ def plot_spn(spn, fname="plot.pdf", feature_labels = None):
     plt.margins(0, 0)
     plt.gca().xaxis.set_major_locator(NullLocator())
     plt.gca().yaxis.set_major_locator(NullLocator())
-    plt.savefig(fname, bbox_inches="tight", pad_inches=0, pdi=1500)
+    plt.savefig(fname, bbox_inches="tight", pad_inches=0, pdi=1000)
 
 
 def plot_spn2(spn, fname="plot.pdf"):

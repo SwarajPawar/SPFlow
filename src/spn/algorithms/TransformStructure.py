@@ -58,7 +58,7 @@ def Prune(node):
                 n.children[i] = c.children[0]
                 continue
 
-            if n_type == type(c):
+            if n_type == type(c) and not isinstance(c, Max):
                 del n.children[i]
                 n.children.extend(c.children)
 

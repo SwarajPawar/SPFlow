@@ -1,97 +1,128 @@
-# SPMN 
-
-SPMN module of SPFlow library implements the structure learning algorithm and 
-claculates MEU on the learned structure for Sum-Product-Max Networks(**SPMN**)
-which generalise Sum-Product Networks(**SPN**) for the class of decison-making problems.
+# RSPMN
+Provides appendix, sample datasets used in experiments and instructions for using the implementation of RSPMN.
+RSPMN module of SPFlow library implements the structure learning algorithm for Recurrent-Sum-Product-Max Networks(**RSPMN**)
+which generalise Sum-Product-Max Networks(**SPN**) for the class of sequential decison-making problems. RSPMN can be used to claculate MEU and obtain policies on sequential decision making domains.
 
 ## Getting Started
 
-Use the forked version of SPFlow [https://github.com/c0derzer0/SPFlow] for installation.
+Use the *rspmn* branch from forked version of SPFlow [https://github.com/SwarajPawar/SPFlow] for installation.
 
-## Using SPMN Module
+## Using RSPMN Module
 
 #### Sample Dataset
-Look at *spmn/data* folder for a list of sample datasets to use with spmn structure learning algorithm. 
-*spmn/meta_data* contains information about 
-*partial order, decision nodes, utility node, feature_names, meta_types* for each of the data sets.
+Look at *RSPMN/RSPMN_MDP_Datasets/* folder for a list of sample datasets to use with RSPMN structure learning algorithm. 
+*ReadMe.txt* of each data set contains meta data about datasets. It contains information about 
+*partial order, decision nodes, utility node, meta_types, dataset size, optimal meu, etc* for each of the data sets.
 ```python
 import pandas as pd    
-csv_path = "Dataset5/Computer_diagnostician.tsv"
-df = pd.DataFrame.from_csv(csv_path, sep='\t')
+csv_path = "FrozenLake/FrozenLake.csv"
+df = pd.DataFrame.from_csv(csv_path, sep=',')
+train_data = df.values
 ```
 #### Provide initial parameters
 Provide *partial order, decision nodes, utility node, feature_names, meta_types* for the dataset
 ```python
-partial_order = [['System_State'], ['Rework_Decision'],
-                 ['Logic_board_fail', 'IO_board_fail', 'Rework_Outcome', 
-                 'Rework_Cost']]
-utility_node = ['Rework_Cost']
-decision_nodes = ['Rework_Decision']
-feature_names = ['System_State', 'Rework_Decision', 'Logic_board_fail', 
-                'IO_board_fail', 'Rework_Outcome', 'Rework_Cost']
+Partial Order = 
+[[state],[action],[reward]]
+decision_nodes = ["action"]
+utility_nodes = ["reward"]
+feature_names = [var for var_set in partial_order for var in var_set]
 
 from spn.structure.StatisticalTypes import MetaType
 # Utility variable is the last variable. Other variables are of discrete type
-meta_types = [MetaType.DISCRETE]*5+[MetaType.UTILITY]  
+meta_types = [MetaType.DISCRETE]*2+[MetaType.UTILITY]
 ```
-#### Pre-process data
-This is not required if the data is a numpy ndarray ordered according to partial order
-```python
-from spn.algorithms.SPMNDataUtil import align_data
-import numpy as np
-
-df1, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
-col_ind = column_titles.index(utility_node[0]) 
-
-df_without_utility = df1.drop(df1.columns[col_ind], axis=1)
-from sklearn.preprocessing import LabelEncoder
-# transform categorical string values to categorical numerical values
-df_without_utility_categorical = df_without_utility.apply(LabelEncoder().fit_transform)  
-df_utility = df1.iloc[:, col_ind]
-df = pd.concat([df_without_utility_categorical, df_utility], axis=1, sort=False)
-
-train_data = df.values
-```
-#### Learn the structure of SPMN 
+#### Learn the structure of RSPMN 
 
 ```python
-from spn.algorithms.SPMN import learn_spmn
-spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, 
-            meta_types, cluster_by_curr_information_set=True,
-            util_to_bin = False)
-spmn_structure = spmn.learn_spmn(train_data)    
+from spn.algorithms.RSPMNnewAlgo import RSPMNnewAlgo
+rspmn = RSPMNnewAlgo(partial_order, decision_nodes, utility_nodes, feature_names, 
+                     meta_types, cluster_by_curr_information_set=True,
+                     util_to_bin=False)
+wrapped_two_timestep_data = rspmn.InitialTemplate.wrap_sequence_into_two_time_steps(train_data)
+spmn_structure_two_time_steps, top_network, initial_template_network = rspmn.InitialTemplate.build_initial_template(wrapped_two_timestep_data)    
 ```
-#### Plot the learned SPMN
+### Learn final template network from initial template network and top network
+```python
+
+template = rspmn.InitialTemplate.template_network
+
+# use one of the follwoing ways to update the template
+
+# Learn final template using sequential data
+template = rspmn.hard_em(train_data, template, False)
+
+# or 
+
+# if numpy array cannot hold whole of train_data, 
+# updates can be made on batches of data and/or by splitting sequence as follows
+for i in range(0, len(train_data), batch_size):
+    print(i)
+    for j in range(0, len(sequence)-1, sequence_split): # e.g. len(sequence) = 10, sequence_split = 5
+        print(j)
+        template = rspmn.hard_em(train_data[i:i+batch_size, j*num_vars:(j+sequence_split)*num_vars], template, False)
+        
+rspmn.update_weights(rspmn.template)
+
+```
+#### We can plot the learned structures 
 ```python
 from spn.io.Graphics import plot_spn
-plot_spn(spmn_structure, "computer_diagonistic.pdf", feature_labels=['SS', 'DD', 'LBF', 'IBF', 'RO', 'RC'])
+plot_spn(spmn_structure_two_time_steps, "folder/file_name.pdf", feature_labels=["State0", "Action0", "Reward0", "State1", "Action1", "Reward1"])
+plot_spn(top_layer, "folder/file_name.pdf", feature_labels=["State", "Action", "Reward"])
+plot_spn(initial_template_network, "folder/file_name.pdf", feature_labels=["State", "Action", "Reward"])
+
 ```
 
     
-#### Calculate Maximum Expected Utility from the learned SPMN
+#### Calculating Maximum Expected Utility (MEU) and obtaining Best Decisions from the learned RSPMN
 ```python
-from spn.algorithms.MEU import meu
-test_data = [[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]]
-meu = meu(spmn_structure, test_data)
+meu_list, lls_list = rspmn.value_iteration(template, num_of_iterations)
+
+# to select an action in state 0
+test_data = [0, np.nan, np.nan]
+test_data = np.array(test_data).reshape(1, len(test_data))
+# rspmn.select_actions returns a numpy array of data filled with best decision values at corresponding decision variables
+# and most probable explaination (MPE) values for leaf variables
+data = rspmn.select_actions(rspmn.template, test_data, meu_list, lls_list)
+# data is represented as [state, action, utility]
+action = data[1]
+# print(action)
+
+# to obtain the Maximum Expected Utility of state 0
+test_data = [0, np.nan, np.nan]
+test_data = np.array(test_data).reshape(1, len(test_data))
+meu = rspmn.meu_of_state(rspmn.template, test_data, meu_list, lls_list)[0][:,0]
+# print(meu)
 ```    
 The output for meu
 ```python
-[242.90708442]
+# after 300 iterations on value iteration
+0.818
 ```
 #### Additional functionality
-We can convert utility variable to binary random variable using cooper transformation
-```python  
-from spn.algorithms.SPMNDataUtil import cooper_tranformation
-# col_ind is index of utility variable in train data
-train_data_with_bin_utility = cooper_tranformation(train_data, col_ind)   
-spmn = SPMN(partial_order , decision_nodes, utility_node, feature_names, 
-        meta_types, cluster_by_curr_information_set=True,
-        util_to_bin = False)
-spmn_structure = spmn.learn_spmn(train_data_with_bin_utility) 
-```
+We can also interact with the environment by using actions generated from RSPMN
+```python
+import gym
+env = gym.make('FrozenLake-v0')
+episode_rewards = [0.0]
+obs = env.reset()
+for i in range(num_steps):
+  test_data = [obs, np.nan, np.nan]
+  data = rspmn.select_actions(rspmn.template, test_data, meu_list, lls_list)
+  # data is represented as [state, action, utility]
+  action = data[1]
+  obs, reward, done, info = env.step(action)
+  
+  # Stats
+  episode_rewards[-1] += reward
+  if done:
+      obs = env.reset()
+      episode_rewards.append(0.0)
+# Compute mean reward for the last 100 episodes
+mean_100ep_reward = round(np.mean(episode_rewards[-100:]), 1)
+# print("Mean reward:", mean_100ep_reward, "Num episodes:", len(episode_rewards))
+```  
 ## Papers implemented
-* Mazen Melibari, Pascal Poupart, Prashant Doshi. "Sum-Product-Max Networks for Tractable Decision Making". In Proceedings of the Twenty-Fifth International Joint Conference on Artificial Intelligence, 2016.
-
-    
-
+Tatavarti, Hari Teja, Prashant Doshi, and Layton Hayes. "Recurrent Sum-Product-Max Networks for Decision Making in Perfectly-Observed Environments." arXiv preprint arXiv:2006.07300 (2020).
 

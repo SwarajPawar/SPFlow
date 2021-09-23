@@ -4,7 +4,7 @@
 import unittest
 import logging
 from spn.algorithms.RSPMN import RSPMN
-from spn.algorithms.RSPMNHelper import get_partial_order_two_time_steps, get_feature_names_two_time_steps,\
+from spn.algorithms.RSPMN.RSPMNInitialTemplateHelper import get_partial_order_two_time_steps, get_feature_names_two_time_steps,\
     get_nodes_two_time_steps
 
 logging.basicConfig(level=logging.DEBUG)
@@ -88,9 +88,16 @@ class TestRSPMN(unittest.TestCase):
     def test_wrap_sequence_into_two_time_steps(self):
 
         data = np.arange(0, 550).reshape(-1, 55)
-        print(data)
+        print(data.shape)
+        varying_data = [np.arange(0, 55).reshape(-1, 55),
+                        np.arange(0, 44).reshape(-1, 44),
+                        np.arange(0, 66).reshape(-1, 66),
+                        np.arange(0, 33).reshape(-1, 33),
+                        np.arange(0, 22).reshape(-1, 22),
+                        # np.arange(0, 11).reshape(-1, 11)
+                        ]
         two_time_step_data = \
-            self.rspmn.InitialTemplate.wrap_sequence_into_two_time_steps(data)
+            self.rspmn.InitialTemplate.wrap_sequence_into_two_time_steps(varying_data, True)
 
         print(f'two_time_step_data {two_time_step_data}')
 

@@ -123,7 +123,7 @@ class Max(Node):
             dec_values = []
         self.dec_values = dec_values
 
-        if  feature_name is None:
+        if feature_name is None:
             feature_name = "Decision_Node"
         self.feature_name = feature_name
 
@@ -142,16 +142,26 @@ class Max(Node):
 
 
 class InterfaceSwitch(Node):
-    def __init__(self, interface_winner=None, children=None):
+    def __init__(self, interface_winner=None, top_down_pass_val=None, children=None):
         Node.__init__(self)
 
         self.interface_winner = interface_winner
+
+        if top_down_pass_val is None:
+            top_down_pass_val = {}
+        self.top_down_pass_val = top_down_pass_val
 
         if children is None:
             children = []
         else:
             self.scope = children[0].scope  # all children have same cope.
         self.children = children
+
+
+class InterfaceSum(Sum):
+    def __init__(self, weights=None, children=None):
+        Sum(weights, children)
+
 
 class Context:
     def __init__(self, meta_types=None, domains=None, parametric_types=None, scope=None, feature_names=None):
@@ -219,9 +229,6 @@ class Context:
 
 def get_number_of_edges(node):
     return sum([len(c.children) for c in get_nodes_by_type(node, (Sum, Product))])
-
-def get_number_of_params(node):
-    return sum([len(c.children) for c in get_nodes_by_type(node, (Sum))])
 
 
 def get_number_of_nodes(spn, node_type=Node):

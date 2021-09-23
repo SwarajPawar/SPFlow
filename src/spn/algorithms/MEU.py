@@ -1,6 +1,7 @@
 """
 Created on March 28, 2019
 @author: Hari Teja Tatavarti
+
 """
 import logging
 
@@ -19,8 +20,6 @@ from spn.structure.Base import InterfaceSwitch
 def meu_sum(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
     meu_children = meu_per_node[:,[child.id for child in node.children]]
     likelihood_children = lls_per_node[:,[child.id for child in node.children]]
-    if np.isnan(likelihood_children).all():
-        likelihood_children = np.ones(likelihood_children.shape)
     weighted_likelihood = np.array(node.weights)*likelihood_children
     norm = np.sum(weighted_likelihood, axis=1)
     normalized_weighted_likelihood = weighted_likelihood / norm.reshape(-1,1)
@@ -53,15 +52,10 @@ def meu_max(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
     # else:
     dec_value = np.select([np.isnan(decision_value_given), True],
                           [max_value, decision_value_given]).astype(int)
-
-    if dec_value[0] not in node.dec_values:
-        meu_per_node[:, node.id] = np.nan
-    else:
-
-        dec_value_to_child_id = lambda val: node.children[list(node.dec_values).index(val)].id
-        dec_value_to_child_id = np.vectorize(dec_value_to_child_id)
-        child_id = dec_value_to_child_id(dec_value)
-        meu_per_node[:,node.id] = meu_per_node[np.arange(meu_per_node.shape[0]),child_id]
+    dec_value_to_child_id = lambda val: node.children[list(node.dec_values).index(val)].id
+    dec_value_to_child_id = np.vectorize(dec_value_to_child_id)
+    child_id = dec_value_to_child_id(dec_value)
+    meu_per_node[:,node.id] = meu_per_node[np.arange(meu_per_node.shape[0]),child_id]
 
 
 def meu_util(node, meu_per_node, data=None, lls_per_node=None, rand_gen=None):
@@ -165,6 +159,8 @@ def eval_spmn_top_down_meu(root, eval_functions,
         lls_per_node=None, likelihood_per_node=None):
     """
       evaluates an spn top to down
+
+
       :param root: spnt root
       :param eval_functions: is a dictionary that contains k:Class of the node, v:lambda function that receives as parameters (node, [parent_results], args**) and returns {child : intermediate_result}. This intermediate_result will be passed to child as parent_result. If intermediate_result is None, no further propagation occurs
       :param all_results: is a dictionary that contains k:Class of the node, v:result of the evaluation of the lambda function for that node.

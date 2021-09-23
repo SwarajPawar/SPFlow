@@ -47,6 +47,10 @@ def add_node_em_update(node_type, lambda_func):
     _node_updates[node_type] = lambda_func
 
 
+def get_node_updates_for_EM():
+    return _node_updates
+
+
 def EM_optimization(spn, data, iterations=5, node_updates=_node_updates, skip_validation=False, **kwargs):
     if not skip_validation:
         valid, err = is_valid(spn)

@@ -51,6 +51,8 @@ def eval_spmn_top_down(root, eval_functions,
         lls_per_node=None, meu_per_node=None):
     """
       evaluates an spn top to down
+
+
       :param root: spnt root
       :param eval_functions: is a dictionary that contains k:Class of the node, v:lambda function that receives as parameters (node, [parent_results], args**) and returns {child : intermediate_result}. This intermediate_result will be passed to child as parent_result. If intermediate_result is None, no further propagation occurs
       :param all_results: is a dictionary that contains k:Class of the node, v:result of the evaluation of the lambda function for that node.
@@ -116,7 +118,7 @@ def spmn_topdowntraversal_and_bestdecisions(
     _node_functions_top_down = node_functions[0].copy()
     _node_functions_top_down.update({Max: max_best_dec_with_meu})
     _node_functions_bottom_up = node_functions[2].copy()
-    #print(f'_node_functions_bottom_up {_node_functions_bottom_up}')
+    print(f'_node_functions_bottom_up {_node_functions_bottom_up}')
 
     nodes = get_nodes_by_type(node)
 
