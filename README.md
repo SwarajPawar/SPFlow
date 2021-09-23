@@ -6,7 +6,7 @@ which generalise Sum-Product Networks(**SPN**) for the class of decison-making p
 
 ## Getting Started
 
-Use the forked version of SPFlow [https://github.com/c0derzer0/SPFlow] for installation.
+Use the *spmn* of SPFlow [https://github.com/SwarajPawar/SPFlow] for installation.
 
 ## Using SPMN Module
 
