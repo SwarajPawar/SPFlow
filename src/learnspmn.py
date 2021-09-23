@@ -37,8 +37,8 @@ import pickle
 
 datasets = ['Export_Textiles','HIV_Screening', 'Powerplant_Airpollution', 'Computer_Diagnostician',  'Test_Strep', 'LungCancer_Staging']
 #datasets = []
-datasets = ['Export_Textiles']
-path = "test"
+datasets = ['SkillTeaching']
+path = "new_results_depth1"
 
 def get_loglikelihood(instance):
 	test_data = np.array(instance).reshape(-1, len(feature_names))
@@ -106,10 +106,6 @@ for dataset in datasets:
 	parameters = get_structure_stats_dict(spmn)["parameters"]
 	layers = get_structure_stats_dict(spmn)["layers"]
 
-	print(f"\n\tNodes : {nodes}")
-	print(f"\n\tparameters : {parameters}")
-	print(f"\n\tLayers : {layers}")
-	
 	if nodes <= 500:
 		plot_spn(spmn, f'{path}/{dataset}/spmn.pdf', feature_labels=feature_labels)
 
@@ -168,7 +164,7 @@ for dataset in datasets:
 	print(f"\n\tLog Likelihood : {ll}")
 	print(f"\n\tMEU : {meus}")
 	print(f"\n\tNodes : {nodes}")
-	print(f"\n\tparameters : {parameters}")
+	print(f"\n\tParameters : {parameters}")
 	print(f"\n\tLayers : {layers}")
 	#print(f"\n\tAverage rewards : {avg_rewards}")
 	#print(f"\n\tDeviation : {reward_dev}")
@@ -180,7 +176,7 @@ for dataset in datasets:
 	f.write(f"\n\tLog Likelihood : {ll}")
 	f.write(f"\n\tMEU : {meus}")
 	f.write(f"\n\tNodes : {nodes}")
-	f.write(f"\n\tparameters : {parameters}")
+	f.write(f"\n\tParameters : {parameters}")
 	f.write(f"\n\tLayers : {layers}")
 	#f.write(f"\n\tAverage rewards : {avg_rewards}")
 	#f.write(f"\n\tDeviation : {reward_dev}")
