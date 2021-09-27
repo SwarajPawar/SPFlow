@@ -11,6 +11,8 @@ original_stats = {
 	'Elevators': {"ll" : 0, "meu" : 0.5, 'nodes' : 38227, 'edges' : 32766, 'layers' : 14, 'reward':0.5, 'dev':0.0, 'runtime':2499.035037279129},
 	'CrossingTraffic': {"ll" : -3.0326077999664487, "meu" : -4.0, 'nodes' : 273206, 'edges' : 254527, 'layers' : 20, 'reward':-4.0, 'dev':0.0, 'runtime':16691.64990258217},
 	'GameOfLife': {"ll" : -4.851702542481353, "meu" : 85.32740885779461, 'nodes' : 674834, 'edges' : 623912, 'layers' : 49, 'reward':10.808334, 'dev':0.027766147446125766, 'runtime':18705.90127849579},
+	'SkillTeaching': {"ll" : -0.8986655982351793, "meu" : -7.180539, 'nodes' : 42320, 'parameters' : 100, 'layers' : 16, 'reward':-7.180538999996855, 'dev':0.0, 'runtime':9037.81082201004},
+
 }
 
 #Optimal MEU values from the IDs
