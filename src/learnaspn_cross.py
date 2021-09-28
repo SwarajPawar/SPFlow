@@ -31,8 +31,8 @@ import sys, os
 
 
 
-datasets = ["msnbc", "baudio", "jester", "bnetflix", "kdd", "plants"]
-datasets = ["msnbc"]
+datasets = ["jester", "bnetflix", "kdd", "plants"]
+#datasets = ["msnbc"]
 path = "cross_new1"
 
 #kfolds = 3
@@ -60,7 +60,6 @@ for dataset in datasets:
 	k_nodes = list()
 	k_runtime = list()
 	
-	#for k in range(1,kfolds+1):
 
 	k = 1
 	for trainidx, testidx in kfold.split(data):

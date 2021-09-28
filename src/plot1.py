@@ -31,7 +31,7 @@ import sys, os
 
 
 
-datasets = ["msnbc"]
+dataset = "msnbc"
 
 path = "cross_new1/msnbc/1"
 
