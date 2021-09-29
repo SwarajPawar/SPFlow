@@ -35,7 +35,7 @@ from collections import Counter
 import time
 import pickle
 
-datasets = ['Export_Textiles']
+dataset = 'Export_Textiles'
 path = "output"
 
 #Get Log-likelihood

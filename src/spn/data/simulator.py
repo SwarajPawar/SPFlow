@@ -12,7 +12,6 @@ from spn.data.Powerplant_Airpollution.simulator import Powerplant_Airpollution
 from spn.data.HIV_Screening.simulator import HIV_Screening
 from spn.data.Test_Strep.simulator import Test_Strep
 from spn.data.LungCancer_Staging.simulator import LungCancer_Staging
-from spn.data.FrozenLake.simulator import FrozenLake
 
 
 #Return the simulator for the given dataset name
@@ -29,8 +28,6 @@ def get_env(dataset, return_state=False):
 		return Test_Strep()
 	elif dataset == "LungCancer_Staging":
 		return LungCancer_Staging()
-	elif dataset == "FrozenLake":
-		return FrozenLake(return_state)
 	else:
 		return None
 
