@@ -48,16 +48,16 @@ meta_types = [MetaType.DISCRETE]*2+[MetaType.UTILITY]
 from spn.algorithms.ASPMN import Anytime_SPMN
 
 anytime_spmn = Anytime_SPMN(dataset, path, partial_order , decision_nodes,
-							 utility_node, feature_names, feature_labels, 	
-							 meta_types, cluster_by_curr_information_set=True,
-							 util_to_bin = False)
+			utility_node, feature_names, feature_labels, 	
+			meta_types, cluster_by_curr_information_set=True,
+			util_to_bin = False)
 							 
 for output in (aspmn.learn_aspmn(train, test, get_stats=True, evaluate_parallel=True)):
 
-		spmn, stats = output
+	spmn, stats = output
 
-		#Plot the SPMN
-		plot_spn(spmn, output_path/dataset/spmn.pdf', feature_labels=feature_labels)
+	#Plot the SPMN
+	plot_spn(spmn, output_path/dataset/spmn.pdf', feature_labels=feature_labels)
   
 ```
 The aspmn.learn_aspmn() function generates and saves the plots for
