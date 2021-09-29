@@ -12,9 +12,6 @@ from spn.algorithms.Validity import is_valid
 
 from spn.structure.Base import Sum, assign_ids
 
-from spn.algorithms.splitting.RDC import get_split_cols_distributed_RDC_py
-from spn.algorithms.splitting.Clustering import get_split_rows_XMeans
-
 from spn.structure.leaves.histogram.Histograms import create_histogram_leaf
 from spn.structure.leaves.parametric.Parametric import create_parametric_leaf
 from spn.structure.leaves.piecewise.PiecewiseLinear import create_piecewise_leaf
