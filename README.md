@@ -38,7 +38,6 @@ from spn.algorithms.SPMNDataUtil import align_data
 import numpy as np
 
 df, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
-
 train_data = df.values
 ```
 #### Learn the structure of SPMN 
