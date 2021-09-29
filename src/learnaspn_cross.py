@@ -135,7 +135,6 @@ for dataset in datasets:
 		k_nodes.append(nodes)
 
 		k+=1
-		break
 
 	
 	plt.close()
