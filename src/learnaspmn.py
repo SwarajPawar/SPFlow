@@ -28,8 +28,7 @@ import sys, os
 
 
 datasets = ['Export_Textiles', 'Powerplant_Airpollution', 'HIV_Screening', 'Computer_Diagnostician', 'Test_Strep', 'LungCancer_Staging']
-datasets = ['Export_Textiles']
-path = "test1"
+path = "output"
 
 
 
