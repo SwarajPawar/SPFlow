@@ -61,8 +61,10 @@ for output in (aspmn.learn_aspmn(train, test, get_stats=True, evaluate_parallel=
   
 ```
 The aspmn.learn_aspmn() function generates and saves the plots for
-for the SPMNs at each iteration of the Anytime technique
+for the SPMNs at each iteration of the Anytime technique.
 These plots can be found at output_path/dataset
+The stats is a dictionary object and consists of log-likelihood,
+number of nodes, runtime, meu and average reward. 
 
 Note that the aspn.learn_aspmn() function is a generator function and generates 
 the SPMN networks in a sequence and returns them at each iteration
