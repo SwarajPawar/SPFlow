@@ -63,8 +63,8 @@ leaves = create_histogram_leaf
 rand_gen=None
 cpus=-1
 
-datasets = ["nltcs","msnbc", "jester", "baudio", "bnetflix", "kdd",  "plants"]
-datasets = ['nltcs']
+datasets = ["nltcs","msnbc", "jester", "baudio", "bnetflix", "kdd"]
+#datasets = ['nltcs']
 path = "maxlimit_new1"
 
 
@@ -93,13 +93,13 @@ for dataset in datasets:
 	#Read training and test datasets
 	#Read training and test datasets
 	df = pd.read_csv(f"spn/data/binary/{dataset}.ts.data", sep=',')
-	data1 = df.values
+	train = df.values
 	df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
-	data2 = df2.values
-	data = np.concatenate((data1, data2))
-	var = data.shape[1]
+	test = df2.values
+	#data = np.concatenate((data1, data2))
+	var = train.shape[1]
 
-	train, test = data, data
+	#train, test = data, data
 
 	ds_context = Context(meta_types=[MetaType.DISCRETE]*train.shape[1])
 	ds_context.add_domains(train)
