@@ -137,22 +137,22 @@ for dataset in datasets:
 	total_ll = 0
 	for j in range(batches):
 		test_slice = test[j*batch_size:(j+1)*batch_size]
-		#lls = pool.map(get_loglikelihood, test_slice)
-		#total_ll += sum(lls)
-		#printProgressBar(j+1, batches, prefix = f'Evaluation Progress:', suffix = 'Complete', length = 50)
+		lls = pool.map(get_loglikelihood, test_slice)
+		total_ll += sum(lls)
+		printProgressBar(j+1, batches, prefix = f'Evaluation Progress:', suffix = 'Complete', length = 50)
 	
-	#ll = total_ll/len(test)
+	ll = total_ll/len(test)
 		
 	#Print and save stats
 	print("\n\n\n\n\n")
 	print("#Nodes: ",nodes)
-	#print("Log-likelihood: ",ll)
+	print("Log-likelihood: ",ll)
 	print("Run Time: ",end-start)
 	print("\n\n\n\n\n")
 	f = open(f"{path}/{dataset}_stats.txt", "w")
 	f.write(f"\n\n\n{dataset}\n\n")
 	f.write(f"#Nodes: {nodes}")
-	#f.write(f"Log-likelihood: {ll}")
+	f.write(f"Log-likelihood: {ll}")
 	f.write(f"Time: {end-start}")
 	f.write("\n\n\n\n\n")
 	f.close()
