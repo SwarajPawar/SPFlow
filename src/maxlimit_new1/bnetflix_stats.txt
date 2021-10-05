@@ -1,0 +1,10 @@
+
+
+
+bnetflix
+
+#Nodes: 4718Log-likelihood: -56.88984026246377Time: 1222.8357133865356
+
+
+
+
