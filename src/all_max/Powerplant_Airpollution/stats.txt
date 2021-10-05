@@ -1,7 +1,0 @@
-
-Powerplant_Airpollution
-	Log Likelihood : [-1.0796486063753]
-	MEU : [-2756263.244346315]
-	Nodes : [46]
-	Average Rewards : [-2755600.0]
-		Deviation : [44079.36024944101]
