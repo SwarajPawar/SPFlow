@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from spn.algorithms.ASPN import AnytimeSPN
+from spn.algorithms.AnytimeSPN import AnytimeSPN
 
 from spn.algorithms.Statistics import get_structure_stats_dict
 from spn.io.Graphics import plot_spn
@@ -89,7 +89,7 @@ for dataset in datasets:
 		runtime = list()		
 
 		#Start anytime learning
-		for i, output in enumerate(aspn.learn_aspn(train, test, get_stats = True)):
+		for i, output in enumerate(aspn.anytime_learn_spn(train, test, get_stats = True)):
 
 			spn, stats = output
 			

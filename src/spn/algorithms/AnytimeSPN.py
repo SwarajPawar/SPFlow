@@ -85,7 +85,7 @@ class AnytimeSPN:
 		return log_likelihood(self.spn, test_data)[0][0]
 
 	# Learn Anytime SPN
-	def learn_aspn(self, train, test=None, get_stats = False, save_models=True, batches=10):
+	def anytime_learn_spn(self, train, test=None, get_stats = False, save_models=True, batches=10):
 			
 	
 		#Initialize max_var to total number of variables in the dataset

@@ -3,7 +3,9 @@
 
 kdd
 
-#Nodes: 274Log-likelihood: -2.528963857512066Time: 1096.580626964569
+#Nodes: 274
+Log-likelihood: -2.528963857512066
+Time: 1096.580626964569
 
 
 

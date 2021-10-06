@@ -9,7 +9,7 @@ using the AnytimeSPN technique
 
 import numpy as np
 
-from spn.algorithms.ASPN import AnytimeSPN
+from spn.algorithms.AnytimeSPN import AnytimeSPN
 
 import logging
 logger = logging.getLogger(__name__)
@@ -59,7 +59,7 @@ for dataset in datasets:
 	
 
 	#Start anytime learning
-	for i, output in enumerate(aspn.learn_aspn(train, test, get_stats = True)):
+	for i, output in enumerate(aspn.anytime_learn_spn(train, test, get_stats = True)):
 
 		spn, stats = output
 		

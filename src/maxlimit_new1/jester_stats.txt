@@ -3,7 +3,9 @@
 
 jester
 
-#Nodes: 13728Log-likelihood: -52.987940009436976Time: 415.3376817703247
+#Nodes: 13728
+Log-likelihood: -52.987940009436976
+Time: 415.3376817703247
 
 
 

@@ -3,7 +3,9 @@
 
 bnetflix
 
-#Nodes: 6074Log-likelihood: -56.373594191535936Time: 1721.3557472229004
+#Nodes: 6074
+Log-likelihood: -56.373594191535936
+Time: 1721.3557472229004
 
 
 

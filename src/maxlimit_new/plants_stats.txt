@@ -3,7 +3,9 @@
 
 plants
 
-#Nodes: 24010Log-likelihood: -12.494126455752165Time: 247.60532212257385
+#Nodes: 24010
+Log-likelihood: -12.494126455752165
+Time: 247.60532212257385
 
 
 

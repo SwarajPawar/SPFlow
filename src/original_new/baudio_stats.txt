@@ -3,7 +3,9 @@
 
 baudio
 
-#Nodes: 322Log-likelihood: -43.40863103111932Time: 288.9936385154724
+#Nodes: 322
+Log-likelihood: -43.40863103111932
+Time: 288.9936385154724
 
 
 

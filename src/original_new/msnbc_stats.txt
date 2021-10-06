@@ -3,7 +3,9 @@
 
 msnbc
 
-#Nodes: 43Log-likelihood: -6.596837245245996Time: 116.55100011825562
+#Nodes: 43
+Log-likelihood: -6.596837245245996
+Time: 116.55100011825562
 
 
 
