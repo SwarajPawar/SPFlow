@@ -76,11 +76,8 @@ class Anytime_SPMN:
 							   curr_information_set_scope, index, depth=None):
 
 		logging.info(f'start of new recursion in __learn_spmn_structure method of SPMN')
-		print("\n\n")
-		print(f'remaining_vars_scope: {remaining_vars_scope}')
-		print(f'curr_information_set_scope: {curr_information_set_scope}')
-		print("data")
-
+		logging.debug(f'remaining_vars_scope: {remaining_vars_scope}')
+		logging.debug(f'curr_information_set_scope: {curr_information_set_scope}')
 
 		# rest set is remaining variables excluding the variables in current information set
 		rest_set_scope = [var_scope for var_scope in remaining_vars_scope if
@@ -226,7 +223,6 @@ class Anytime_SPMN:
 
 			if curr_op != 'Sum':    # fails if correlated variable set found in previous recursive call.
 									# Without this condition code keeps looping at this stage
-				print("prod")
 
 				ds_context = get_ds_context(remaining_vars_data, remaining_vars_scope, self.params)
 
@@ -242,8 +238,7 @@ class Anytime_SPMN:
 				next_remaining_vars_scope = []
 				independent_vars_scope = []
 
-				for dslice in data_slices_prod:
-					print(dslice[1])
+
 				for correlated_var_set_cluster, correlated_var_set_scope, weight in data_slices_prod:
 
 					if any(var_scope in correlated_var_set_scope for var_scope in rest_set_scope):
@@ -330,7 +325,6 @@ class Anytime_SPMN:
 			# Cluster the data
 			else:
 
-				print("sum")
 				curr_op = self.get_curr_operation()
 				logging.debug(f'curr_op at sum node (cluster test): {curr_op}')
 
@@ -372,8 +366,6 @@ class Anytime_SPMN:
 				logging.debug(f'cluster labels of rows: {labels_array} used to cluster data on '
 							  f'total remaining variables {remaining_vars_scope}')
 
-				for dslice in data_slices_sum:
-					print(dslice[1])
 				for cluster, scope, weight in data_slices_sum:
 
 					self.set_next_operation("Prod")
@@ -430,8 +422,8 @@ class Anytime_SPMN:
 			if done:
 				return policy
 
-	def learn_aspmn(self, train, test=None, get_stats = False, save_models=True, evaluate_parallel=False, log_likelihood_batches=10,
-					 rewards_batch_size=20000, rewards_batch_count=25):
+	def anytime_learn_spmn(self, train, test=None, get_stats = False, save_models=True, evaluate_parallel=False, log_likelihood_batches=10,
+					 rewards_batch_size=20000, rewards_batch_count=25, start_iteration=1):
 		"""
 		:param: train:- train dataset
 				test:- test dataset
@@ -441,6 +433,7 @@ class Anytime_SPMN:
 				log_likelihood_batches:- Number of batches used for loglikelihood evaluation
 				rewards_batch_size:- Number of reward evaluations per batch
 				rewards_batch_count:- Number of batches used for reward evaluation
+				start_iteration:- Anytime algorithm proceeds from the given iteration
 		:return: learned ASPMNs and stats
 		"""
 		
@@ -471,7 +464,7 @@ class Anytime_SPMN:
 		all_ll_dev = list()
 		all_meus = list()
 		all_nodes = list()
-		all_edges = list()
+		all_parameters = list()
 		all_layers = list()
 		all_avg_rewards = list()
 		all_reward_dev = list()
@@ -482,7 +475,7 @@ class Anytime_SPMN:
 				"ll_dev": None,
 				"meu" : None,
 				"nodes" : None,
-				"edges" : None,
+				"parameters" : None,
 				"layers" : None,
 				"reward" : None,
 				"reward_dev" : None
@@ -493,6 +486,18 @@ class Anytime_SPMN:
 		i = 0
 		while(True):
 
+			
+			#Restart the algorithm from the given iteration
+			#Skip all the previous iterations
+			if (i+1) < start_iteration:
+				i += 1
+				limit += 1
+				max_depth += 1
+				d += d_step
+				n = n+step
+				if self.vars < 10:
+					step = 1
+				continue
 			
 
 			index = 0
@@ -518,11 +523,7 @@ class Anytime_SPMN:
 			#self.spmn = spmn
 			self.spmn = Prune(spmn)
 
-			'''
-			if not is_valid_spmn(self.spmn):
-				print("Not Valid")
-				return	
-			'''		
+				
 
 			#Get Run time
 			runtime = end_time - start_time
@@ -542,7 +543,7 @@ class Anytime_SPMN:
 				meu_ = self.evaluate_meu()
 				struct_stats = self.evaluate_structure_stats()
 				nodes = struct_stats['nodes']
-				edges = struct_stats['edges']
+				parameters = struct_stats['parameters']
 				layers = struct_stats['layers']
 
 				if evaluate_parallel:
@@ -556,7 +557,7 @@ class Anytime_SPMN:
 				all_ll_dev.append(ll_dev)
 				all_meus.append(meu_)
 				all_nodes.append(nodes)
-				all_edges.append(edges)
+				all_parameters.append(parameters)
 				all_layers.append(layers)
 				all_avg_rewards.append(avg_rewards)
 				all_reward_dev.append(reward_dev)
@@ -565,7 +566,7 @@ class Anytime_SPMN:
 				stats["ll_dev"] = all_ll_dev
 				stats["meu"] = all_meus
 				stats["nodes"] = all_nodes
-				stats["edges"] = all_edges
+				stats["parameters"] = all_parameters
 				stats["layers"] = all_layers
 				stats["reward"] = all_avg_rewards
 				stats["reward_dev"] = all_reward_dev
@@ -580,7 +581,7 @@ class Anytime_SPMN:
 				print("\n\n")
 				print("Run Time: ", runtime)
 				print("#Nodes: ",nodes)
-				print("#Edges: ",edges)
+				print("#Parameters: ",parameters)
 				print("#Layers: ",layers)
 				print("Log Likelihood: ",avg_ll)
 				print("Log Likelihood Deviation: ",ll_dev)
@@ -598,7 +599,7 @@ class Anytime_SPMN:
 				f.write(f"\n\tLog Likelihood Deviation: {all_ll_dev}")
 				f.write(f"\n\tMEU : {all_meus}")
 				f.write(f"\n\tNodes : {all_nodes}")
-				f.write(f"\n\tEdges : {all_edges}")
+				f.write(f"\n\tParameters : {all_parameters}")
 				f.write(f"\n\tLayers : {all_layers}")
 				f.write(f"\n\tAverage Rewards : {all_avg_rewards}")
 				f.write(f"\n\tRewards Deviation : {all_reward_dev}")

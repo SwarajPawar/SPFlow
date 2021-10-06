@@ -40,7 +40,7 @@ class FrozenLake:
 
 	def __init__(self, return_state=False):
 		
-		self.tot_dec = 10
+		self.tot_dec = 8
 		self.env = gym.make('FrozenLake-v0')
 		#Done Indicator
 		self.done = False

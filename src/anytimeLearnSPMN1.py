@@ -20,14 +20,14 @@ from spn.data.domain_stats import get_original_stats, get_optimal_meu, get_rando
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.SPMNDataUtil import align_data
 from spn.algorithms.SPMN import SPMN
-from spn.algorithms.ASPMN import Anytime_SPMN
+from spn.algorithms.AnytimeSPMN import Anytime_SPMN
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
 
 
 datasets = ["SkillTeaching"]
-path = "new_results_depth1"
+path = "output"
 
 
 
@@ -55,7 +55,7 @@ for dataset in datasets:
 	df, column_titles = align_data(df, partial_order)
 	data = df.values
 
-	test_size = int(data.shape[0]*0.02)
+	test_size = int(data.shape[0]*0.2)
 	train, test = data, np.array(random.sample(list(data), test_size))
 
 	#Initialize anytime Learning
@@ -76,7 +76,7 @@ for dataset in datasets:
 
 
 	#Start anytime learning
-	for i, output in enumerate(aspmn.learn_aspmn(train, test, get_stats=True, evaluate_parallel=True)):
+	for i, output in enumerate(aspmn.anytime_learn_spmn(train, test, get_stats=True, evaluate_parallel=True)):
 
 		spmn, stats = output
 
