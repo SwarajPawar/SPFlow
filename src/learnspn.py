@@ -26,7 +26,8 @@ from spn.algorithms.splitting.Conditioning import (
 )
 
 from spn.algorithms.splitting.Clustering import get_split_rows_KMeans
-from spn.algorithms.splitting.RDC import get_split_cols_single_RDC_py, get_split_cols_RDC_py
+from spn.algorithms.splitting.RDC import get_split_cols_RDC_py
+from spn.algorithms.EM import EM_optimization
 from spn.io.ProgressBar import printProgressBar
 import logging
 logger = logging.getLogger(__name__)
@@ -62,7 +63,7 @@ cpus=-1
 
 datasets = ["nltcs","msnbc", "kdd", "baudio", "jester", "bnetflix"]
 #datasets = ['bnetflix']
-path = "original_new1"
+path = "original_new_opt"
 
 #Get log-likelihood for the instance
 def get_loglikelihood(instance):
@@ -92,6 +93,9 @@ for dataset in datasets:
 	#data = np.concatenate((data1, data2))
 	var = train.shape[1]
 
+	df3 = pd.read_csv(f"spn/data/binary/{dataset}.valid.data", sep=',')
+	valid = df3.values
+
 
 	ds_context = Context(meta_types=[MetaType.DISCRETE]*train.shape[1])
 	ds_context.add_domains(train)
@@ -108,6 +112,8 @@ for dataset in datasets:
 	spn = learn_structure(train, ds_context, split_rows, split_cols, leaves, nextop)
 	end = time.time()
 	print('SPN Learned!\n')
+
+	EM_optimization(spn, valid)
 
 	file = open(f"{path}/models/spn_{dataset}.pkle",'wb')
 	pickle.dump(spn, file)
