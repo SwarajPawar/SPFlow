@@ -90,8 +90,9 @@ for dataset in datasets:
 	train = df.values
 	df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
 	test = df2.values
-	#data = np.concatenate((data1, data2))
-	var = train.shape[1]
+	data = np.concatenate((train, test))
+	var = data.shape[1]
+	train, test = data, data
 
 	df3 = pd.read_csv(f"spn/data/binary/{dataset}.valid.data", sep=',')
 	valid = df3.values
@@ -113,7 +114,7 @@ for dataset in datasets:
 	end = time.time()
 	print('SPN Learned!\n')
 
-	EM_optimization(spn, valid)
+	EM_optimization(spn, train)
 
 	file = open(f"{path}/models/spn_{dataset}.pkle",'wb')
 	pickle.dump(spn, file)
