@@ -114,7 +114,7 @@ for dataset in datasets:
 	end = time.time()
 	print('SPN Learned!\n')
 
-	EM_optimization(spn, test)
+	EM_optimization(spn, valid)
 
 	file = open(f"{path}/models/spn_{dataset}.pkle",'wb')
 	pickle.dump(spn, file)
