@@ -64,8 +64,8 @@ rand_gen=None
 cpus=-1
 
 datasets = ["nltcs","msnbc", "jester", "baudio", "bnetflix", "kdd"]
-#datasets = ['nltcs']
-path = "maxlimit_new1"
+datasets = ['nltcs']
+path = "maxlimit_new2"
 
 
 #Get log-likelihood for the instance
