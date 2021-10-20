@@ -45,6 +45,7 @@ import time
 import multiprocessing
 import pickle
 import random
+from keras.datasets import mnist
 
 #Initialize parameters
 
@@ -58,14 +59,13 @@ rand_gen=None
 cpus=-1
 
 
-path = "classifier"
+path = "mnist"
 
 dataset = "mnist"
 
 
 
-df = pd.read_csv(f"{path}/{dataset}_train.csv", sep=',')
-data = df.values
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 
 #Create output directory 
@@ -80,13 +80,21 @@ if not pth.exists(f'{path}/models'):
 		
 
 
-train = data
+train = list()
+for i, x in enumerate(x_train):
+	x = [y_train[i]] + list(np.reshape(x, (x.shape[0]*x.shape[1])))
+	train.append(x)
+
+train = np.array(train)
+print(train)
+print(train.shape)
+
 
 ds_context = Context(parametric_types=[Categorical]+ [Gaussian]*(train.shape[1]-1))
 ds_context.add_domains(train)
 
 
-spn = learn_classifier(train, ds_context, learn_parametric, 1)
+spn = learn_classifier(train, ds_context, learn_parametric, 0)
 
 file = open(f"{path}/models/spn_{dataset}.pkle",'wb')
 pickle.dump(spn, file)
@@ -95,6 +103,7 @@ file.close()
 from spn.io.Graphics import plot_spn
 #Plot spn
 plot_spn(spn, f'{path}/{dataset}_spn.pdf')
+
 '''
 test = [[1,0,0,0,np.nan],
 		[0,0,1,0,np.nan]]
