@@ -93,8 +93,13 @@ print(train.shape)
 ds_context = Context(parametric_types=[Categorical]+ [Gaussian]*(train.shape[1]-1))
 ds_context.add_domains(train)
 
-
+print("\n\nLearning SPN")
+start = time.time()
 spn = learn_classifier(train, ds_context, learn_parametric, 0)
+end = time.time()
+print("\nSPN Learned!")
+
+print("\n\nRun Time: ", (end-start))
 
 file = open(f"{path}/models/spn_{dataset}.pkle",'wb')
 pickle.dump(spn, file)
