@@ -46,6 +46,7 @@ import multiprocessing
 import pickle
 import random
 from keras.datasets import mnist
+from PIL import Image
 
 #Initialize parameters
 
@@ -79,9 +80,11 @@ if not pth.exists(f'{path}/models'):
 
 		
 
-
 train = list()
 for i, x in enumerate(x_train):
+	img = Image.fromarray(x mode='L')
+	img = img.resize((10,10))
+	x = np.asarray(img)
 	x = [y_train[i]] + list(np.reshape(x, (x.shape[0]*x.shape[1])))
 	train.append(x)
 
