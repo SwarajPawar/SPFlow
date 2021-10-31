@@ -104,11 +104,11 @@ print("\n\nRun Time: ", (end-start))
 file = open(f"{path}/models/spn_{dataset}.pkle",'wb')
 pickle.dump(spn, file)
 file.close()
-
+'''
 from spn.io.Graphics import plot_spn
 #Plot spn
 plot_spn(spn, f'{path}/{dataset}_spn.pdf')
-
+'''
 '''
 test = [[1,0,0,0,np.nan],
 		[0,0,1,0,np.nan]]
