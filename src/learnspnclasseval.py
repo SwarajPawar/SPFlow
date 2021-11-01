@@ -92,10 +92,10 @@ test = np.array(test)
 print(test)
 print(test.shape)
 
-
+'''
 ds_context = Context(parametric_types=[Categorical]+ [Gaussian]*(test.shape[1]-1))
 ds_context.add_domains(test)
-
+'''
 
 file = open(f"{path}/models/spn_{dataset}.pkle","rb")
 spn = pickle.load(file)
