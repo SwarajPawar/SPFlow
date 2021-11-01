@@ -83,7 +83,7 @@ if not pth.exists(f'{path}/models'):
 train = list()
 for i, x in enumerate(x_train):
 	img = Image.fromarray(x, mode='L')
-	img = img.resize((10,10))
+	img = img.resize((14,14))
 	x = np.asarray(img)
 	x = [y_train[i]] + list(np.reshape(x, (x.shape[0]*x.shape[1])))
 	train.append(x)
@@ -102,23 +102,69 @@ spn = learn_classifier(train, ds_context, learn_parametric, 0)
 end = time.time()
 print("\nSPN Learned!")
 
-print("\n\nRun Time: ", (end-start))
+runtime = end - start
+print("\n\nRun Time: ", runtime)
 
 file = open(f"{path}/models/spn_{dataset}.pkle",'wb')
 pickle.dump(spn, file)
 file.close()
-'''
-from spn.io.Graphics import plot_spn
-#Plot spn
-plot_spn(spn, f'{path}/{dataset}_spn.pdf')
-'''
-'''
-test = [[1,0,0,0,np.nan],
-		[0,0,1,0,np.nan]]
+
+
+test = list()
+for i, x in enumerate(x_test):
+	img = Image.fromarray(x, mode='L')
+	img = img.resize((14,14))
+	x = np.asarray(img)
+	x = [np.nan] + list(np.reshape(x, (x.shape[0]*x.shape[1])))
+	test.append(x)
 
 test = np.array(test)
+print(test)
+print(test.shape)
+
+
+
+
+nodes = get_structure_stats_dict(spn)["nodes"]
+parameters = get_structure_stats_dict(spn)["parameters"]
+layers = get_structure_stats_dict(spn)["layers"]
+
+
+print(f"\n\tNodes : {nodes}")
+print(f"\n\tParameters : {parameters}")
+print(f"\n\tLayers : {layers}")
 
 from spn.algorithms.MPE import mpe
-print(mpe(spn, test))
 
-'''
+
+results = mpe(spn, test)
+
+pred = list(results[:,0])
+true = list(y_test)
+
+
+from sklearn import metrics
+
+report = metrics.classification_report(true, pred)
+print(f'\n\nReport : \n{report}')
+
+prfs = metrics.precision_recall_fscore_support(true, pred)
+prfs_micro = metrics.precision_recall_fscore_support(true, pred, average='micro')
+cm = metrics.confusion_matrix(true, pred)
+
+print(f"\n\t{prfs}")
+print(f"\n\t{prfs_micro}")
+print(f"\n\tConfusion Matrix : {cm}")
+
+
+f = open(f"{path}/{dataset}/stats14.txt", "w")
+f.write(f"\n{dataset}")
+f.write(f"\n\tRun Time : {runtime}")
+f.write(f"\n\tNodes : {nodes}")
+f.write(f"\n\tParameters : {parameters}")
+f.write(f"\n\tLayers : {layers}")
+f.write(f"\n\tReport : \n{report}")
+f.write(f"\n\tConfusion Matrix : {cm}")
+f.write(f"\n\t{prfs}")
+f.write(f"\n\t{prfs_micro}")
+f.close()
