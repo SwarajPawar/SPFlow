@@ -122,11 +122,11 @@ true = list(y_test)
 
 from sklearn import metrics
 
-report = metrics.classification_report(true pred)
+report = metrics.classification_report(true, pred)
 print(f'\n\nReport : \n{report}')
 
-prfs = metrics.precision_recall_fscore_support(true pred)
-cm = metrics.confusion_matrix(true pred)
+prfs = metrics.precision_recall_fscore_support(true, pred)
+cm = metrics.confusion_matrix(true, pred)
 
 print(f"\n\t{prfs}")
 print(f"\n\tConfusion Matrix : {cm}")
