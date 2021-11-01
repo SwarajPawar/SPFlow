@@ -116,7 +116,7 @@ from spn.algorithms.MPE import mpe
 
 results = mpe(spn, test)
 
-pred = list(test[:,0])
+pred = list(results[:,0])
 true = list(y_test)
 
 
@@ -126,9 +126,11 @@ report = metrics.classification_report(true, pred)
 print(f'\n\nReport : \n{report}')
 
 prfs = metrics.precision_recall_fscore_support(true, pred)
+prfs_micro = metrics.precision_recall_fscore_support(true, pred, average='micro')
 cm = metrics.confusion_matrix(true, pred)
 
 print(f"\n\t{prfs}")
+print(f"\n\t{prfs_micro}")
 print(f"\n\tConfusion Matrix : {cm}")
 
 
