@@ -69,7 +69,7 @@ for dataset in datasets:
 
 		#Get stats
 		runtime = stats["runtime"]
-		avg_ll = stats["avg_ll"]
+		avg_ll = stats["ll"]
 		nodes = stats["nodes"]
 
 		# plot the statistics
