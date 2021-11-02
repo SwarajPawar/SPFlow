@@ -38,6 +38,7 @@ import pandas as pd
 from spn.structure.Base import Context
 from spn.structure.StatisticalTypes import MetaType
 from spn.algorithms.Statistics import get_structure_stats_dict
+from spn.algorithms.EM import EM_optimization
 import matplotlib.pyplot as plt
 from os import path as pth
 import sys, os
@@ -101,6 +102,7 @@ for i, x in enumerate(x_train):
 	valid.append(x)
 
 nan = np.array([np.nan]*test.shape[0])
+print(nan)
 test[:,0] = nan
 
 valid = np.array(valid)
