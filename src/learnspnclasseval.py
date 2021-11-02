@@ -95,7 +95,7 @@ test = np.array(valid)
 
 for i, x in enumerate(x_train):
 	img = Image.fromarray(x, mode='L')
-	img = img.resize((14,14))
+	img = img.resize((10,10))
 	x = np.asarray(img)
 	x = [y_train[i]] + list(np.reshape(x, (x.shape[0]*x.shape[1])))
 	valid.append(x)
