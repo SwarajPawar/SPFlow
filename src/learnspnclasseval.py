@@ -100,8 +100,8 @@ for i, x in enumerate(x_train):
 	x = [y_train[i]] + list(np.reshape(x, (x.shape[0]*x.shape[1])))
 	valid.append(x)
 
-for i in range(test.shape[0]):
-	test[i,0] = np.nan
+nan = np.array([np.nan]*test.shape[0])
+test[:,0] = nan
 
 valid = np.array(valid)
 print(valid)
