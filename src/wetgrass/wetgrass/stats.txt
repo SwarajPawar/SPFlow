@@ -1,0 +1,4 @@
+wetgrass:
+	#Nodes: [27]
+	Log-likelihood: [-11.674194816642542]
+	Run Time: [25.020278930664062]
