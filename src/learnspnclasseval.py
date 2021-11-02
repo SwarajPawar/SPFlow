@@ -92,7 +92,7 @@ for i, x in enumerate(x_test):
 	x = [y_test[i]] + list(np.reshape(x, (x.shape[0]*x.shape[1])))
 	valid.append(x)
 
-test = np.array(valid)
+test = list()
 
 for i, x in enumerate(x_train):
 	img = Image.fromarray(x, mode='L')
@@ -101,9 +101,13 @@ for i, x in enumerate(x_train):
 	x = [y_train[i]] + list(np.reshape(x, (x.shape[0]*x.shape[1])))
 	valid.append(x)
 
-nan = np.array([np.nan]*test.shape[0])
-print(nan)
-test[:,0] = nan
+for i, x in enumerate(x_test):
+	img = Image.fromarray(x, mode='L')
+	img = img.resize((10,10))
+	x = np.asarray(img)
+	x = [np.nan] + list(np.reshape(x, (x.shape[0]*x.shape[1])))
+	test.append(x)
+
 
 valid = np.array(valid)
 print(valid)
@@ -113,7 +117,7 @@ test = np.array(test)
 print(test)
 print(test.shape)
 
-EM_optimization(spn, valid)	
+	
 
 '''
 ds_context = Context(parametric_types=[Categorical]+ [Gaussian]*(test.shape[1]-1))
@@ -124,6 +128,8 @@ file = open(f"{path}/models/spn_{dataset}.pkle","rb")
 spn = pickle.load(file)
 file.close()
 
+EM_optimization(spn, valid)
+print("Optimized")
 
 nodes = get_structure_stats_dict(spn)["nodes"]
 parameters = get_structure_stats_dict(spn)["parameters"]
