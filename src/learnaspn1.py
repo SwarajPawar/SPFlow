@@ -45,6 +45,8 @@ for dataset in datasets:
 	df = pd.read_csv(f"wetgrass/{dataset}.tsv", sep='\t')
 	train = df.values
 
+	test = train
+
 
 	#Get dataset Context
 	ds_context = Context(meta_types=[MetaType.DISCRETE]*train.shape[1])
