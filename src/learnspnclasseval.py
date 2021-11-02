@@ -92,7 +92,6 @@ for i, x in enumerate(x_test):
 	valid.append(x)
 
 test = np.array(valid)
-test[:,0] = np.nan
 
 for i, x in enumerate(x_train):
 	img = Image.fromarray(x, mode='L')
@@ -100,6 +99,9 @@ for i, x in enumerate(x_train):
 	x = np.asarray(img)
 	x = [y_train[i]] + list(np.reshape(x, (x.shape[0]*x.shape[1])))
 	valid.append(x)
+
+for i in range(test.shape[0]):
+	test[i,0] = np.nan
 
 valid = np.array(valid)
 print(valid)
