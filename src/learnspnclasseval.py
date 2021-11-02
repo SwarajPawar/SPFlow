@@ -152,4 +152,15 @@ print(f"\n\t{prfs}")
 print(f"\n\t{prfs_micro}")
 print(f"\n\tConfusion Matrix : {cm}")
 
+f = open(f"{path}/{dataset}/statsnew.txt", "w")
+f.write(f"\n{dataset}")
+f.write(f"\n\tNodes : {nodes}")
+f.write(f"\n\tParameters : {parameters}")
+f.write(f"\n\tLayers : {layers}")
+f.write(f"\n\tReport : \n{report}")
+f.write(f"\n\tConfusion Matrix : {cm}")
+f.write(f"\n\t{prfs}")
+f.write(f"\n\t{prfs_micro}")
+f.close()
+
 
