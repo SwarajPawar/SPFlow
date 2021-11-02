@@ -31,9 +31,9 @@ import matplotlib.pyplot as plt
 
 
 
-datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
-datasets = ['nltcs']
-path = "output"
+#datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
+datasets = ['wetgrass']
+path = "wetgrass"
 
 
 
@@ -42,11 +42,9 @@ for dataset in datasets:
 	print(f"\n\n\n{dataset}\n\n\n")
 	
 	#Get train and test datasets
-	df = pd.read_csv(f"spn/data/binary/{dataset}.ts.data", sep=',')
+	df = pd.read_csv(f"wetgrass/{dataset}.tsv", sep='\t')
 	train = df.values
 
-	df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
-	test = df2.values
 
 	#Get dataset Context
 	ds_context = Context(meta_types=[MetaType.DISCRETE]*train.shape[1])
@@ -65,7 +63,7 @@ for dataset in datasets:
 		
 
 		#Plot the spn
-		plot_spn(spn, f'{path}/{dataset}/spn{i+1}.pdf')
+		plot_spn(spn, f'{path}/spn{i+1}.pdf')
 
 		#Get stats
 		runtime = stats["runtime"]
@@ -79,7 +77,7 @@ for dataset in datasets:
 		plt.xlabel("Iteration")
 		plt.ylabel("Run Time")
 		plt.legend()
-		plt.savefig(f"{path}/{dataset}/runtime.png", dpi=100)
+		plt.savefig(f"{path}/runtime.png", dpi=100)
 		plt.close()
 
 		plt.close()
@@ -88,7 +86,7 @@ for dataset in datasets:
 		plt.xlabel("Iteration")
 		plt.ylabel("Log Likelihood")
 		plt.legend()
-		plt.savefig(f"{path}/{dataset}/ll.png", dpi=100)
+		plt.savefig(f"{path}/ll.png", dpi=100)
 		plt.close()
 
 
@@ -97,6 +95,6 @@ for dataset in datasets:
 		plt.xlabel("Iteration")
 		plt.ylabel("# Nodes")
 		plt.legend()
-		plt.savefig(f"{path}/{dataset}/nodes.png", dpi=100)
+		plt.savefig(f"{path}/nodes.png", dpi=100)
 		plt.close()
 
