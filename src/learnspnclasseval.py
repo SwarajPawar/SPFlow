@@ -78,19 +78,38 @@ if not pth.exists(f'{path}/models'):
 		print ("Creation of the directory %s failed" % path)
 		sys.exit()
 
-		
 
-test = list()
+
+valid = list()
+
+
+
 for i, x in enumerate(x_test):
 	img = Image.fromarray(x, mode='L')
 	img = img.resize((10,10))
 	x = np.asarray(img)
-	x = [np.nan] + list(np.reshape(x, (x.shape[0]*x.shape[1])))
-	test.append(x)
+	x = [y_test[i]] + list(np.reshape(x, (x.shape[0]*x.shape[1])))
+	valid.append(x)
+
+test = np.array(valid)
+test[:,0] = np.nan
+
+for i, x in enumerate(x_train):
+	img = Image.fromarray(x, mode='L')
+	img = img.resize((14,14))
+	x = np.asarray(img)
+	x = [y_train[i]] + list(np.reshape(x, (x.shape[0]*x.shape[1])))
+	valid.append(x)
+
+valid = np.array(valid)
+print(valid)
+print(valid.shape)
 
 test = np.array(test)
 print(test)
 print(test.shape)
+
+EM_optimization(spn, valid)	
 
 '''
 ds_context = Context(parametric_types=[Categorical]+ [Gaussian]*(test.shape[1]-1))
