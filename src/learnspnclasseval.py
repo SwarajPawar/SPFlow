@@ -131,6 +131,10 @@ file.close()
 EM_optimization(spn, valid)
 print("Optimized")
 
+file = open(f"{path}/models/spn_{dataset}_EM.pkle",'wb')
+pickle.dump(spn, file)
+file.close()
+
 nodes = get_structure_stats_dict(spn)["nodes"]
 parameters = get_structure_stats_dict(spn)["parameters"]
 layers = get_structure_stats_dict(spn)["layers"]
