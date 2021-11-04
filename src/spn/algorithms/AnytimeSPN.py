@@ -25,7 +25,6 @@ from spn.algorithms.Inference import log_likelihood
 import time
 import pickle
 import logging
-import math
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +103,7 @@ class AnytimeSPN:
 		past3 = list()
 	
 		#Initialize number of variables for splitting to sqrt(n)
-		n = math.ceil(self.max_var**0.5)  
+		n = int(self.max_var**0.5)  
 		#Step size for increment in #variables for splitting
 		step = (self.max_var - (self.max_var**0.5))/20
 
