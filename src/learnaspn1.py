@@ -59,14 +59,14 @@ for dataset in datasets:
 	
 
 	#Start anytime learning
-	for i, output in enumerate(aspn.anytime_learn_spn(train, test, get_stats = True)):
+	for i, output in enumerate(aspn.anytime_learn_spn(train, test, get_stats = False)):
 
 		spn, stats = output
 		
 
 		#Plot the spn
 		plot_spn(spn, f'{path}/spn{i+1}.pdf')
-
+		'''
 		#Get stats
 		runtime = stats["runtime"]
 		avg_ll = stats["ll"]
@@ -99,4 +99,5 @@ for dataset in datasets:
 		plt.legend()
 		plt.savefig(f"{path}/nodes.png", dpi=100)
 		plt.close()
+		'''
 

@@ -80,13 +80,15 @@ def plot_spn(spn, fname="plot.pdf", feature_labels = None):
         node_color="#DDDDDD",
         edge_color="#888888",
         width=1,
-        node_size=100,
+        node_size=300,
         labels=labels,
-        font_size=4,
+        font_size=8,
     )
-    ax.collections[0].set_edgecolor("#333333")
+    ax.collections[0].set_edgecolor("#222222")
+    ax.collections[2].set_edgecolor("#222222")
+    ax.collections[4].set_edgecolor("#222222")
     edge_labels = nx.draw_networkx_edge_labels(
-        g, pos=pos, edge_labels=nx.get_edge_attributes(g, "weight"), font_size=5, alpha=0.6
+        g, pos=pos, edge_labels=nx.get_edge_attributes(g, "weight"), font_size=7, alpha=0.9    
     )
 
     xpos = list(map(lambda p: p[0], pos.values()))
