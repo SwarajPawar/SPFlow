@@ -25,6 +25,7 @@ from spn.algorithms.Inference import log_likelihood
 import time
 import pickle
 import logging
+import math
 
 logger = logging.getLogger(__name__)
 
