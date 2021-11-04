@@ -59,7 +59,7 @@ for dataset in datasets:
 	
 
 	#Start anytime learning
-	for i, output in enumerate(aspn.anytime_learn_spn(train, test, get_stats = False)):
+	for i, output in enumerate(aspn.anytime_learn_spn(train, test, get_stats = True)):
 
 		spn, stats = output
 		
