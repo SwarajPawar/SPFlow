@@ -65,7 +65,7 @@ for dataset in datasets:
 		
 
 		#Plot the spn
-		plot_spn(spn, f'{path}/spn{i+1}.pdf', feature_labels = ['TB', 'TR'])
+		plot_spn(spn, f'{path}/spn{i+1}.pdf', feature_labels = None)# ['TB', 'TR'])
 		'''
 		#Get stats
 		runtime = stats["runtime"]
