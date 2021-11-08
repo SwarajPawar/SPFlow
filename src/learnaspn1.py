@@ -32,8 +32,8 @@ import matplotlib.pyplot as plt
 
 
 #datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
-datasets = ['wetgrass']
-path = "wetgrass"
+datasets = ['tb']
+path = "tb"
 
 
 
@@ -42,7 +42,7 @@ for dataset in datasets:
 	print(f"\n\n\n{dataset}\n\n\n")
 	
 	#Get train and test datasets
-	df = pd.read_csv(f"wetgrass/{dataset}.tsv", sep='\t')
+	df = pd.read_csv(f"{path}/{dataset}.tsv", sep='\t')
 	train = df.values
 
 	test = train
@@ -65,7 +65,7 @@ for dataset in datasets:
 		
 
 		#Plot the spn
-		plot_spn(spn, f'{path}/spn{i+1}.pdf')
+		plot_spn(spn, f'{path}/spn{i+1}.pdf', feature_labels = ['TB', 'TR'])
 		'''
 		#Get stats
 		runtime = stats["runtime"]
