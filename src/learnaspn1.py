@@ -32,8 +32,8 @@ import matplotlib.pyplot as plt
 
 
 #datasets = ["nltcs","msnbc", "plants", "kdd", "baudio", "jester", "bnetflix"]
-datasets = ['tb']
-path = "tb"
+datasets = ['wetgrass']
+path = "wetgrass"
 
 
 
@@ -65,7 +65,7 @@ for dataset in datasets:
 		
 
 		#Plot the spn
-		plot_spn(spn, f'{path}/spn{i+1}.pdf', feature_labels = ['TB', 'TR'])
+		plot_spn(spn, f'{path}/spn{i+1}.pdf', feature_labels = ['C', 'S', 'R', 'WG'])
 		'''
 		#Get stats
 		runtime = stats["runtime"]
