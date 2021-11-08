@@ -43,7 +43,7 @@ for dataset in datasets:
 	
 	#Get train and test datasets
 	df = pd.read_csv(f"{path}/{dataset}.tsv", sep='\t')
-        train = df.values[:,1:]
+	train = df.values[:,1:]
 
 	test = train
 
