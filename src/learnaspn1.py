@@ -43,7 +43,7 @@ for dataset in datasets:
 	
 	#Get train and test datasets
 	df = pd.read_csv(f"{path}/{dataset}.tsv", sep='\t')
-	train = df.values
+        train = df.values[:,1:]
 
 	test = train
 
@@ -59,13 +59,13 @@ for dataset in datasets:
 	
 
 	#Start anytime learning
-	for i, output in enumerate(aspn.anytime_learn_spn(train, test, get_stats = True)):
+	for i, output in enumerate(aspn.anytime_learn_spn(train, test, get_stats = False)):
 
 		spn, stats = output
 		
 
 		#Plot the spn
-		plot_spn(spn, f'{path}/spn{i+1}.pdf', feature_labels = None)# ['TB', 'TR'])
+		plot_spn(spn, f'{path}/spn{i+1}.pdf', feature_labels = ['TB', 'TR'])
 		'''
 		#Get stats
 		runtime = stats["runtime"]
