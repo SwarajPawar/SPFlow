@@ -194,7 +194,7 @@ class AnytimeSPN:
 				stats['ll'] = avg_ll
 				stats['nodes'] = nodes
 
-				yield (self.spn, stats)
+			yield (self.spn, stats)
 			
 			#Save the log-likelihood past 3 iterations
 			past3 = avg_ll[-min(len(avg_ll),3):]
