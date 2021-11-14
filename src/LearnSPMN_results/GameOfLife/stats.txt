@@ -1,0 +1,8 @@
+
+GameOfLife
+	Run Time : 18705.90127849579
+	Log Likelihood : -4.851702542481353
+	MEU : 85.32740885779461
+	Nodes : 674834
+	Edges : 623912
+	Layers : 49

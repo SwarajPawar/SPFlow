@@ -1,6 +1,0 @@
-
-Elevators
-	Run Time : 2499.035037279129
-	Log Likelihood : 0.0
-	MEU : 0.5
-	Nodes : 38227

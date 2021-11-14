@@ -1,8 +1,0 @@
-
-SkillTeaching
-	Run Time : 9037.81082201004
-	Log Likelihood : -0.8986655982351793
-	MEU : -7.180539
-	Nodes : 42320
-	Parameters : 100
-	Layers : 16

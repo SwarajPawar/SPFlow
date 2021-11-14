@@ -1,6 +1,0 @@
-
-Test_Strep
-	MEU : 54.9416526618876
-	Nodes : 130
-	Average rewards : 54.91352060400901
-	Deviation : 0.013189836549851251

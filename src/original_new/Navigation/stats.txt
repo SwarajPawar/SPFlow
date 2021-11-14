@@ -1,6 +1,0 @@
-
-Navigation
-	Run Time : 2044.684020280838
-	Log Likelihood : -0.25421657291373406
-	MEU : -4.049331963001028
-	Nodes : 17426

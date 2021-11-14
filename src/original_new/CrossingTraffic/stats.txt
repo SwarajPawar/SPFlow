@@ -1,8 +1,0 @@
-
-CrossingTraffic
-	Run Time : 16691.64990258217
-	Log Likelihood : -3.0326077999664487
-	MEU : -4.0
-	Nodes : 273206
-	Edges : 254527
-	Layers : 20

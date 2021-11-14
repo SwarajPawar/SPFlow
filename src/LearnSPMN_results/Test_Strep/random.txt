@@ -1,0 +1,4 @@
+
+Test_Strep
+	Average rewards : 54.89614493400057
+	Deviation : 0.012847272731391593

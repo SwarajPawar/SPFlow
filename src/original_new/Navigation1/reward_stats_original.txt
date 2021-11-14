@@ -1,3 +1,0 @@
-
-	Average Reward : -3.1046000000000005
-	Reward Deviation : 0.042266298631415615
