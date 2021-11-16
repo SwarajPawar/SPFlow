@@ -31,9 +31,9 @@ import sys, os
 
 
 
-datasets = ["jester", "bnetflix", "kdd", "plants"]
+datasets = ["jester", "bnetflix", "kdd"]
 #datasets = ["msnbc"]
-path = "cross_new1"
+path = "cross_new"
 
 #kfolds = 3
 kfold = KFold(n_splits=3, shuffle=True)

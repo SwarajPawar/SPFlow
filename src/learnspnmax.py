@@ -65,7 +65,7 @@ cpus=-1
 
 datasets = ["nltcs","msnbc", "jester", "baudio", "bnetflix", "kdd"]
 datasets = ['nltcs']
-path = "maxlimit_new2"
+path = "maxlimit"
 
 
 #Get log-likelihood for the instance
