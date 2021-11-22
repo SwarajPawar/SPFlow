@@ -37,8 +37,8 @@ import pickle
 
 datasets = ['Export_Textiles','HIV_Screening', 'Powerplant_Airpollution', 'Computer_Diagnostician',  'Test_Strep', 'LungCancer_Staging']
 #datasets = []
-datasets = ['SkillTeaching']
-path = "new_results_depth1"
+datasets = ['Export_Textiles']
+path = "sample"
 
 def get_loglikelihood(instance):
 	test_data = np.array(instance).reshape(-1, len(feature_names))
@@ -82,7 +82,6 @@ for dataset in datasets:
 	df = pd.read_csv(f"spn/data/{dataset}/{dataset}.tsv", sep='\t')
 
 	df, column_titles = align_data(df, partial_order)  # aligns data in partial order sequence
-	
 	data = df.values
 	train, test = data, np.array(random.sample(list(data), int(data.shape[0]*0.02)))
 
