@@ -28,60 +28,6 @@ def get_instance(id):
 			instance = [id] + list(state[0])
 			return instance
 
-'''
-def get_action(state):
-	if state==0:
-		p=random.random()
-		if p<0.5:
-			return 1
-		else:
-			return 2
-	if state==1:
-		return 2
-	if state==2:
-		return 1
-	if state==3:
-		return 0
-	if state==4:
-		return 1
-	if state==5:
-		return random.randint(0, n_actions-1)
-	if state==6:
-		return 1
-	if state==7:
-		return random.randint(0, n_actions-1)
-	if state==8:
-		return 2
-	if state==9:
-		p=random.random()
-		if p<0.5:
-			return 1
-		else:
-			return 2
-	if state==10:
-		return 1
-	if state==11:
-		return random.randint(0, n_actions-1)
-	if state==12:
-		return random.randint(0, n_actions-1)
-	if state==13:
-		return 2
-	if state==14:
-		return 2
-	if state==15:
-		return 2
-
-def get_instance1(id):
-	state = env.reset()
-	k=0
-	while True:
-		action = get_action(state[0][k*2])
-		state, reward, done = env.step(action)
-		k+=1
-		if done:
-			instance = [id] + list(state[0])
-			return instance
-'''
 
 pool = multiprocessing.Pool()
 batch = 10000
@@ -93,12 +39,6 @@ data = []
 for i in range(int(instances/batch)):
 	
 	ids = [(i*batch)+j+1 for j in range(batch)]
-	'''
-	if i < 6:
-		datablock = datablock = pool.map(get_instance1, ids)
-		data += datablock
-	else:
-	'''
 	datablock = pool.map(get_instance, ids)
 	data += datablock
 	print((i+1)*batch)

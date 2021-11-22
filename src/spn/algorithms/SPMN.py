@@ -133,7 +133,7 @@ class SPMN:
                                     # Without this condition code keeps looping at this stage
 
                 ds_context = get_ds_context(remaining_vars_data, remaining_vars_scope, self.params)
-
+                print(remaining_vars_scope)
                 split_cols = get_split_cols_RDC_py()
                 data_slices_prod = split_cols(remaining_vars_data, ds_context, remaining_vars_scope)
 
@@ -145,7 +145,7 @@ class SPMN:
 
 
                 for correlated_var_set_cluster, correlated_var_set_scope, weight in data_slices_prod:
-
+                    print(data_slices_prod)
                     if any(var_scope in correlated_var_set_scope for var_scope in rest_set_scope):
 
                         next_remaining_vars_scope.extend(correlated_var_set_scope)
