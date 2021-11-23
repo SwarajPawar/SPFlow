@@ -229,6 +229,20 @@ def eval_spmn_top_down_meu(root, eval_functions,
 
 def best_next_decision(root, input_data, in_place=False):
 
+    # Function to check if the groupings are same
+    def same_groupings(grouping1, grouping2):
+        grouping1 = [set(x) for x in grouping1]
+        grouping2 = [set(x) for x in grouping2]
+
+        if len(grouping1) != len(grouping2):
+            return False
+
+        for x in grouping2:
+            if x not in grouping1:
+                return False
+
+        return True
+
     if in_place:
         data = input_data
     else:
@@ -238,19 +252,8 @@ def best_next_decision(root, input_data, in_place=False):
     nodes = get_nodes_by_type(root)
     dec_dict = {}
 
-    #Find all possible decision values
-    all_dict = dict()
-    for node in nodes:
-        if type(node) == Max:
-            all_vals = list()
-            for dec_value in node.dec_values:
-                all_vals += dec_value
-            if node.dec_idx in all_dict:
-                all_dict[node.dec_idx] = list(set(all_dict[node.dec_idx] + all_vals))
-            else:
-                all_dict[node.dec_idx] = all_vals
 
-    #Get maximum possible decision value groups for the decision variables
+    #Get possible decision value groups for the decision variables
     total_val = 0
     for node in nodes:
         if type(node) == Max:
@@ -260,26 +263,16 @@ def best_next_decision(root, input_data, in_place=False):
                 dec_vals += dec_value
             
             if node.dec_idx in dec_dict:
-                if len(dec_vals) > total_val:
-                    dec_dict[node.dec_idx] = list(node.dec_values)
-                '''
-                else:
-                    for dec_val in (node.dec_values):
-                        if dec_val not in dec_dict[node.dec_idx]:
-                            dec_dict[node.dec_idx].append(dec_val)
-                '''
+                if not same_groupings(dec_dict[node.dec_idx], node.dec_values):
+                    all_vals = list()
+                    for dec_value in dec_dict[node.dec_idx]:
+                        all_vals += dec_value
+                    dec_dict[node.dec_idx] = [ [x] for x in list(set(all_vals + dec_vals))]
+                
             else:
                 dec_dict[node.dec_idx] = list(node.dec_values)
-                total_val = len(dec_vals)
 
-    #Include the missing decision values
-    for dec_idx in dec_dict.keys():
-        dec_vals = list()
-        for dec_value in dec_dict[dec_idx]:
-            dec_vals += dec_value
-        rem_vals = list(set(all_dict[dec_idx]) - set(dec_vals))
-        for val in rem_vals:
-            dec_dict[dec_idx].append([val])
+    
             
 
 
@@ -316,4 +309,3 @@ def best_next_decision(root, input_data, in_place=False):
     #Select a decision randomly from the possible values
     best_decision = np.full((1,data.shape[0]), random.choice(possible_decisions))
     return possible_decisions, best_decision
-
