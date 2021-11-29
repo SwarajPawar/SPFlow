@@ -1,0 +1,11 @@
+
+Elevators
+	Run Time : [121.54777216911316, 841.7800934314728, 1441.0262422561646]
+	Log Likelihood : [-11.028378673378384, -3.7742790794304186, -2.119894843044539]
+	Log Likelihood Deviation: [0.3198904685028384, 0.035070316666844535, 0.038818839321835684]
+	MEU : [None, None, None]
+	Nodes : [1562, 14741, 31718]
+	Parameters : [221, 1532, 1602]
+	Layers : [16, 26, 24]
+	Average Rewards : [None, None, None]
+	Rewards Deviation : [None, None, None]
