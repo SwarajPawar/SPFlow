@@ -73,7 +73,7 @@ for dataset in datasets:
 		#train, test = train_test_split(data, test_size=0.3, shuffle=True)
 		
 		train, test = data[trainidx], data[testidx]
-		#test = np.array(random.sample(list(test), 5000))
+		test = np.array(random.sample(list(test), 5000))
 
 		plot_path = f"{path}/{dataset}/{k}"
 		if not pth.exists(plot_path):
@@ -88,7 +88,7 @@ for dataset in datasets:
 		
 
 		#Start anytime learning
-		for i, output in enumerate(aspmn.anytime_learn_spmn(train, test, get_stats=True, evaluate_parallel=True)):
+		for i, output in enumerate(aspmn.anytime_learn_spmn(train, test, get_stats=True, evaluate_parallel=True, log_likelihood_batches=5)):
 
 			spmn, stats = output
 
