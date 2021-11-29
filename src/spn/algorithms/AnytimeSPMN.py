@@ -49,16 +49,18 @@ class Anytime_SPMN:
 
 		#Number of variables
 		self.vars = len(feature_labels)
-
+		
+		self.plot_path = f"{output_path}"
 		#Create output directory if it doesn't exist
-		self.plot_path = f"{output_path}/{dataset}"
+		#self.plot_path = f"{output_path}/{dataset}"
+		'''
 		if not pth.exists(self.plot_path):
 			try:
 				os.makedirs(self.plot_path)
 			except OSError:
 				print ("Creation of the directory %s failed" % self.plot_path)
 				sys.exit()
-
+		'''
 		#Get the indices of the decision variables
 		self.dec_node_vars = [i for i in range(len(self.params.feature_names)) if self.params.feature_names[i] in self.params.decision_nodes]
 

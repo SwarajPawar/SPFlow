@@ -84,16 +84,13 @@ for dataset in datasets:
 				sys.exit()
 
 		#Initialize anytime Learning
-		aspmn = Anytime_SPMN(dataset, path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=True, util_to_bin = False)
+		aspmn = Anytime_SPMN(dataset, plot_path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=True, util_to_bin = False)
 		
 
 		#Start anytime learning
-		for i, output in enumerate(aspmn.anytime_learn_spmn(train, test, get_stats=True, evaluate_parallel=True, log_likelihood_batches=5)):
+		for i, output in enumerate(aspmn.anytime_learn_spmn(train, test, get_stats=True, evaluate_parallel=True, log_likelihood_batches=5, save_models=False)):
 
 			spmn, stats = output
-
-			#Plot the SPMN
-			plot_spn(spmn, f'{plot_path}/spmn{i}.pdf', feature_labels=feature_labels)
 
 			#Get stats
 			#Get stats
