@@ -540,7 +540,7 @@ class Anytime_SPMN:
 			if get_stats:
 				#Store the stats in a dictionary
 				avg_rewards, reward_dev = None, None
-				meu_ = self.evaluate_meu()
+				meu_ = None #self.evaluate_meu()
 				struct_stats = self.evaluate_structure_stats()
 				nodes = struct_stats['nodes']
 				parameters = struct_stats['parameters']
