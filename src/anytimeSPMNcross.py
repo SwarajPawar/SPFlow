@@ -27,6 +27,7 @@ from os import path as pth
 import sys, os
 from sklearn.model_selection import KFold
 from sklearn.model_selection import train_test_split
+import pickle
 
 
 datasets = ['Navigation', 'SkillTeaching', 'CrossingTraffic', 'GameOfLife']
