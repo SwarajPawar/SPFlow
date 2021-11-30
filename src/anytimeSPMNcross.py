@@ -113,7 +113,7 @@ for dataset in datasets:
 			file.close()
 
 			#Get edges and layers for the SPMNs
-			ll, dev = aspmn.evaluate_loglikelihood_parallel(self, test, spmn=spmn, batches=5):
+			ll, dev = aspmn.evaluate_loglikelihood_parallel(test, spmn=spmn, batches=5)
 			avg_ll.append(ll)
 			ll_dev.append(dev)
 
