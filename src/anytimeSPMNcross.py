@@ -30,7 +30,7 @@ from sklearn.model_selection import train_test_split
 
 
 datasets = ['Navigation', 'SkillTeaching', 'CrossingTraffic', 'GameOfLife']
-outpath = "output"
+path = "output"
 
 model_count = {'Navigation':11,
 				'SkillTeaching': 11,
