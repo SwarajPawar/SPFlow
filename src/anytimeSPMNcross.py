@@ -29,9 +29,13 @@ from sklearn.model_selection import KFold
 from sklearn.model_selection import train_test_split
 
 
-datasets = ['Elevators', 'Navigation', 'SkillTeaching', 'GameOfLife', 'CrossingTraffic']
-path = "output"
+datasets = ['Navigation', 'SkillTeaching', 'CrossingTraffic', 'GameOfLife']
+outpath = "output"
 
+model_count = {'Navigation':11,
+				'SkillTeaching': 11,
+				'CrossingTraffic': 11,
+				'GameOfLife': 18}
 
 
 kfold = KFold(n_splits=3, shuffle=True)
@@ -65,8 +69,8 @@ for dataset in datasets:
 	df, column_titles = align_data(df, partial_order)
 	data = df.values
 
-	ll = list()
-	dev = list()
+	k_ll = list()
+	k_dev = list()
 
 	k = 1
 	for trainidx, testidx in kfold.split(data):
@@ -86,7 +90,7 @@ for dataset in datasets:
 		#Initialize anytime Learning
 		aspmn = Anytime_SPMN(dataset, plot_path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=True, util_to_bin = False)
 		
-
+		'''
 		#Start anytime learning
 		for i, output in enumerate(aspmn.anytime_learn_spmn(train, test, get_stats=True, evaluate_parallel=True, log_likelihood_batches=5, save_models=False)):
 
@@ -97,6 +101,26 @@ for dataset in datasets:
 			runtime = stats["runtime"]
 			avg_ll = stats["ll"]
 			ll_dev = stats["ll_dev"]
+		'''
+			#Start evaluation
+		avg_ll = list()
+		ll_dev = list()
+		for model in range(model_count[dataset]):
+
+			#Get the model from the file
+			file = open(f"AnytimeSPMN_results/{dataset}/models/spmn_{model+1}.pkle","rb")
+			spmn = pickle.load(file)
+			file.close()
+
+			#Get edges and layers for the SPMNs
+			ll, dev = aspmn.evaluate_loglikelihood_parallel(self, test, spmn=spmn, batches=5):
+			avg_ll.append(ll)
+			ll_dev.append(dev)
+
+			f = open(f"{plot_path}/stats.txt", "w")
+			f.write(f"\n\tLog-Likelihood : {avg_ll}")
+			f.write(f"\n\tLikelihood Deviation: {ll_dev}")
+			f.close()
 
 
 			plt.close()
@@ -109,8 +133,13 @@ for dataset in datasets:
 			plt.savefig(f"{plot_path}/ll.png", dpi=100)
 			plt.close()
 
-			ll.append(avg_ll)
-			dev.append(ll_dev)
+		k_ll.append(avg_ll)
+		k_dev.append(ll_dev)
+
+		f = open(f"{path}/{dataset}/stats.txt", "w")
+		f.write(f"\n\tLog-Likelihood : {avg_ll}")
+		f.write(f"\n\tLikelihood Deviation: {ll_dev}")
+		f.close()
 
 		k+=1
 

@@ -665,7 +665,7 @@ class Anytime_SPMN:
 			lls = pool.map(self.get_loglikelihood, test_slice)
 			total_ll = sum(lls)
 			batch.append(total_ll/batch_size)
-			printProgressBar(b+1, 10, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
+			printProgressBar(b+1, batches, prefix = f'Log Likelihood Evaluation :', suffix = 'Complete', length = 50)
 		
 		#Get average ll and deviation
 		avg_ll = np.mean(batch)
