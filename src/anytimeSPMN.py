@@ -61,8 +61,7 @@ for dataset in datasets:
 	df, column_titles = align_data(df, partial_order)
 	data = df.values
 
-	test_size = int(data.shape[0]*0.3)
-	train, test = data, np.array(random.sample(list(data), test_size))
+	train, test = data, data
 
 	#Initialize anytime Learning
 	aspmn = Anytime_SPMN(dataset, path, partial_order , decision_nodes, utility_node, feature_names, feature_labels, meta_types, cluster_by_curr_information_set=True, util_to_bin = False)
@@ -75,7 +74,6 @@ for dataset in datasets:
 		#Plot the SPMN
 		plot_spn(spmn, f'{plot_path}/spmn{i}.pdf', feature_labels=feature_labels)
 
-		#Get stats
 		#Get stats
 		runtime = stats["runtime"]
 		avg_ll = stats["ll"]

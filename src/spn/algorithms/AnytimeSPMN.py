@@ -50,17 +50,14 @@ class Anytime_SPMN:
 		#Number of variables
 		self.vars = len(feature_labels)
 		
-		self.plot_path = f"{output_path}"
 		#Create output directory if it doesn't exist
-		#self.plot_path = f"{output_path}/{dataset}"
-		'''
+		self.plot_path = f"{output_path}/{dataset}"
 		if not pth.exists(self.plot_path):
 			try:
 				os.makedirs(self.plot_path)
 			except OSError:
 				print ("Creation of the directory %s failed" % self.plot_path)
 				sys.exit()
-		'''
 		#Get the indices of the decision variables
 		self.dec_node_vars = [i for i in range(len(self.params.feature_names)) if self.params.feature_names[i] in self.params.decision_nodes]
 
@@ -542,12 +539,13 @@ class Anytime_SPMN:
 			if get_stats:
 				#Store the stats in a dictionary
 				avg_rewards, reward_dev = None, None
-				meu_ = None #self.evaluate_meu()
+				meu_ = self.evaluate_meu()
 				struct_stats = self.evaluate_structure_stats()
 				nodes = struct_stats['nodes']
 				parameters = struct_stats['parameters']
 				layers = struct_stats['layers']
 
+				#Check for parallel evaluation
 				if evaluate_parallel:
 					avg_ll, ll_dev = self.evaluate_loglikelihood_parallel(test, batches=log_likelihood_batches)
 					avg_rewards, reward_dev = self.evaluate_rewards_parallel(batch_size=rewards_batch_size, batches=rewards_batch_count)
