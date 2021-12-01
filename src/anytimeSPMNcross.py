@@ -117,6 +117,8 @@ for dataset in datasets:
 
 		for model in range(model_count[dataset]):
 
+			print(f'\n\nModel {model+1}: \n')
+
 			#Get the model from the file
 			file = open(f"AnytimeSPMN_results/{dataset}/models/spmn_{model+1}.pkle","rb")
 			spmn = pickle.load(file)
