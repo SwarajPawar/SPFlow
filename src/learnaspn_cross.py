@@ -32,7 +32,6 @@ import sys, os
 
 
 datasets = ["jester", "bnetflix", "kdd"]
-#datasets = ["msnbc"]
 path = "cross_new"
 
 #kfolds = 3
@@ -60,13 +59,11 @@ for dataset in datasets:
 	k_nodes = list()
 	k_runtime = list()
 	
-
+	#Use 3-fold split
 	k = 1
 	for trainidx, testidx in kfold.split(data):
-		#train, test = train_test_split(data, test_size=0.3, shuffle=True)
 		
 		train, test = data[trainidx], data[testidx]
-		#test = np.array(random.sample(list(test), 5000))
 
 		plot_path = f"{path}/{dataset}/{k}"
 		if not pth.exists(plot_path):
@@ -82,7 +79,6 @@ for dataset in datasets:
 
 		#Initialize ASPN
 		aspn = AnytimeSPN(dataset, path, ds_context, k)
-		#spn_structure, stats = aspn.learn_aspn(train, test)
 
 		ll = list()
 		nodes = list()
@@ -136,7 +132,7 @@ for dataset in datasets:
 
 		k+=1
 
-	
+	#Plot the mean
 	plt.close()
 	colors = ["red", "blue", "green"]
 

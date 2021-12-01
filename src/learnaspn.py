@@ -32,7 +32,6 @@ import matplotlib.pyplot as plt
 
 
 datasets = ["nltcs","msnbc", "kdd", "baudio", "jester", "bnetflix"]
-datasets = ['nltcs']
 path = "output"
 
 

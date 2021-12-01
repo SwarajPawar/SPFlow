@@ -91,15 +91,14 @@ for dataset in datasets:
 			sys.exit()
 	
 	#Read training and test datasets
-	#Read training and test datasets
 	df = pd.read_csv(f"spn/data/binary/{dataset}.ts.data", sep=',')
 	train = df.values
 	df2 = pd.read_csv(f"spn/data/binary/{dataset}.test.data", sep=',')
 	test = df2.values
-	#data = np.concatenate((data1, data2))
+	data = np.concatenate((data1, data2))
 	var = train.shape[1]
 
-	#train, test = data, data
+	train, test = data, data
 
 	ds_context = Context(meta_types=[MetaType.DISCRETE]*train.shape[1])
 	ds_context.add_domains(train)
