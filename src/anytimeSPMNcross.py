@@ -157,8 +157,8 @@ for dataset in datasets:
 		k_dev.append(ll_dev)
 
 		f = open(f"{path}/{dataset}/stats.txt", "w")
-		f.write(f"\n\tLog-Likelihood : {avg_ll}")
-		f.write(f"\n\tLikelihood Deviation: {ll_dev}")
+		f.write(f"\n\tLog-Likelihood : {k_ll}")
+		f.write(f"\n\tLikelihood Deviation: {k_dev}")
 		f.close()
 
 		k+=1
