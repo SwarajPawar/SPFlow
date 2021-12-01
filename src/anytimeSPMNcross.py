@@ -30,7 +30,7 @@ from sklearn.model_selection import train_test_split
 import pickle
 
 
-datasets = ['Navigation', 'SkillTeaching', 'CrossingTraffic', 'GameOfLife']
+datasets = ['SkillTeaching', 'CrossingTraffic', 'GameOfLife']
 path = "output"
 
 model_count = {'Navigation':11,
