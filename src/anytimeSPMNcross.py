@@ -76,9 +76,16 @@ for dataset in datasets:
 	k = 1
 	for trainidx, testidx in kfold.split(data):
 		#train, test = train_test_split(data, test_size=0.3, shuffle=True)
+
+		print(f"\n\n\n{k}\n\n")
+
+		if dataset in ['SkillTeaching'] and k==1:
+			k+=1
+			continue
+
 		
 		train, test = data[trainidx], data[testidx]
-		test = np.array(random.sample(list(test), 5000))
+		test = np.array(random.sample(list(test), 500))
 
 		plot_path = f"{path}/{dataset}/{k}"
 		if not pth.exists(plot_path):
@@ -106,6 +113,8 @@ for dataset in datasets:
 			#Start evaluation
 		avg_ll = list()
 		ll_dev = list()
+		prev_size = 0
+
 		for model in range(model_count[dataset]):
 
 			#Get the model from the file
@@ -113,10 +122,18 @@ for dataset in datasets:
 			spmn = pickle.load(file)
 			file.close()
 
-			#Get edges and layers for the SPMNs
-			ll, dev = aspmn.evaluate_loglikelihood_parallel(test, spmn=spmn, batches=5)
+			struct_stats = aspmn.evaluate_structure_stats(spmn = spmn)
+			nodes = struct_stats["nodes"]
+
+			if nodes == prev_size:
+				ll = avg_ll[-1]
+				dev = ll_dev[-1]
+			else:
+				ll, dev = aspmn.evaluate_loglikelihood_parallel(test, spmn=spmn, batches=5)
+
 			avg_ll.append(ll)
 			ll_dev.append(dev)
+			prev_size = nodes
 
 			f = open(f"{plot_path}/stats.txt", "w")
 			f.write(f"\n\tLog-Likelihood : {avg_ll}")
