@@ -43,20 +43,20 @@ ds_context.add_domains(data)
 #### Start the Anytime Learning for SPNs 
 
 ```python
-import spn.algorithms.ASPN
+from spn.algorithms.AnytimeSPN import AnytimePSN
 
 dataset = 'nltcs'
-aspn = ASPN(dataset, output_path, ds_context)
-spn_structure, stats = aspn.learn_aspn(train_data, test_data)    
+anytime_spn = AnytimeSPN(dataset, output_path, ds_context)
+spn_structure, stats = anytime_spn.anytime_learn_spn(train_data, test_data)    
 ```
-The aspn.learn_aspn() function generates and saves the plots for loglikelihood and number of nodes
+The anytime_spn.anytime_learn_spn() function generates and saves the plots for loglikelihood and number of nodes
 for the SPNs at each iteration of the Anytime technique
 These plots can be found at output_path/dataset
 
 ![nltcs LogLikelihood](https://github.com/SwarajPawar/SPFlow/blob/anytime_spn/plots/nltcs_ll.png)
 ![nltcs Nodes](https://github.com/SwarajPawar/SPFlow/blob/anytime_spn/plots/nltcs_nodes.png)
 
-Note that the aspn.learn_aspn() function is a generator function and generates 
+Note that the anytime_spn.anytime_learn_spn() function is a generator function and generates 
 the SPN networks in a sequence and returns them at each iteration
 
 
