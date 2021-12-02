@@ -66,7 +66,7 @@ These plots can be found at output_path/dataset
 The stats is a dictionary object and consists of log-likelihood,
 number of nodes, runtime, meu and average reward. 
 
-Note that the aspn.learn_aspmn() function is a generator function and generates 
+Note that the anytime_spmn.anytime_learn_spmn() function is a generator function and generates 
 the SPMN networks in a sequence and returns them at each iteration
 
 
