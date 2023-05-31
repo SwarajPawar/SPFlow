@@ -15,15 +15,14 @@ Look at *RSPMN/RSPMN_MDP_Datasets/* folder for a list of sample datasets to use 
 *partial order, decision nodes, utility node, meta_types, dataset size, optimal meu, etc* for each of the data sets.
 ```python
 import pandas as pd    
-csv_path = "FrozenLake/FrozenLake.csv"
-df = pd.DataFrame.from_csv(csv_path, sep=',')
+csv_path = "spn/RSPMN_MDP_Datasets/FrozenLake/FrozenLake.csv"
+df = pd.read_csv(csv_path, sep=',')
 train_data = df.values
 ```
 #### Provide initial parameters
 Provide *partial order, decision nodes, utility node, feature_names, meta_types* for the dataset
 ```python
-Partial Order = 
-[[state],[action],[reward]]
+partial_order = [["state"],["action"],["reward"]]
 decision_nodes = ["action"]
 utility_nodes = ["reward"]
 feature_names = [var for var_set in partial_order for var in var_set]
@@ -53,9 +52,11 @@ template = rspmn.InitialTemplate.template_network
 template = rspmn.hard_em(train_data, template, False)
 
 # or 
-
 # if numpy array cannot hold whole of train_data, 
 # updates can be made on batches of data and/or by splitting sequence as follows
+batch_size = 1000
+sequence = 8
+sequence_split = 4
 for i in range(0, len(train_data), batch_size):
     print(i)
     for j in range(0, len(sequence)-1, sequence_split): # e.g. len(sequence) = 10, sequence_split = 5
